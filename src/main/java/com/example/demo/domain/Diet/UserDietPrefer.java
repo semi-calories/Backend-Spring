@@ -1,6 +1,7 @@
 package com.example.demo.domain.Diet;
 
 import com.example.demo.domain.BaseEntity;
+import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -24,8 +25,9 @@ public class UserDietPrefer extends BaseEntity {
 
     private String goal;
 
-    @Column(name="prefer_food_code")
-    private Long preferFoodCode;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="food_code")
+    private DietList preferFoodCode;
     @Column(name="prefer_food_name")
     private Long preferFoodName;
     @Column(name="prefer_food_kcal")

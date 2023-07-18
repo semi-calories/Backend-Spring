@@ -11,7 +11,7 @@ import java.util.prefs.BackingStoreException;
 
 @Entity
 @Getter
-public class DietList extends BaseEntity {
+public class DietList {
 
     @Id
     @Column(name="food_code")
