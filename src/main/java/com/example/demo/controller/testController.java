@@ -16,8 +16,9 @@ public class testController {
 
     @GetMapping("/api")
     public void test(){
-        int result = fastApiFeign.test();
-        System.out.println(result);
+        log.info("home api");
+        System.out.println(fastApiFeign.test());
+
         log.info("home");
     }
 
