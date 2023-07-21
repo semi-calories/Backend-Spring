@@ -1,5 +1,7 @@
 package com.example.demo.dto.Recommend.FastAPI;
 
+import com.example.demo.domain.DB.DietList;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -24,23 +27,23 @@ public class RequestRecommendAPIDto {
     private double weight;
     private int age;
     private String activity;
-    private List<String> prefer;
-    private List<String> dislike;
+    private List<Long> prefer;
+    private List<Long> dislike;
     private Boolean firstFood;
     private List<String> nutrient;
 
-    public RequestRecommendAPIDto(UserGoal user, Boolean firstFood) {
+    public RequestRecommendAPIDto(UserGoal user, Boolean firstFood, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet) {
+        List<Long> preferCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
+        List<Long> dislikeCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
+
         this.goal = user.getUserGoal();
         this.gender = user.getUserCode().getGender().toString();
         this.height = user.getUserCode().getHeight();
         this.weight = user.getUserCode().getWeight();
         this.age = user.getUserCode().getAge();
         this.activity = user.getUserActivity();
-//        this.prefer = user.getPreferFoodCode();
-//        this.dislike = user.getDislikeFoodCode();
-
-        this.prefer = null;
-        this.dislike = null;
+        this.prefer = preferCollect;
+        this.dislike = dislikeCollect;
         this.firstFood = firstFood;
         this.nutrient = null;
     }

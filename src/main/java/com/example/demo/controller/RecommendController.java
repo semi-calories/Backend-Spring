@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import com.example.demo.dto.Recommend.Request.RequestRecommendDto;
 import com.example.demo.feign.FastApiFeign;
+import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/recommend")
@@ -24,6 +27,7 @@ public class RecommendController {
 
     private final FastApiFeign fastApiFeign;
     private final UserService userService;
+    private final DietService dietService;
 
     /**
      * 음식 추천 요청 받는 api
@@ -31,11 +35,15 @@ public class RecommendController {
     @PostMapping("/request")
     public ResponseRecommendAPIDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
         // DB에서 해당 유저 정보 가져옴 (유저 없으면 exception 터지는데, 처리 필요)
+        // 유저 목표 및 유저 조회
         UserGoal user = userService.findUserWithUserGoal(0L);
+        // 유저 선호 음식 조회(비선호도 해야함!)
+        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(0L);
+
 
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, requestRecommendDto.getFirstFood());
+                new RequestRecommendAPIDto(user, requestRecommendDto.getFirstFood(), preferDiet, preferDiet);
 
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 

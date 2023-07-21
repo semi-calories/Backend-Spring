@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface UserGoalRepository extends JpaRepository<UserGoal, Long> {
 
+    /**
+     * user goal 조회 by user code
+     */
     @Query("select ug from UserGoal ug left join fetch ug.userCode")
     Optional<UserGoal> findAllWithUser(@Param("userCode") Long userCode);
 }

@@ -29,7 +29,7 @@ public class UserDietDislike extends BaseEntity {
     @JoinColumn(name="food_code")
     private DietList dislikeFoodCode;
     @Column(name="dislike_food_name")
-    private Long dislikeFoodName;
+    private String dislikeFoodName;
     @Column(name="dislike_food_kcal")
     private Long dislikeFoodKcal;
 
