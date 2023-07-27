@@ -15,6 +15,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ import java.io.IOException;
 public class FoodRecognizerController {
 
     private final LogmealApiFeign logmealApiFeign;
+    String auth = "Bearer f45c34959ac63312f2efeb272f3ec28f4d75a46e";
 
     /**
      * 음식 이미지 받는 API
@@ -38,16 +42,10 @@ public class FoodRecognizerController {
     public ResponseEntity upload(MultipartHttpServletRequest request) throws IOException {
         MultipartFile file = request.getFile("image");
 
-        String originalFileName = file.getOriginalFilename();
-//        File destination = new File("upload/dir" + originalFileName);
-//        file.transferTo(destination);
+        Object result = logmealApiFeign.getFoodName(auth, "eng", file);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(originalFileName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/test")
-    public String test(){
-        System.out.println("접속");
-        return "ok";
-    }
+
 }
