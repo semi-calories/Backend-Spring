@@ -1,6 +1,7 @@
 package com.example.demo.dto.Recommend.FastAPI;
 
 import com.example.demo.domain.DB.DietList;
+import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
@@ -30,11 +31,12 @@ public class RequestRecommendAPIDto {
     private List<Long> prefer;
     private List<Long> dislike;
     private Boolean firstFood;
-    private List<String> nutrient;
+    private List<List<Integer>> nutrient;
 
-    public RequestRecommendAPIDto(UserGoal user, Boolean firstFood, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet) {
-        List<Long> preferCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
-        List<Long> dislikeCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
+    public RequestRecommendAPIDto(UserGoal user, Boolean firstFood, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet, List<DietRecord> dietRecords) {
+        List<Long> preferCollect = getPreferCollect(preferDiet);
+        List<Long> dislikeCollect = getPreferCollect(preferDiet);
+
 
         this.goal = user.getUserGoal();
         this.gender = user.getUserCode().getGender().toString();
@@ -47,4 +49,19 @@ public class RequestRecommendAPIDto {
         this.firstFood = firstFood;
         this.nutrient = null;
     }
+
+    private static List<Long> getPreferCollect(List<UserDietPrefer> preferDiet) {
+        List<Long> preferCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
+        return preferCollect;
+    }
+
+//    private static void getDietRecords(List<DietRecord> dietRecords){
+//        List<List<Integer>> dietList = new ArrayList<>();
+//        int i = 0
+//        for(DietRecord dietRecord : dietRecords){
+//            dietList.get(i).add(dietRecord.getFoodTimes());
+//            dietList.get(i).add(dietRecord.get)
+//        }
+//    }
+
 }

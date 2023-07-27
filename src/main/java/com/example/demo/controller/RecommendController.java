@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static java.time.LocalDateTime.now;
 
 @RestController
 @RequestMapping("/recommend")
@@ -40,10 +43,12 @@ public class RecommendController {
         // 유저 선호 음식 조회(비선호도 해야함!)
         List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(0L);
 
+        List<DietRecord> dietRecords = dietService.findDietRecordByUserCode(0L, now());
+
 
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, requestRecommendDto.getFirstFood(), preferDiet, preferDiet);
+                new RequestRecommendAPIDto(user, requestRecommendDto.getFirstFood(), preferDiet, preferDiet, dietRecords);
 
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 

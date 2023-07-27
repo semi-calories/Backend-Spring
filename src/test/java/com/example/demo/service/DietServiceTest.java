@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,5 +29,16 @@ class DietServiceTest {
         //then
 
         assertThat(preferList.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void record_목록_조회() throws Exception{
+        //given
+        List<DietRecord> result = dietService.findDietRecordByUserCode(0L, now());
+        //when
+        System.out.println(result);
+
+        //then
+        assertThat(result.size()).isEqualTo(2);
     }
 }
