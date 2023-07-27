@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.TestDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.feign.LogmealApiFeign;
 import lombok.RequiredArgsConstructor;
