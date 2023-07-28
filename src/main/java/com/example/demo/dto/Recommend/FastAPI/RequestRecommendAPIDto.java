@@ -39,7 +39,6 @@ public class RequestRecommendAPIDto {
         List<Long> dislikeCollect = getPreferCollect(preferDiet);
         List<Double> dietRecordsList = getDietRecords(dietRecords);
 
-
         this.goal = user.getUserGoal();
         this.gender = user.getUserCode().getGender().toString();
         this.height = user.getUserCode().getHeight();
@@ -68,7 +67,6 @@ public class RequestRecommendAPIDto {
         arr.add(totalCarbo);
         arr.add(totalProtein);
         arr.add(totalFat);
-
         return arr;
     }
 

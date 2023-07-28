@@ -24,7 +24,7 @@ public class DietRecord extends BaseEntity {
     private User userCode;
 
 
-    @Column(name="food_tiems")
+    @Column(name="food_times")
     private int foodTimes;
 
     @ManyToOne(fetch = FetchType.LAZY)

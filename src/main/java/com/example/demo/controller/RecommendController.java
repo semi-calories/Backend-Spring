@@ -39,11 +39,11 @@ public class RecommendController {
     public ResponseRecommendAPIDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
         // DB에서 해당 유저 정보 가져옴 (유저 없으면 exception 터지는데, 처리 필요)
         // 유저 목표 및 유저 조회
-        UserGoal user = userService.findUserWithUserGoal(0L);
+        UserGoal user = userService.findUserWithUserGoal(1L);
         // 유저 선호 음식 조회(비선호도 해야함!)
-        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(0L);
+        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(1L);
 
-        List<DietRecord> dietRecords = dietService.findDietRecordByUserCode(0L, now());
+        List<DietRecord> dietRecords = dietService.findDietRecordByUserCode(1L, now());
 
 
         // FASTAPI 서버에 api 요청
