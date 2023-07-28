@@ -67,6 +67,7 @@ public class RequestRecommendAPIDto {
         arr.add(totalKcal);
         arr.add(totalCarbo);
         arr.add(totalProtein);
+        arr.add(totalFat);
 
         return arr;
     }

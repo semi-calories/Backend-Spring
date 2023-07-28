@@ -1,9 +1,6 @@
 package com.example.demo.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import javax.annotation.processing.Generated;
@@ -32,6 +29,7 @@ public class User extends BaseEntity {
     @Column(name= "user_age")
     private int age;
 
+    @Enumerated(EnumType.STRING)
     @Column(name= "user_gender")
     private Gender gender;
 
