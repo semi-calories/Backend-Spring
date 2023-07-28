@@ -12,6 +12,6 @@ public interface UserGoalRepository extends JpaRepository<UserGoal, Long> {
     /**
      * user goal 조회 by user code
      */
-    @Query("select ug from UserGoal ug left join fetch ug.userCode")
+    @Query("select ug from UserGoal ug left join fetch ug.userCode where ug.userCode.userCode = :userCode")
     Optional<UserGoal> findAllWithUser(@Param("userCode") Long userCode);
 }

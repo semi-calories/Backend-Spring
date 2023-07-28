@@ -13,6 +13,6 @@ public interface PreferDietRepository extends JpaRepository<UserDietPrefer, Long
     /**
      * prefer diet 조회 by user code
      */
-    @Query("select udp from UserDietPrefer udp left join fetch udp.userCode")
+    @Query("select udp from UserDietPrefer udp left join fetch udp.userCode where udp.userCode.userCode = :userCode")
     List<UserDietPrefer> findByUserCode(@Param("userCode") Long userCode);
 }

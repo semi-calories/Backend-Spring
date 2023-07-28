@@ -17,8 +17,9 @@ public interface DietRecordRepository extends JpaRepository<DietRecord, Long> {
     /**
      * 조회 by user code
      */
-    @Query("select dr from DietRecord dr left join fetch dr.userCode where dr.eatDate > current_date ")
-    List<DietRecord> findByUserCode(@Param("userCode") Long userCode, @Param("start")LocalDateTime start, @Param("next")LocalDateTime next);
+    @Query("select dr from DietRecord dr left join fetch dr.userCode where  dr.userCode.userCode = :userCode and dr.eatDate between :startDatetime and :endDatetime")
+    List<DietRecord> findAllByUserCodeWithEatDateBetween(@Param("userCode") Long userCode, @Param("startDatetime") LocalDateTime startDatetime,@Param("endDatetime") LocalDateTime endDatetime);
+
 
 
 }

@@ -30,12 +30,14 @@ public class RequestRecommendAPIDto {
     private String activity;
     private List<Long> prefer;
     private List<Long> dislike;
-    private Boolean firstFood;
-    private List<List<Integer>> nutrient;
 
-    public RequestRecommendAPIDto(UserGoal user, Boolean firstFood, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet, List<DietRecord> dietRecords) {
+    private int eatTimes;
+    private List<Double> nutrient;
+
+    public RequestRecommendAPIDto(UserGoal user, int eatTimes, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet, List<DietRecord> dietRecords) {
         List<Long> preferCollect = getPreferCollect(preferDiet);
         List<Long> dislikeCollect = getPreferCollect(preferDiet);
+        List<Double> dietRecordsList = getDietRecords(dietRecords);
 
 
         this.goal = user.getUserGoal();
@@ -46,8 +48,8 @@ public class RequestRecommendAPIDto {
         this.activity = user.getUserActivity();
         this.prefer = preferCollect;
         this.dislike = dislikeCollect;
-        this.firstFood = firstFood;
-        this.nutrient = null;
+        this.eatTimes = eatTimes;
+        this.nutrient = dietRecordsList;
     }
 
     private static List<Long> getPreferCollect(List<UserDietPrefer> preferDiet) {
@@ -55,13 +57,18 @@ public class RequestRecommendAPIDto {
         return preferCollect;
     }
 
-//    private static void getDietRecords(List<DietRecord> dietRecords){
-//        List<List<Integer>> dietList = new ArrayList<>();
-//        int i = 0
-//        for(DietRecord dietRecord : dietRecords){
-//            dietList.get(i).add(dietRecord.getFoodTimes());
-//            dietList.get(i).add(dietRecord.get)
-//        }
-//    }
+    private static List<Double> getDietRecords(List<DietRecord> dietRecords){
+        // 0 총칼로리, 123 탄단지
+        List<Double> arr = new ArrayList<>();
+        Double totalKcal = dietRecords.stream().map(dr -> dr.getFoodKcal()).mapToDouble(i->i).sum();
+        Double totalCarbo = dietRecords.stream().map(dr -> dr.getFoodCarbo()).mapToDouble(i->i).sum();
+        Double totalProtein = dietRecords.stream().map(dr -> dr.getFoodProtein()).mapToDouble(i->i).sum();
+        Double totalFat = dietRecords.stream().map(dr -> dr.getFoodFat()).mapToDouble(i->i).sum();
+        arr.add(totalKcal);
+        arr.add(totalCarbo);
+        arr.add(totalProtein);
+
+        return arr;
+    }
 
 }

@@ -14,6 +14,6 @@ public class RequestRecommendDto {
 
     @JsonProperty("user-code")
     private Long userCode;
-    @JsonProperty("first-food")
-    private Boolean firstFood;
+    @JsonProperty("eat-times")
+    private int eatTimes;
 }

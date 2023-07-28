@@ -48,8 +48,9 @@ public class RecommendController {
 
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, requestRecommendDto.getFirstFood(), preferDiet, preferDiet, dietRecords);
+                new RequestRecommendAPIDto(user, requestRecommendDto.getEatTimes(), preferDiet, preferDiet, dietRecords);
 
+        log.info("여기까지 완료!!!!!!!!!!!!!!!!!1");
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
 

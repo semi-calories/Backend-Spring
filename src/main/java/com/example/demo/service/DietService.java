@@ -35,9 +35,10 @@ public class DietService {
      */
     public List<DietRecord> findDietRecordByUserCode(Long userCode, LocalDateTime date) throws Exception{
 
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date.minusDays(1)), LocalTime.of(0,0,0));;
+        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(0,0,0));;
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(23,59,59));
-        List<DietRecord> dietList = dietRecordRepository.findByUserCode(userCode, startDatetime, endDatetime);
+        List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(userCode, startDatetime, endDatetime);
         return dietList;
+//        return null;
     }
 }
