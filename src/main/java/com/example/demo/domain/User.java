@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
+@Table(schema = "User")
 public class User extends BaseEntity {
 
     @Id @GeneratedValue
@@ -22,9 +23,6 @@ public class User extends BaseEntity {
 
     @Column(name= "user_name")
     private String name;
-
-    @Column(name= "user_nickname")
-    private String nickname;
 
     @Column(name= "user_age")
     private int age;

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
@@ -39,18 +40,19 @@ public class RecommendController {
     public ResponseRecommendAPIDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
         // DB에서 해당 유저 정보 가져옴 (유저 없으면 exception 터지는데, 처리 필요)
         // 유저 목표 및 유저 조회
-        UserGoal user = userService.findUserWithUserGoal(1L);
+        UserGoal user = userService.findUserWithUserGoal(requestRecommendDto.getUserCode());
+        log.info("########## user = {}",user);
         // 유저 선호 음식 조회(비선호도 해야함!)
-        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(1L);
+        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(requestRecommendDto.getUserCode());
+        List<UserDietDislike> dislikeDiet = dietService.findDislikeByUserCode(requestRecommendDto.getUserCode());
 
-        List<DietRecord> dietRecords = dietService.findDietRecordByUserCode(1L, now());
+        List<DietRecord> dietRecords = dietService.findDietRecordByUserCode(requestRecommendDto.getUserCode(), now());
 
 
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, requestRecommendDto.getEatTimes(), preferDiet, preferDiet, dietRecords);
+                new RequestRecommendAPIDto(user, requestRecommendDto.getEatTimes(), preferDiet, dislikeDiet, dietRecords);
 
-        log.info("여기까지 완료!!!!!!!!!!!!!!!!!1");
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
 

@@ -11,6 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
+@Table(schema = "User_diet_prefer")
 public class UserDietPrefer extends BaseEntity {
 
     @Id @GeneratedValue
@@ -21,14 +22,11 @@ public class UserDietPrefer extends BaseEntity {
     @JoinColumn(name="user_code")
     private User userCode;
 
-    private String goal;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="prefer_food_code")
     private DietList preferFoodCode;
     @Column(name="prefer_food_name")
     private String preferFoodName;
-    @Column(name="prefer_food_kcal")
-    private Long preferFoodKcal;
 
 }

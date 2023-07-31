@@ -2,6 +2,7 @@ package com.example.demo.dto.Recommend.FastAPI;
 
 import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
@@ -34,9 +35,9 @@ public class RequestRecommendAPIDto {
     private int eatTimes;
     private List<Double> nutrient;
 
-    public RequestRecommendAPIDto(UserGoal user, int eatTimes, List<UserDietPrefer> preferDiet, List<UserDietPrefer> dislikeDiet, List<DietRecord> dietRecords) {
+    public RequestRecommendAPIDto(UserGoal user, int eatTimes, List<UserDietPrefer> preferDiet, List<UserDietDislike> dislikeDiet, List<DietRecord> dietRecords) {
         List<Long> preferCollect = getPreferCollect(preferDiet);
-        List<Long> dislikeCollect = getPreferCollect(preferDiet);
+        List<Long> dislikeCollect = getDislikeCollect(dislikeDiet);
         List<Double> dietRecordsList = getDietRecords(dietRecords);
 
         this.goal = user.getUserGoal();
@@ -54,6 +55,11 @@ public class RequestRecommendAPIDto {
     private static List<Long> getPreferCollect(List<UserDietPrefer> preferDiet) {
         List<Long> preferCollect = preferDiet.stream().map(p -> p.getPreferFoodCode().getFoodCode()).collect(Collectors.toList());
         return preferCollect;
+    }
+
+    private static List<Long> getDislikeCollect(List<UserDietDislike> preferDiet) {
+        List<Long> dislikeCollect = preferDiet.stream().map(p -> p.getDislikeFoodCode().getFoodCode()).collect(Collectors.toList());
+        return dislikeCollect;
     }
 
     private static List<Double> getDietRecords(List<DietRecord> dietRecords){
