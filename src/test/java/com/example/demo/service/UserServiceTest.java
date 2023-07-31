@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,5 +24,16 @@ class UserServiceTest {
         System.out.println(result);
         //then
         Assertions.assertThat(result.getUserCode().getName()).isEqualTo("박지은");
+    }
+
+    @Test
+    public void 유저조회() throws Exception{
+        //given
+        User one = userService.findOne(0L);
+        System.out.println(one);
+        System.out.println(one.getCreatedAt());
+        //when
+
+        //then
     }
 }

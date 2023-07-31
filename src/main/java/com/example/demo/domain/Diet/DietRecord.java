@@ -23,7 +23,6 @@ public class DietRecord extends BaseEntity {
     @JoinColumn(name="user_code")
     private User userCode;
 
-    private String goal;
 
     @Column(name="food_times")
     private int foodTimes;

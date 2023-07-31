@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(schema = "User_diet_dislike")
 public class UserDietDislike extends BaseEntity {
 
     @Id @GeneratedValue
@@ -23,14 +24,12 @@ public class UserDietDislike extends BaseEntity {
     @JoinColumn(name="user_code")
     private User userCode;
 
-    private String goal;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="dislike_food_code")
     private DietList dislikeFoodCode;
     @Column(name="dislike_food_name")
     private String dislikeFoodName;
-    @Column(name="dislike_food_kcal")
-    private Long dislikeFoodKcal;
+
 
 }
