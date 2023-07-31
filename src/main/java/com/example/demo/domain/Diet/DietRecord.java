@@ -25,7 +25,7 @@ public class DietRecord extends BaseEntity {
 
     private String goal;
 
-    @Column(name="food_tiems")
+    @Column(name="food_times")
     private int foodTimes;
 
     @ManyToOne(fetch = FetchType.LAZY)

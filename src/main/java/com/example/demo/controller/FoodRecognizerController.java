@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.Recognizer.Logmeal.ResponseDto.Recognition_results;
-import com.example.demo.dto.Recognizer.Logmeal.ResponseDto.ResponseLogmealDto;
 import com.example.demo.dto.Recognizer.Request.RequestFoodRecogDto;
 import com.example.demo.dto.Recognizer.Response.ResponseFoodRecogDto;
-import com.example.demo.feign.LogmealApiFeign;
+import com.example.demo.feign.FastApiFeign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,9 +20,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/recognizer")
 public class FoodRecognizerController {
-
-    private final LogmealApiFeign logmealApiFeign;
-    String auth = "Bearer f45c34959ac63312f2efeb272f3ec28f4d75a46e";
+    
+    private FastApiFeign fastApiFeign;
 
     @PostMapping(value = "/recognizerFood", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity recogFood(@ModelAttribute RequestFoodRecogDto requestFoodRecogDto) throws IOException {
@@ -32,11 +29,8 @@ public class FoodRecognizerController {
         MultipartFile file = requestFoodRecogDto.getImage();
 
         // logmeal에 api 전송
-        ResponseLogmealDto logmealList = logmealApiFeign.getFoodName(auth, "eng", file);
+        ResponseFoodRecogDto responseFoodRecogDto = fastApiFeign.requestRecognizer(file);
 
-        // 결과 값 받아와 name list 생성
-        List<List<Recognition_results>> collect = logmealList.getSegmentation_results().stream().map(list -> list.getRecognition_results()).collect(Collectors.toList());
-        ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto(collect);
 
         // TODO DB에 저장!! - 비동기로
 
