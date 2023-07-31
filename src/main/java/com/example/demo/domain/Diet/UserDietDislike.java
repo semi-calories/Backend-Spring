@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(schema = "User_diet_dislike")
 public class UserDietDislike extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_diet_dislike_id")
     private Long id;
 

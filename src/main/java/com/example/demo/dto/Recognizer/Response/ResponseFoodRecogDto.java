@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @Getter
 public class ResponseFoodRecogDto {
-    private List<String> names = new ArrayList<>();
+    private List<String> foodNameList = new ArrayList<>();
+    private List<Integer> foodCodeList = new ArrayList<>();
 
 }

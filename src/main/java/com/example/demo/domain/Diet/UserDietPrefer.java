@@ -14,7 +14,7 @@ import lombok.*;
 @Table(schema = "User_diet_prefer")
 public class UserDietPrefer extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_diet_prefer_id")
     private Long id;
 

@@ -41,7 +41,7 @@ public class RecommendController {
         // DB에서 해당 유저 정보 가져옴 (유저 없으면 exception 터지는데, 처리 필요)
         // 유저 목표 및 유저 조회
         UserGoal user = userService.findUserWithUserGoal(requestRecommendDto.getUserCode());
-        log.info("########## user = {}",user);
+
         // 유저 선호 음식 조회(비선호도 해야함!)
         List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(requestRecommendDto.getUserCode());
         List<UserDietDislike> dislikeDiet = dietService.findDislikeByUserCode(requestRecommendDto.getUserCode());

@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.feign.FastApiFeign;
-import com.example.demo.feign.LogmealApiFeign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,23 +11,22 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class testController {
 
-    private final FastApiFeign fastApiFeign;
-    private final LogmealApiFeign logmealApiFeign;
+//    private final FastApiFeign fastApiFeign;
+//
+//    @GetMapping("/api")
+//    public void test(){
+//        log.info("home api");
+//        System.out.println(fastApiFeign.test());
+//
+//        log.info("home");
+//    }
+//
 
-    @GetMapping("/api")
-    public void test(){
-        log.info("home api");
-        System.out.println(fastApiFeign.test());
 
-        log.info("home");
+    @GetMapping("/test")
+    public int test(){
+        System.out.println("#3333333333 test 받음 ############");
+        return 2023;
     }
-
-    @GetMapping("/logmeal-test")
-    public Object logmeal(){
-        Object logmeal = logmealApiFeign.getService("Bearer f45c34959ac63312f2efeb272f3ec28f4d75a46e");
-        log.info("logmeal return 값 = {}", logmeal);
-        return logmeal;
-    }
-
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.domain.Diet;
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User;
+import com.example.demo.dto.Record.Request.RequestRecordDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class DietRecord extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="diet_record_id")
     private Long id;
 
@@ -34,15 +36,37 @@ public class DietRecord extends BaseEntity {
     @Column(name="eat_date")
     private LocalDateTime eatDate;
 
+    @Column(name="food_weight")
+    private Long foodWeight;
+
+    @Column(name="food_name")
+    private String foodName;
+
     @Column(name="food_kcal")
-    private Long foodKcal;
+    private Double foodKcal;
 
     @Column(name="food_carbo")
-    private Long foodCarbo;
+    private Double foodCarbo;
 
     @Column(name="food_protein")
-    private Long foodProtein;
+    private Double foodProtein;
 
     @Column(name="food_fat")
-    private Long foodFat;
+    private Double foodFat;
+
+
+    //== DB 저장용 생성자 ==//
+
+    public DietRecord(RequestRecordDto recordDto, User userCode, DietList foodCode) {
+        this.userCode = userCode;
+        this.foodTimes = recordDto.getFoodTimes();
+        this.foodCode = foodCode;
+        this.eatDate = recordDto.getEatDate();
+        this.foodName = recordDto.getFoodName();
+        this.foodWeight = recordDto.getFoodWeight();
+        this.foodKcal = recordDto.getFoodKcal();
+        this.foodCarbo = recordDto.getFoodCarbo();
+        this.foodProtein = recordDto.getFoodProtein();
+        this.foodFat = recordDto.getFoodFat();
+    }
 }

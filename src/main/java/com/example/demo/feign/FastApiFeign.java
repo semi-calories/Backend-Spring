@@ -27,12 +27,12 @@ public interface FastApiFeign {
             @RequestBody RequestRecommendAPIDto requestRecommendAPIDto
             );
 
-    /**
-     * 음식 인식 요청
-     */
-    @PostMapping("/requset-")
-    public ResponseFoodRecogDto requestRecognizer(
-            @RequestPart MultipartFile file
-            );
+//    /**
+//     * 음식 인식 요청
+//     */
+//    @PostMapping("/request-food-recog")
+//    public ResponseFoodRecogDto requestRecognizer(
+//            @RequestPart MultipartFile file
+//            );
 
 }
