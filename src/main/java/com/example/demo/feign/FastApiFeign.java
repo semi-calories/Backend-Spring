@@ -1,9 +1,12 @@
 package com.example.demo.feign;
 
+import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
+import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import com.example.demo.dto.TestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name="FastApiFeign", url="http://localhost:8000")
 public interface FastApiFeign {
@@ -12,6 +15,14 @@ public interface FastApiFeign {
      * test 연결
      */
     @GetMapping("/test")
-    public int test();
+    public ResponseRecommendAPIDto test();
+
+    /**
+     * 추천 알고리즘 요청
+     */
+    @PostMapping("/request-recommend")
+    public ResponseRecommendAPIDto requestRecommend(
+            @RequestBody RequestRecommendAPIDto requestRecommendAPIDto
+            );
 
 }

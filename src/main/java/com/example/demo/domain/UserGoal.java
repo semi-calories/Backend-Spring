@@ -1,30 +1,23 @@
 package com.example.demo.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
+@Table(schema = "User_goal")
 public class UserGoal extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name="user_goal_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_code")
     private User userCode;
-
-    @Column(name="prefer_food_code")
-    private Long preferFoodCode;
-
-    @Column(name="dislike_food_code")
-    private Long dislikeFoodCode;
 
     @Column(name="user_activity")
     private String userActivity;

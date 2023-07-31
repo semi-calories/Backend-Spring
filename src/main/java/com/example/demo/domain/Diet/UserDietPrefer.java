@@ -1,17 +1,17 @@
 package com.example.demo.domain.Diet;
 
 import com.example.demo.domain.BaseEntity;
+import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
+@Table(schema = "User_diet_prefer")
 public class UserDietPrefer extends BaseEntity {
 
     @Id @GeneratedValue
@@ -22,13 +22,11 @@ public class UserDietPrefer extends BaseEntity {
     @JoinColumn(name="user_code")
     private User userCode;
 
-    private String goal;
 
-    @Column(name="prefer_food_code")
-    private Long preferFoodCode;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="prefer_food_code")
+    private DietList preferFoodCode;
     @Column(name="prefer_food_name")
-    private Long preferFoodName;
-    @Column(name="prefer_food_kcal")
-    private Long preferFoodKcal;
+    private String preferFoodName;
 
 }

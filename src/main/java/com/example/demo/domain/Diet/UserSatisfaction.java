@@ -1,5 +1,6 @@
 package com.example.demo.domain.Diet;
 
+import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(schema = "User_satisfaction")
 public class UserSatisfaction {
 
     @Id
@@ -24,8 +26,9 @@ public class UserSatisfaction {
 
     private String goal;
 
-    @Column(name="food_code")
-    private Long foodCode;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="food_code")
+    private DietList foodCode;
     @Column(name="food_name")
     private String foodName;
 

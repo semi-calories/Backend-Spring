@@ -1,13 +1,7 @@
 package com.example.demo.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 import javax.annotation.processing.Generated;
 import java.io.Serializable;
@@ -16,6 +10,8 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
+@Table(schema = "User")
 public class User extends BaseEntity {
 
     @Id @GeneratedValue
@@ -28,12 +24,10 @@ public class User extends BaseEntity {
     @Column(name= "user_name")
     private String name;
 
-    @Column(name= "user_nickname")
-    private String nickname;
-
     @Column(name= "user_age")
     private int age;
 
+    @Enumerated(EnumType.STRING)
     @Column(name= "user_gender")
     private Gender gender;
 
