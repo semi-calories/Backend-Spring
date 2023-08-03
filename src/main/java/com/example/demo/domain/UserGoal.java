@@ -37,4 +37,15 @@ public class UserGoal extends BaseEntity{
     @Column(name="user_fat")
     private Long fat;
 
+    //==비즈니스 로직==//
+    public void change(String userActivity, String userGoal, double goalWeight, Long kcal, Long carbo, Long protein, Long fat){
+        this.userActivity = userActivity;
+        this.goalWeight = goalWeight;
+        this.userGoal = userGoal;
+        this.kcal = kcal;
+        this.carbo = carbo;
+        this.protein = protein;
+        this.fat = fat;
+    }
+
 }

@@ -32,4 +32,11 @@ public class UserDietDislike extends BaseEntity {
     private String dislikeFoodName;
 
 
+    public UserDietDislike(User userCode, DietList dislikeFoodCode, String dislikeFoodName) {
+        this.userCode = userCode;
+        this.dislikeFoodCode = dislikeFoodCode;
+        this.dislikeFoodName = dislikeFoodName;
+    }
+
+
 }

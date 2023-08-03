@@ -43,4 +43,15 @@ public class User extends BaseEntity {
     @Column(name= "user_weight")
     private double weight;
 
+
+    //==비즈니스 로직==//
+    public void change(String name, String email, int age, Gender gender, String phone, double height, double weight){
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
+        this.height = height;
+        this.weight = weight;
+    }
 }

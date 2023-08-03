@@ -1,13 +1,14 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.Diet.UserSatisfaction;
-import com.example.demo.repository.DietRecordRepository;
-import com.example.demo.repository.DislikeDietRepository;
-import com.example.demo.repository.PreferDietRepository;
-import com.example.demo.repository.UserSatisfactionRepository;
+import com.example.demo.domain.User;
+import com.example.demo.dto.User.Request.RequestDislikeSaveDto;
+import com.example.demo.dto.User.Request.RequestPreferSaveDto;
+import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class DietService {
     private final DislikeDietRepository dislikeRepository;
     private final DietRecordRepository dietRecordRepository;
     private  final UserSatisfactionRepository userSatisfactionRepository;
+    private final DietListRepository dietListRepository;
 
     /**
      * prefer diet 조회 by user code
@@ -82,5 +84,42 @@ public class DietService {
     public Long saveUserSatisfaction(UserSatisfaction userSatisfaction){
         userSatisfactionRepository.save(userSatisfaction);
         return userSatisfaction.getId();
+    }
+
+    /**
+     * 선호 음식 저장
+     */
+    @Transactional
+    public Long savePreferDiet(User user, RequestPreferSaveDto preferSaveDto){
+
+        for(int i=0; i<preferSaveDto.getPreferList().size(); i++){
+            Optional<DietList> findDiet = dietListRepository.findById(preferSaveDto.getPreferList().get(i));
+            if (findDiet.isPresent()){
+                UserDietPrefer userDietPrefer = new UserDietPrefer(user, findDiet.get(), findDiet.get().getFoodName() );
+                preferRepository.save(userDietPrefer);
+            }
+            else{
+                throw new IllegalStateException("존재하지 않는 정보입니다.");
+            }
+
+        }
+        return user.getUserCode();
+    }
+
+    @Transactional
+    public Long saveDislikeDiet(User user, RequestDislikeSaveDto preferSaveDto){
+
+        for(int i=0; i<preferSaveDto.getDislikeList().size(); i++){
+            Optional<DietList> findDiet = dietListRepository.findById(preferSaveDto.getDislikeList().get(i));
+            if (findDiet.isPresent()){
+                 UserDietDislike userDietDislike= new UserDietDislike(user, findDiet.get(), findDiet.get().getFoodName() );
+                 dislikeRepository.save(userDietDislike);
+            }
+            else{
+                throw new IllegalStateException("존재하지 않는 정보입니다.");
+            }
+
+        }
+        return user.getUserCode();
     }
 }

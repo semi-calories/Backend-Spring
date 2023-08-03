@@ -29,4 +29,9 @@ public class UserDietPrefer extends BaseEntity {
     @Column(name="prefer_food_name")
     private String preferFoodName;
 
+    public UserDietPrefer(User userCode, DietList preferFoodCode, String preferFoodName) {
+        this.userCode = userCode;
+        this.preferFoodCode = preferFoodCode;
+        this.preferFoodName = preferFoodName;
+    }
 }
