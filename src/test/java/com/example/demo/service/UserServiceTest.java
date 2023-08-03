@@ -19,7 +19,7 @@ class UserServiceTest {
     @Test
     public void 유저_유저목표_조회() throws Exception{
         //given
-        UserGoal result = userService.findUserWithUserGoal(0L);
+        UserGoal result = userService.findUserWithUserGoal(1L);
         //when
         System.out.println(result);
         //then
@@ -29,11 +29,10 @@ class UserServiceTest {
     @Test
     public void 유저조회() throws Exception{
         //given
-        User one = userService.findOne(0L);
-        System.out.println(one);
-        System.out.println(one.getCreatedAt());
+        User one = userService.findOne(1L);
         //when
 
         //then
+        Assertions.assertThat(one.getName()).isEqualTo("박지은");
     }
 }

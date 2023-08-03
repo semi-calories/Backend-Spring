@@ -1,6 +1,5 @@
 package com.example.demo.feign;
 
-import com.example.demo.dto.Recognizer.Response.ResponseFoodRecogDto;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -31,7 +30,7 @@ public interface FastApiFeign {
 //     * 음식 인식 요청
 //     */
 //    @PostMapping("/request-food-recog")
-//    public ResponseFoodRecogDto requestRecognizer(
+//    public ResponseFoodRecogAPIDto requestRecognizer(
 //            @RequestPart MultipartFile file
 //            );
 

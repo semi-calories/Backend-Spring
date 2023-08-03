@@ -44,13 +44,22 @@ public class DietService {
         return dislikeDietList;
     }
 
+    /**
+     * 전체 식단 기록 조회 by user code
+     */
+    public List<DietRecord> findDietRecordByUserCode(Long userCode) throws Exception{
+
+        List<DietRecord> dietList = dietRecordRepository.findAllByUserCode(userCode);
+        return dietList;
+    }
+
 
     /**
      * 식단 기록 조회 by user code & date
      */
-    public List<DietRecord> findDietRecordByUserCode(Long userCode, LocalDateTime date) throws Exception{
+    public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDateTime date) throws Exception{
 
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(0,0,0));;
+        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(0,0,0));
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(23,59,59));
         List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(userCode, startDatetime, endDatetime);
         return dietList;
@@ -60,7 +69,7 @@ public class DietService {
      * 식단 기록 저장 by text
      */
     @Transactional
-    public Long saveFoodRecordByText(DietRecord dietRecord){
+    public Long saveFoodRecord(DietRecord dietRecord){
         dietRecordRepository.save(dietRecord);
         return dietRecord.getId();
     }

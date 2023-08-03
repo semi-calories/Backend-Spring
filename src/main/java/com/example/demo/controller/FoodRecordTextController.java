@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-        @RequiredArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-        @RequestMapping("/record")
+@RequestMapping("/record")
 public class FoodRecordTextController {
 
     private final DietService dietService;
@@ -39,8 +39,8 @@ public class FoodRecordTextController {
         // entity 생성
         DietRecord dietRecord = new DietRecord(requestRecordDto , user, food);
 
-        // food record에 다 저장하고
-        dietService.saveFoodRecordByText(dietRecord);
+        // food record에 저장
+        dietService.saveFoodRecord(dietRecord);
 
         // 만족도테이블에 만족도 저장
         UserSatisfaction userSatisfaction = new UserSatisfaction(user, food, requestRecordDto.getFoodName(), requestRecordDto.getSatisfaction());

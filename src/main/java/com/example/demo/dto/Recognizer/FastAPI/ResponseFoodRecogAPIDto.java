@@ -1,4 +1,4 @@
-package com.example.demo.dto.Recognizer.Response;
+package com.example.demo.dto.Recognizer.FastAPI;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
@@ -14,14 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @ApiOperation(
-        value = "음식 사진 인식 응답",
-        notes = "음식 사진의 인식을 응답한다.")
-public class ResponseFoodRecogDto {
+        value = "음식 사진 인식 FastAPI 응답",
+        notes = "FastAPI에서 음식 사진의 인식을 응답한다.")
+public class ResponseFoodRecogAPIDto {
 
-    @JsonProperty("food-name-list")
     private List<String> foodNameList = new ArrayList<>();
 
-    @JsonProperty("food-code-list")
     private List<Integer> foodCodeList = new ArrayList<>();
 
 }
