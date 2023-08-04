@@ -20,6 +20,6 @@ public class ResponseFoodRecogAPIDto {
 
     private List<String> foodNameList = new ArrayList<>();
 
-    private List<Integer> foodCodeList = new ArrayList<>();
+    private List<Long> foodCodeList = new ArrayList<>();
 
 }

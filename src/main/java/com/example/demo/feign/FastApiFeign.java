@@ -1,12 +1,10 @@
 package com.example.demo.feign;
 
+import com.example.demo.dto.Recognizer.FastAPI.ResponseFoodRecogAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @FeignClient(name="FastApiFeign", url="http://localhost:8000")
@@ -26,12 +24,12 @@ public interface FastApiFeign {
             @RequestBody RequestRecommendAPIDto requestRecommendAPIDto
             );
 
-//    /**
-//     * 음식 인식 요청
-//     */
-//    @PostMapping("/request-food-recog")
-//    public ResponseFoodRecogAPIDto requestRecognizer(
-//            @RequestPart MultipartFile file
-//            );
+    /**
+     * 음식 인식 요청
+     */
+    @PostMapping("/request-food-recog")
+    public ResponseFoodRecogAPIDto requestRecognizer(
+            @ModelAttribute MultipartFile file
+            );
 
 }

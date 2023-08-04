@@ -77,6 +77,7 @@ public class DietService {
     }
 
 
+
     /**
      * 유저 만족도 저장
      */
@@ -106,6 +107,9 @@ public class DietService {
         return user.getUserCode();
     }
 
+    /**
+     * 비선호 음식 저장
+     */
     @Transactional
     public Long saveDislikeDiet(User user, RequestDislikeSaveDto preferSaveDto){
 
