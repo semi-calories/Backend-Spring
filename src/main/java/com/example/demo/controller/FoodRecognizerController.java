@@ -1,53 +1,56 @@
 package com.example.demo.controller;
 
-import com.example.demo.feign.LogmealApiFeign;
+import com.example.demo.domain.DB.DietList;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.dto.Recognizer.FastAPI.ResponseFoodRecogAPIDto;
+import com.example.demo.dto.Recognizer.Request.RequestFoodRecogDto;
+import com.example.demo.dto.Recognizer.Response.ResponseFoodRecogDto;
+import com.example.demo.feign.FastApiFeign;
+import com.example.demo.service.DBService;
+import com.example.demo.service.DietService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/recognizer")
 public class FoodRecognizerController {
-
-    private final LogmealApiFeign logmealApiFeign;
+    
+    private final FastApiFeign fastApiFeign;
+    private final DBService dbService;
+    private final DietService dietService;
 
     /**
-     * 음식 이미지 받는 API
+     * 음식 인식용 이미지 받는 API
      */
-    @PostMapping(name="/receive-image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public Object receiveImage(@RequestPart(value="image") MultipartFile imgFile){
-        System.out.println("수신");
-        log.info("이미지={}",String.valueOf(imgFile));
-        return imgFile;
+    @PostMapping(value = "/recognizerFood", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity recogFood(@ModelAttribute RequestFoodRecogDto requestFoodRecogDto) throws IOException {
+        // 음식 이미지 받아옴
+        MultipartFile file = requestFoodRecogDto.getImage();
+        String originalFilename = file.getOriginalFilename();
+
+        // FAST API - AI 모델에 전송
+        ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(file);
+
+        // db에 값 조회해 영양성분 get
+        List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
+
+        // 사진 인식 응답 DTO 생성
+        ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto(dietLists);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
     }
 
-    @PostMapping("/upload")
-    public ResponseEntity upload(MultipartHttpServletRequest request) throws IOException {
-        MultipartFile file = request.getFile("image");
-
-        String originalFileName = file.getOriginalFilename();
-//        File destination = new File("upload/dir" + originalFileName);
-//        file.transferTo(destination);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(originalFileName);
-    }
-
-    @PostMapping("/test")
-    public String test(){
-        System.out.println("접속");
-        return "ok";
-    }
 }
+

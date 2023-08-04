@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class SatisfactionRecommendDiet extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="satisfaction_recommend_diet_id")
     private Long id;
 

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Table(schema = "User")
 public class User extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_code")
     private Long userCode;
 
@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(name= "user_age")
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(name= "user_gender")
@@ -38,9 +38,20 @@ public class User extends BaseEntity {
     private byte[] image;
 
     @Column(name= "user_height")
-    private double height;
+    private Double height;
 
     @Column(name= "user_weight")
-    private double weight;
+    private Double weight;
 
+
+    //==비즈니스 로직==//
+    public void change(String name, String email, int age, Gender gender, String phone, double height, double weight){
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
+        this.height = height;
+        this.weight = weight;
+    }
 }
