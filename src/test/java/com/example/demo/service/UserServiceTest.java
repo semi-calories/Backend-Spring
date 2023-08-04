@@ -35,4 +35,13 @@ class UserServiceTest {
         //then
         Assertions.assertThat(one.getName()).isEqualTo("박지은");
     }
+
+    @Test
+    public void 헤리스베네딕트() throws Exception{
+        //given
+
+        //when
+
+        //then
+    }
 }

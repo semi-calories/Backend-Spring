@@ -3,6 +3,8 @@ package com.example.demo.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,23 +31,26 @@ public class UserGoal extends BaseEntity{
     private String userGoal;
 
     @Column(name="user_kcal")
-    private Long kcal;
+    private Double kcal;
     @Column(name="user_carbo")
-    private Long carbo;
+    private Double carbo;
     @Column(name="user_protein")
-    private Long protein;
+    private Double protein;
     @Column(name="user_fat")
-    private Long fat;
+    private Double fat;
 
     //==비즈니스 로직==//
-    public void change(String userActivity, String userGoal, double goalWeight, Long kcal, Long carbo, Long protein, Long fat){
+    public void change(String userActivity, String userGoal, double goalWeight){
         this.userActivity = userActivity;
         this.goalWeight = goalWeight;
         this.userGoal = userGoal;
-        this.kcal = kcal;
-        this.carbo = carbo;
-        this.protein = protein;
-        this.fat = fat;
+    }
+
+    public void harrisBenedict(List<Double> hbList){
+        this.kcal = hbList.get(0);
+        this.carbo = hbList.get(1);
+        this.protein = hbList.get(2);
+        this.fat = hbList.get(3);
     }
 
 }

@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiOperation(
-        value = "유저 기본 정보 수정",
-        notes = "유저의 기본 정보를 수정한다.")
-public class RequestUserInfoUpdateDto {
+        value = "유저 정보 수정",
+        notes = "유저의 정보를 수정한다.")
+public class RequestUserUpdateDto {
 
     @JsonProperty("user-code")
     private Long userCode;
@@ -25,4 +25,11 @@ public class RequestUserInfoUpdateDto {
     private int age;
     private double height;
     private double weight;
+
+    @JsonProperty("activity")
+    private String userActivity;
+    @JsonProperty("goal-weight")
+    private double goalWeight;
+    @JsonProperty("goal")
+    private String userGoal;
 }

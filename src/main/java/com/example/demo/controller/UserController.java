@@ -2,12 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserGoal;
-import com.example.demo.dto.User.Request.RequestDislikeSaveDto;
-import com.example.demo.dto.User.Request.RequestPreferSaveDto;
-import com.example.demo.dto.User.Request.RequestUserGoalUpdateDto;
-import com.example.demo.dto.User.Request.RequestUserInfoUpdateDto;
-import com.example.demo.dto.User.Response.ResponseUserGoalGetDto;
-import com.example.demo.dto.User.Response.ResponseUserInfoGetDto;
+import com.example.demo.dto.User.Request.*;
+import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
@@ -15,8 +11,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.http.HttpResponse;
 
 @RestController
 @RequestMapping("/user")
@@ -36,45 +30,40 @@ public class UserController {
      */
 
     /**
-     * 회원 기본 정보 추가 저장(수정)
+     * 회원 정보 추가 저장(수정)
      */
     @PostMapping("/updateInfo")
-    public ReturnDto updateUserInfo(@RequestBody RequestUserInfoUpdateDto requestInfoUpdateDto) throws Exception{
+    public ReturnDto updateUserInfo(@RequestBody RequestUserUpdateDto requestInfoUpdateDto) throws Exception{
+
+        // 유저 수정
         Long userCode = userService.userUpdate(requestInfoUpdateDto);
 
-        ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
-        return returnDto;
-    }
+        // 유저 목표 수정
+        userService.userGoalUpdate(requestInfoUpdateDto);
 
-    /**
-     * 회원 목표 정보 추가 저장(수정)
-     */
-    @PostMapping("/updateGoal")
-    public ReturnDto updateUserInfo(@RequestBody RequestUserGoalUpdateDto requestUserGoalUpdateDto) throws Exception{
-        Long userCode = userService.userGoalUpdate(requestUserGoalUpdateDto);
+        // 헤리스 베네딕트 수정
+        userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode());
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return returnDto;
     }
 
+
     /**
-     * 회원 기본 정보 조회
+     * 회원 정보 조회
      */
     @GetMapping("/getInfo")
-    public ResponseUserInfoGetDto getInfo(Long userCode) throws Exception {
-        User findUser = userService.findOne(userCode);
-        ResponseUserInfoGetDto responseUserInfoGetDto = new ResponseUserInfoGetDto(findUser);
-        return responseUserInfoGetDto;
-    }
+    public ResponseUserGetDto getInfo(Long userCode) throws Exception {
 
-    /**
-     * 회원 목표 정보 조회
-     */
-    @GetMapping("/getGoal")
-    public ResponseUserGoalGetDto getGoal(Long userCode) throws Exception {
+        // 기본 정보 조회
+        User findUser = userService.findOne(userCode);
+
+        // 목표 정보 조회
         UserGoal findGoal = userService.findUserWithUserGoal(userCode);
-        ResponseUserGoalGetDto responseUserGoalGetDto = new ResponseUserGoalGetDto(findGoal);
-        return responseUserGoalGetDto;
+
+        // 응답 DTO 생성
+        ResponseUserGetDto responseUserInfoGetDto = new ResponseUserGetDto(findUser, findGoal);
+        return responseUserInfoGetDto;
     }
 
     /**

@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(name= "user_age")
-    private int age;
+    private Integer age;
 
     @Enumerated(EnumType.STRING)
     @Column(name= "user_gender")
@@ -38,10 +38,10 @@ public class User extends BaseEntity {
     private byte[] image;
 
     @Column(name= "user_height")
-    private double height;
+    private Double height;
 
     @Column(name= "user_weight")
-    private double weight;
+    private Double weight;
 
 
     //==비즈니스 로직==//
