@@ -20,6 +20,6 @@ public class RequestPreferenceSaveDto {
 
     @JsonProperty("user-code")
     private Long userCode;
-    @JsonProperty("prefer-list")
+    @JsonProperty("food-list")
     private List<Long> foodList = new ArrayList<>();
 }
