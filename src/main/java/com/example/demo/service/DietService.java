@@ -7,7 +7,8 @@ import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User;
 import com.example.demo.dto.User.Request.RequestDislikeSaveDto;
-import com.example.demo.dto.User.Request.RequestPreferSaveDto;
+
+import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -91,19 +92,10 @@ public class DietService {
      * 선호 음식 저장
      */
     @Transactional
-    public Long savePreferDiet(User user, RequestPreferSaveDto preferSaveDto){
+    public Long savePreferDiet(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer){
 
-        for(int i=0; i<preferSaveDto.getPreferList().size(); i++){
-            Optional<DietList> findDiet = dietListRepository.findById(preferSaveDto.getPreferList().get(i));
-            if (findDiet.isPresent()){
-                UserDietPrefer userDietPrefer = new UserDietPrefer(user, findDiet.get(), findDiet.get().getFoodName() );
-                preferRepository.save(userDietPrefer);
-            }
-            else{
-                throw new IllegalStateException("존재하지 않는 정보입니다.");
-            }
+        extracted(user, preferSaveDto, isPrefer);
 
-        }
         return user.getUserCode();
     }
 
@@ -111,19 +103,29 @@ public class DietService {
      * 비선호 음식 저장
      */
     @Transactional
-    public Long saveDislikeDiet(User user, RequestDislikeSaveDto preferSaveDto){
+    public Long saveDislikeDiet(User user, RequestPreferenceSaveDto dislikeSaveDto, Boolean isPrefer){
 
-        for(int i=0; i<preferSaveDto.getDislikeList().size(); i++){
-            Optional<DietList> findDiet = dietListRepository.findById(preferSaveDto.getDislikeList().get(i));
-            if (findDiet.isPresent()){
-                 UserDietDislike userDietDislike= new UserDietDislike(user, findDiet.get(), findDiet.get().getFoodName() );
-                 dislikeRepository.save(userDietDislike);
-            }
-            else{
-                throw new IllegalStateException("존재하지 않는 정보입니다.");
-            }
-
-        }
+        extracted(user, dislikeSaveDto, isPrefer);
         return user.getUserCode();
+    }
+
+    @Transactional
+    protected void extracted(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {
+        preferSaveDto.getFoodList().stream() // 선호 음식 리스트 스트림 생성
+                .map(dietListRepository::findById) //리스트에서 하나씩 DB에서 객체 찾기
+                .forEach(findDiet -> { // 각 객체에 대해
+                    if(findDiet.isPresent()) {
+                        // 존재한다면
+                        if(isPrefer == Boolean.TRUE){
+                            //prefer DB에 저장
+                            preferRepository.save(new UserDietPrefer(user, findDiet.get(), findDiet.get().getFoodName()));
+                        }
+                        // dislike DB에 저장
+                        else dislikeRepository.save(new UserDietDislike(user, findDiet.get(), findDiet.get().getFoodName()));
+                    }
+                    else{
+                        throw new IllegalStateException("존재하지 않는 정보입니다.");
+                    }
+                });
     }
 }
