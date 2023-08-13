@@ -70,13 +70,13 @@ public class UserController {
      * 선호 음식 저장
      */
     @PostMapping("/savePrefer")
-    public ReturnDto savePrefer(@RequestBody RequestPreferSaveDto requestPreferSaveDto) throws Exception{
+    public ReturnDto savePrefer(@RequestBody RequestPreferenceSaveDto requestPreferSaveDto) throws Exception{
 
         // 유저 찾기
         User user = userService.findOne(requestPreferSaveDto.getUserCode());
 
         // 선호 음식 저장
-        Long userCode = dietService.savePreferDiet(user, requestPreferSaveDto);
+        Long userCode = dietService.savePreferDiet(user, requestPreferSaveDto, true);
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return  returnDto;
@@ -86,13 +86,13 @@ public class UserController {
      * 비선호 음식 저장
      */
     @PostMapping("/saveDislike")
-    public ReturnDto savePrefer(@RequestBody RequestDislikeSaveDto requestDislikeSaveDto) throws Exception{
+    public ReturnDto saveDislike(@RequestBody RequestPreferenceSaveDto requestDislikeSaveDto) throws Exception{
 
         // 유저 찾기
         User user = userService.findOne(requestDislikeSaveDto.getUserCode());
 
         // 비선호음식 저장
-        Long userCode = dietService.saveDislikeDiet(user, requestDislikeSaveDto);
+        Long userCode = dietService.saveDislikeDiet(user, requestDislikeSaveDto, false);
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return  returnDto;

@@ -14,12 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiOperation(
-        value = "유저 선호 음식 저장",
-        notes = "유저의 선호 음식을 저장한다.")
-public class RequestPreferSaveDto {
+        value = "유저 선호도 음식 저장",
+        notes = "유저의 선호도 음식을 저장한다.")
+public class RequestPreferenceSaveDto {
 
     @JsonProperty("user-code")
     private Long userCode;
-    @JsonProperty("prefer-list")
-    private List<Long> preferList = new ArrayList<>();
+    @JsonProperty("food-list")
+    private List<Long> foodList = new ArrayList<>();
 }

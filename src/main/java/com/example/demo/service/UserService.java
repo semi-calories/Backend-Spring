@@ -72,24 +72,19 @@ public class UserService {
      * 유저 단건 검색
      */
     public User findOne(Long userCode) throws Exception{
-        Optional<User> findUser = (Optional<User>) userRepository.findById(userCode);
-        if(findUser.isPresent()){
-            return findUser.get();
-        }else {
-            throw new IllegalStateException("존재하지 않는 회원입니다.");
-        }
+
+        return userRepository.findById(userCode)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
+
     }
 
     /**
      * 유저 및 유저 목표 조회
      */
     public UserGoal findUserWithUserGoal(Long userCode) throws Exception{
-        Optional<UserGoal> findUserGoal = userGoalRepository.findAllWithUser(userCode);
-        if(findUserGoal.isPresent()){
-            return findUserGoal.get();
-        }else {
-            throw new IllegalStateException("존재하지 않는 정보입니다.");
-        }
+
+        return userGoalRepository.findAllWithUser(userCode)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 정보입니다.") );
     }
 
     /**
@@ -119,20 +114,22 @@ public class UserService {
 
         // 성별에 따라
         if(findUser.getGender() == Gender.M){
-            daliyEnerge = (88.362 + (13.397 * findUser.getWeight()) + (4.799* findUser.getHeight()) - (5.677* findUser.getAge()));
+            daliyEnerge = 88.362 + 13.397 * findUser.getWeight() + 4.799 * findUser.getHeight() - 5.677 * findUser.getAge();
         }
         else{
-            daliyEnerge = (88.362 + ((447.593 + (9.24 * findUser.getWeight()) + (3.098 * findUser.getHeight()) - (4.330 * findUser.getAge()))));
+            daliyEnerge = 88.362 + 447.593 + 9.24 * findUser.getWeight() + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
         }
 
         // 활동계수에 따라
-        if (findGoal.getUserActivity()== "less"){
-            daliyEnerge *= 1.3;
-        } else if (findGoal.getUserActivity() == "normal") {
-            daliyEnerge *= 1.5;
-        }
-        else {
-            daliyEnerge *= 1.7;
+        switch (findGoal.getUserActivity()) {
+            case "less":
+                daliyEnerge *= 1.3;
+                break;
+            case "normal":
+                daliyEnerge *= 1.5;
+                break;
+            default:
+                daliyEnerge *= 1.7;
         }
 
         // 목표에 따라
@@ -142,8 +139,7 @@ public class UserService {
             daliyEnerge *= 1.1;
         }
 
-        List<Double> energyList = Arrays.asList(daliyEnerge, daliyEnerge *0.5 /4 , daliyEnerge * 0.3 /4, daliyEnerge * 0.2/9);
-        return energyList;
+        return Arrays.asList(daliyEnerge, daliyEnerge *0.5 /4 , daliyEnerge * 0.3 /4, daliyEnerge * 0.2/9);
 
     }
 
