@@ -53,4 +53,17 @@ public class DBService {
                 .collect(Collectors.toList());// 리스트로 리턴
         return dietList;
     }
+
+    /**
+     * 음식 이름으로 검색
+     */
+    public List<DietList> findDietListByName(String param){
+        Optional<List<DietList>> foodList = dietListRepository.findByFoodNameContaining(param);
+        if (foodList.isPresent()){
+            return foodList.get();
+        }
+        else {
+            throw new IllegalArgumentException("내부오류");
+        }
+    }
 }
