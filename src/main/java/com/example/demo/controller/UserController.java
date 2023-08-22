@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserGoal;
+import com.example.demo.domain.User.User;
+import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.*;
 import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.DietService;
@@ -21,13 +21,8 @@ public class UserController {
     private final UserService userService;
     private final DietService dietService;
 
-    /**
-     * 회원 정보 저장 (= 회원 가입)
-     */
 
-    /**
-     * 로그인
-     */
+
 
     /**
      * 회원 정보 추가 저장(수정)

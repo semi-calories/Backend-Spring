@@ -1,6 +1,6 @@
 package com.example.demo.dto.User.Request;
 
-import com.example.demo.domain.Gender;
+import com.example.demo.domain.User.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,6 @@ public class RequestUserUpdateDto {
     @JsonProperty("user-code")
     private Long userCode;
     private String email;
-    private String phone;
     private String image;
     private String name;
     private Gender gender;

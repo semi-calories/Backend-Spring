@@ -2,8 +2,9 @@ package com.example.demo.domain.Diet;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.User;
+import com.example.demo.domain.User.User;
 import com.example.demo.dto.Record.Request.RequestRecordDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class DietRecord extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_code")
+    @JsonIgnore
     private User userCode;
 
 
@@ -31,6 +33,7 @@ public class DietRecord extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_code")
+    @JsonIgnore
     private DietList foodCode;
 
     @Column(name="eat_date")

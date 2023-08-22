@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Gender;
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserGoal;
+import com.example.demo.domain.User.Gender;
+import com.example.demo.domain.User.User;
+import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +20,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserGoalRepository userGoalRepository;
-
-    /**
-     * 유저 정보 저장(=회원가입) - 유저 기본 정보 및 목표 저장
-     */
 
 
     /**
@@ -40,7 +35,6 @@ public class UserService {
                 requestUserInfoUpdateDto.getEmail(),
                 requestUserInfoUpdateDto.getAge(),
                 requestUserInfoUpdateDto.getGender(),
-                requestUserInfoUpdateDto.getPhone(),
                 requestUserInfoUpdateDto.getHeight(),
                 requestUserInfoUpdateDto.getWeight()
         );

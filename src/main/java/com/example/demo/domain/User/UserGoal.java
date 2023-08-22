@@ -1,5 +1,6 @@
-package com.example.demo.domain;
+package com.example.demo.domain.User;
 
+import com.example.demo.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Table(schema = "User_goal")
-public class UserGoal extends BaseEntity{
+public class UserGoal extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_goal_id")
@@ -38,6 +39,13 @@ public class UserGoal extends BaseEntity{
     private Double protein;
     @Column(name="user_fat")
     private Double fat;
+
+    //==생성자==//
+
+
+    public UserGoal(User userCode) {
+        this.userCode = userCode;
+    }
 
     //==비즈니스 로직==//
     public void change(String userActivity, String userGoal, double goalWeight){

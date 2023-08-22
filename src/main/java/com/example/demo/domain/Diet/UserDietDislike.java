@@ -2,7 +2,7 @@ package com.example.demo.domain.Diet;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.User;
+import com.example.demo.domain.User.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

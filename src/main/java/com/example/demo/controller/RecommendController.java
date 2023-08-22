@@ -3,8 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserGoal;
+import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import com.example.demo.dto.Recommend.Request.RequestRecommendDto;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
