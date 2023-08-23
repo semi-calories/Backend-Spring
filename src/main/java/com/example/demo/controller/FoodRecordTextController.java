@@ -5,6 +5,7 @@ import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User;
 import com.example.demo.dto.Record.Request.RequestRecordDto;
+import com.example.demo.dto.Record.Response.ResponseFoodListDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.service.DBService;
 import com.example.demo.service.DietService;
@@ -13,10 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,5 +47,12 @@ public class FoodRecordTextController {
         dietService.saveUserSatisfaction(userSatisfaction);
 
         return ResponseEntity.status(HttpStatus.OK).body("식단 기록 저장 완료");
+    }
+
+    @GetMapping("/food-search")
+    public ResponseFoodListDto foodSearchByText(String foodName){
+
+        List<DietList> dietListByName = dbService.findDietListByName(foodName);
+        return new ResponseFoodListDto(dietListByName);
     }
 }

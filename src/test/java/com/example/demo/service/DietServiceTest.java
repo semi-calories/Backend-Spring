@@ -1,20 +1,27 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
+import com.example.demo.domain.User;
+import com.example.demo.dto.Record.Request.RequestRecordDto;
+import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.DietRecordRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,18 +29,63 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class DietServiceTest {
 
+    @Autowired UserService userService;
+    @Autowired DBService dbService;
     @Autowired DietService dietService;
     @Autowired
     DietRecordRepository dietRecordRepository;
 
     @Test
-    public void 선호음식_저장() throws Exception{
+//    @Rollback(false)
+    public void 식단기록_저장() throws Exception{
         //given
+        User user = userService.findOne(1L);
+        DietList food = dbService.findOne(1L);
+        RequestRecordDto requestRecordDto = new RequestRecordDto(1L,now(),300L,1,1L,"메밀 전병",100.0,10.0,30.0,200.0,4);
+        DietRecord dietRecord = new DietRecord(requestRecordDto,user,food);
 
         //when
+        dietService.saveFoodRecord(dietRecord);
 
         //then
+        List<DietRecord> dietRecordByUserCode = dietService.findDietRecordByUserCode(1L);
+        System.out.println(dietRecordByUserCode);
+        assertThat(dietRecordByUserCode.size()).isEqualTo(2);
     }
+
+    @Test
+//    @Rollback(false)
+    public void 선호음식_저장() throws Exception{
+        //given
+        User user = userService.findOne(1L);
+        RequestPreferenceSaveDto requestPreferenceSaveDto = new RequestPreferenceSaveDto(1L, Arrays.asList(6L));
+
+        //when
+        Long savePreferCode = dietService.savePreferDiet(user,requestPreferenceSaveDto ,true);
+
+        //then
+        List<UserDietPrefer> preferList = dietService.findPreferByUserCode(1L);
+        System.out.println(preferList);
+        assertThat(preferList.get(1).getPreferFoodCode().getFoodCode()).isEqualTo(6l);
+    }
+
+    @Test
+//    @Rollback(false)
+    public void 비선호음식_저장() throws Exception{
+        //given
+        User user = userService.findOne(1L);
+//        DietList food = dbService.findOne(3L);
+        RequestPreferenceSaveDto requestPreferenceSaveDto = new RequestPreferenceSaveDto(1L, Arrays.asList(5L));
+
+        //when
+        Long savePreferCode = dietService.savePreferDiet(user,requestPreferenceSaveDto ,false);
+
+        //then
+        List<UserDietDislike> dislikeList = dietService.findDislikeByUserCode(1L);
+        System.out.println(dislikeList);
+        assertThat(dislikeList.get(2).getDislikeFoodName()).isEqualTo("감자옹심이");
+    }
+
 
     @Test
     public void 선호음식_목록_조회() throws Exception{
@@ -44,7 +96,7 @@ class DietServiceTest {
 
         //then
         assertThat(preferList.get(0).getUserCode().getName()).isEqualTo("박지은");
-        assertThat(preferList.get(0).getPreferFoodName()).isEqualTo("가래떡");
+        assertThat(preferList.get(0).getPreferFoodName()).isEqualTo("약식");
 
     }
 
@@ -69,7 +121,7 @@ class DietServiceTest {
 
 
         //then
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
     }
 
 
@@ -78,10 +130,10 @@ class DietServiceTest {
         //given
 
         //when
-        List<DietRecord> result = dietService.findDietRecordByUserCodeAndDate(1L, LocalDateTime.of(2023,7,31,3,23));
+        List<DietRecord> result = dietService.findDietRecordByUserCodeAndDate(1L, LocalDateTime.of(2023,8,10,3,23));
 
         //then
-        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.size()).isEqualTo(1);
     }
 
 }

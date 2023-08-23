@@ -28,6 +28,9 @@ public class DietList {
     @Column(name="food_detailed_classification")
     private String foodDetailedClassification;
 
+    @Column(name="food_image")
+    private String foodImage;
+
     @Column(name = "food_weight")
     private Long foodWeight;
 
