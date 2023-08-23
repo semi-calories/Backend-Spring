@@ -1,10 +1,8 @@
-package com.example.demo.domain;
+package com.example.demo.domain.User;
 
+import com.example.demo.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import javax.annotation.processing.Generated;
-import java.io.Serializable;
 
 @Entity
 @Getter
@@ -31,11 +29,9 @@ public class User extends BaseEntity {
     @Column(name= "user_gender")
     private Gender gender;
 
-    @Column(name= "user_phone")
-    private String phone;
 
     @Column(name= "user_image")
-    private byte[] image;
+    private String image;
 
     @Column(name= "user_height")
     private Double height;
@@ -44,14 +40,21 @@ public class User extends BaseEntity {
     private Double weight;
 
 
-    //==비즈니스 로직==//
-    public void change(String name, String email, int age, Gender gender, String phone, double height, double weight){
+    //==생성자==//
+    public User(String email, String name) {
+        this.email = email;
+        this.name = name;
+    }
+
+    //==비즈니스 변경 로직==//
+    public void change(String name, String email, int age, Gender gender, double height, double weight){
         this.name = name;
         this.email = email;
         this.age = age;
         this.gender = gender;
-        this.phone = phone;
         this.height = height;
         this.weight = weight;
     }
+
+
 }

@@ -1,12 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.Diet.UserSatisfaction;
-import com.example.demo.domain.User;
-import com.example.demo.dto.User.Request.RequestDislikeSaveDto;
+import com.example.demo.domain.User.User;
 
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.*;
@@ -65,6 +63,7 @@ public class DietService {
         LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(0,0,0));
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(23,59,59));
         List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(userCode, startDatetime, endDatetime);
+
         return dietList;
     }
 
@@ -86,6 +85,14 @@ public class DietService {
     public Long saveUserSatisfaction(UserSatisfaction userSatisfaction){
         userSatisfactionRepository.save(userSatisfaction);
         return userSatisfaction.getId();
+    }
+
+    /**
+     * 유저 만족도 조회
+     */
+    public Optional<UserSatisfaction> findUserSatisfaction(Long userCode, Long foodCode){
+        Optional<UserSatisfaction> satisfactionList = userSatisfactionRepository.findByUserCodeAndFoodCode(userCode, foodCode);
+        return satisfactionList;
     }
 
     /**

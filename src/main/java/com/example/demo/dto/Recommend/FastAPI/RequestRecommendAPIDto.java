@@ -1,18 +1,15 @@
 package com.example.demo.dto.Recommend.FastAPI;
 
-import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
-import com.example.demo.domain.User;
-import com.example.demo.domain.UserGoal;
+import com.example.demo.domain.User.UserGoal;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

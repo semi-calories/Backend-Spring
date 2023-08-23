@@ -7,14 +7,14 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient(name="FastApiFeign", url="http://localhost:8000")
+@FeignClient(name="FastApiFeign", url="http://34.207.37.53:8000")
 public interface FastApiFeign {
 
     /**
      * test 연결
      */
     @GetMapping("/test")
-    public ResponseRecommendAPIDto test();
+    public String test();
 
     /**
      * 추천 알고리즘 요청

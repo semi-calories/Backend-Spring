@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.prefs.BackingStoreException;
 
 @Entity
 @Getter
@@ -28,8 +27,6 @@ public class DietList {
     @Column(name="food_detailed_classification")
     private String foodDetailedClassification;
 
-    @Column(name="food_image")
-    private String foodImage;
 
     @Column(name = "food_weight")
     private Long foodWeight;
