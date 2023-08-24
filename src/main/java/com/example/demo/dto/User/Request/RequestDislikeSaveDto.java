@@ -17,8 +17,8 @@ import java.util.List;
         notes = "유저의 비선호 음식을 저장한다.")
 public class RequestDislikeSaveDto {
 
-    @JsonProperty("user-code")
+
     private Long userCode;
-    @JsonProperty("dislike-list")
+
     private List<Long> dislikeList = new ArrayList<>();
 }

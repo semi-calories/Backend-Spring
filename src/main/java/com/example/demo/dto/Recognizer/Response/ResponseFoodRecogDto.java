@@ -27,12 +27,10 @@ public class ResponseFoodRecogDto {
     }
 
     private class DietListDto {
-        @JsonProperty("food-code")
+
         private Long foodCode;
         private String name;
-        @JsonProperty("main-category")
         private String mainCategory;
-        @JsonProperty("detail-category")
         private String detailCategory;
         private Long weight;
         private double kcal;

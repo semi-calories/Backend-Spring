@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
         notes = "유저의 비밀번호를 수정한다.")
 public class RequestPwUpdateDto {
 
-    @JsonProperty(value = "user-code")
+
     private Long userCode;
 
     private String password;

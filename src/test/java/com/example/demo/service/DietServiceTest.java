@@ -5,6 +5,7 @@ import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
+import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Record.Request.RequestRecordDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.DietRecordRepository;
@@ -13,13 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 @SpringBootTest
 @Transactional
@@ -134,5 +138,24 @@ class DietServiceTest {
         //then
         assertThat(result.size()).isEqualTo(1);
     }
+
+    @Test
+    public void 해당month_기록_get() throws Exception{
+        //given
+        User user = userService.findOne(1L);
+        UserGoal userGoal = userService.findUserWithUserGoal(1L);
+
+        //when
+//        MultiValueMap<Integer, DietRecord> weekList = dietService.getWeekList(user, 2023, 8);
+        List<List<Double>> monthList = dietService.getMonthList(userGoal ,2023);
+
+        for (List<Double> doubles : monthList) {
+            System.out.println("doubles = " + doubles);
+        }
+
+        //then
+    }
+
+
 
 }
