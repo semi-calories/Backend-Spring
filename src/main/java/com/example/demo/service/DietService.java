@@ -110,9 +110,16 @@ public class DietService {
     @Transactional
     public Long savePreferDiet(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer){
 
-        extracted(user, preferSaveDto, isPrefer);
+        savePrefer(user, preferSaveDto, isPrefer);
 
         return user.getUserCode();
+    }
+
+    /**
+     * 선호 음식 조회
+     */
+    public List<UserDietPrefer> getPreferDiet(Long userCode){
+        return preferRepository.findByUserCode(userCode);
     }
 
     /**
@@ -121,8 +128,15 @@ public class DietService {
     @Transactional
     public Long saveDislikeDiet(User user, RequestPreferenceSaveDto dislikeSaveDto, Boolean isPrefer){
 
-        extracted(user, dislikeSaveDto, isPrefer);
+        savePrefer(user, dislikeSaveDto, isPrefer);
         return user.getUserCode();
+    }
+
+    /**
+     * 비선호 음식 조회
+     */
+    public List<UserDietDislike> getDislikeDiet(Long userCode){
+        return dislikeRepository.findByUserCode(userCode);
     }
 
     /**
@@ -146,17 +160,12 @@ public class DietService {
 
         MultiValueMap<Integer,DietRecord> weekMap= new LinkedMultiValueMap<>();
 
-//        dietRecordList.stream()
-//                .forEach(dl -> {
-//                    weekMap.put(getWeekOfMonth(dl.getEatDate()), (List<DietRecord>) dl);
-//                });
-
         return weekMap;
     }
 
 
     @Transactional
-    protected void extracted(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {
+    protected void savePrefer(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {
         preferSaveDto.getFoodList().stream() // 선호 음식 리스트 스트림 생성
                 .map(dietListRepository::findById) //리스트에서 하나씩 DB에서 객체 찾기
                 .forEach(findDiet -> { // 각 객체에 대해

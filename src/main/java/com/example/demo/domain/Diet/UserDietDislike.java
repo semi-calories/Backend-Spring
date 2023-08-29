@@ -3,6 +3,7 @@ package com.example.demo.domain.Diet;
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,10 +23,11 @@ public class UserDietDislike extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_code")
+    @JsonIgnore
     private User userCode;
 
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne //(fetch=FetchType.LAZY)
     @JoinColumn(name="dislike_food_code")
     private DietList dislikeFoodCode;
     @Column(name="dislike_food_name")

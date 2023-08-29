@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Diet.UserDietDislike;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.*;
@@ -11,6 +13,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -79,6 +83,21 @@ public class UserController {
     }
 
     /**
+     * 선호 음식 조회
+     */
+    @GetMapping("/getPrefer")
+    public ReturnDto getPrefer(Long userCode) throws Exception{
+
+        // 선호음식 조회
+        List<UserDietPrefer> preferDiet = dietService.getPreferDiet(userCode);
+
+        ReturnDto<List<UserDietPrefer>> returnDto = new ReturnDto<>(preferDiet);
+        return  returnDto;
+
+    }
+
+
+    /**
      * 비선호 음식 저장
      */
     @PostMapping("/saveDislike")
@@ -92,6 +111,20 @@ public class UserController {
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return  returnDto;
+    }
+
+    /**
+     * 비선호 음식 조회
+     */
+    @GetMapping("/getDislike")
+    public ReturnDto getDislike(Long userCode) throws Exception{
+
+        // 선호음식 조회
+        List<UserDietDislike> dislikeDiet = dietService.getDislikeDiet(userCode);
+
+        ReturnDto<List<UserDietDislike>> returnDto = new ReturnDto<>(dislikeDiet);
+        return  returnDto;
+
     }
 
 
