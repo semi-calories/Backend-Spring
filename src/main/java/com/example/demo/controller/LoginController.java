@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.domain.User.Login;
 import com.example.demo.dto.Login.Request.RequestPwMatchDto;
 import com.example.demo.dto.Login.Request.RequestPwUpdateDto;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
@@ -55,7 +54,8 @@ public class LoginController {
      */
     @PostMapping("/passwordMatch")
     public ResponseLoginDto passwordMatch(@RequestBody RequestPwMatchDto requestPwMatchDto){
-        return loginService.matchPw(requestPwMatchDto.getEmail(), requestPwMatchDto.getPassword());
+        ResponseLoginDto responseLoginDto = loginService.matchPw(requestPwMatchDto.getUserEmail(), requestPwMatchDto.getUserPassword());
+        return responseLoginDto;
     }
 
 

@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
         notes = "사용자가 먹을 음식 추천을 요청한다.")
 public class RequestRecommendDto {
 
-    @JsonProperty("user-code")
+
     private Long userCode;
-    @JsonProperty("eat-times")
+
     private int eatTimes;
 }

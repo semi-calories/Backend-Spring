@@ -4,6 +4,7 @@ import com.example.demo.dto.Recognizer.FastAPI.ResponseFoodRecogAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +28,7 @@ public interface FastApiFeign {
     /**
      * 음식 인식 요청
      */
-    @PostMapping("/request-food-recog")
+    @PostMapping(value = "/request-food-recog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseFoodRecogAPIDto requestRecognizer(
             @ModelAttribute MultipartFile file
             );

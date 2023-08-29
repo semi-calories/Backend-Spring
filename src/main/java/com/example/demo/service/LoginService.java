@@ -79,7 +79,8 @@ public class LoginService {
             boolean matches = passwordEncoder.matches(userPw, login.get().getUserPassword());
             if(matches==true){
                 // 비밀번호 매칭 성공
-                return new ResponseLoginDto(true, Optional.of(login.get().getUserCode()),true);
+                User user = login.get().getUserCode();
+                return new ResponseLoginDto(true, Optional.of(user),true);
             // 매칭 실패
             }else return new ResponseLoginDto(true, Optional.empty(),false);
         }else{
