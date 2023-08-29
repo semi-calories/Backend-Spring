@@ -16,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -130,7 +131,7 @@ class DietServiceTest {
         //given
 
         //when
-        List<DietRecord> result = dietService.findDietRecordByUserCodeAndDate(1L, LocalDateTime.of(2023,8,10,3,23));
+        List<DietRecord> result = dietService.findDietRecordByUserCodeAndDate(1L, LocalDate.of(2023,8,10));
 
         for (DietRecord dietRecord : result) {
             System.out.println("dietRecord = " + dietRecord);

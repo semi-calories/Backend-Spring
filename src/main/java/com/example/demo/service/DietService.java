@@ -8,6 +8,8 @@ import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 
 import com.example.demo.domain.User.UserGoal;
+import com.example.demo.dto.Record.Request.RequestWeekStatDto;
+import com.example.demo.dto.Record.Request.WeekDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -61,9 +63,9 @@ public class DietService {
     /**
      * 식단 기록 조회 by user code & date
      */
-    public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDateTime date) throws Exception{
+    public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDate date) throws Exception{
 
-        LocalDateTime startDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(0,0,0));
+        LocalDateTime startDatetime = LocalDateTime.of(date, LocalTime.of(0,0,0));
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(23,59,59));
         List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(userCode, startDatetime, endDatetime);
 
@@ -71,14 +73,13 @@ public class DietService {
     }
 
     /**
-     * 식단 기록 저장 by text
+     * 식단 기록 저장
      */
     @Transactional
     public Long saveFoodRecord(DietRecord dietRecord){
         dietRecordRepository.save(dietRecord);
         return dietRecord.getId();
     }
-
 
 
     /**
@@ -175,7 +176,7 @@ public class DietService {
     }
 
     /**
-     * 1년동안 기록 get
+     * 1년동안 식단 통계 get
      */
     public List<List<Double>> getMonthList(UserGoal userGoal, int year){
 
@@ -186,32 +187,22 @@ public class DietService {
         // 각 월에 대한 식단 기록 map 저장 key:월(중복 o) value:식단 기록
         MultiValueMap<Integer, DietRecord> monthMap = getMonthDietRecord(dietRecordList);
 
-        // 각 월에 대해 kcal,탄단지 sum
+        // 각 월에 대해 탄단지 sum
         List<List<Double>> monthList = getMonthKcalSum(monthMap);
 
-        // 각 월에 대해 -> `sum 값/헤리스 베네틱트*해당 30(31)`
+        // 각 월에 대해 -> `탄단지 sum 값/헤리스 베네틱트 kcal*해당 30(31)`
         List<List<Double>> monthRecordList = getMonthRecordList(userGoal, year, monthList);
 
         return monthRecordList;
     }
 
-    private static List<List<Double>> getMonthRecordList(UserGoal userGoal, int year, List<List<Double>> monthList) {
-        Calendar cal = Calendar.getInstance();
-        List<List<Double>> monthRecordList = new ArrayList<>();
-
-        for(int month=0;month<=11;month++){
-            cal.set(year,month,1);
-            // month[kcal, 탄, 단, 지]
-            // 각 탄단지 sum get / 한달동안 먹을양
-            // 소수 첫째자리까지 반환
-
-            double carboResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(0) / (userGoal.getCarbo() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
-            double proteinResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(1) / (userGoal.getProtein() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
-            double fatResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(2) / (userGoal.getFat() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
-
-            monthRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
-        }
-        return monthRecordList;
+    private static MultiValueMap<Integer, DietRecord> getMonthDietRecord(List<DietRecord> dietRecordList) {
+        MultiValueMap<Integer,DietRecord> monthMap= new LinkedMultiValueMap<>();
+        dietRecordList.stream()
+                .forEach(dl->{
+                    monthMap.add(dl.getEatDate().getMonthValue(), dl);
+                });
+        return monthMap;
     }
 
     private static List<List<Double>> getMonthKcalSum(MultiValueMap<Integer, DietRecord> monthMap) {
@@ -234,14 +225,80 @@ public class DietService {
         return monthList;
     }
 
-    private static MultiValueMap<Integer, DietRecord> getMonthDietRecord(List<DietRecord> dietRecordList) {
-        MultiValueMap<Integer,DietRecord> monthMap= new LinkedMultiValueMap<>();
-        dietRecordList.stream()
-                .forEach(dl->{
-                    monthMap.add(dl.getEatDate().getMonthValue(), dl);
-                });
-        return monthMap;
+    private static List<List<Double>> getMonthRecordList(UserGoal userGoal, int year, List<List<Double>> monthList) {
+        Calendar cal = Calendar.getInstance();
+        List<List<Double>> monthRecordList = new ArrayList<>();
+
+        for(int month=0;month<=11;month++){
+            cal.set(year,month,1);
+            // month[kcal, 탄, 단, 지]
+            // 각 탄단지 sum get / 한달동안 먹을양
+            // 소수 첫째자리까지 반환
+
+            double carboResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(0)*4) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+            double proteinResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(1)*4) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+            double fatResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(2)*9) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+
+            monthRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
+        }
+        return monthRecordList;
     }
 
+    /**
+     * 한달동안 식단 통계 get
+     */
+    public List<List<Double>> getWeekList(UserGoal userGoal, RequestWeekStatDto requestWeekStatDto){
 
+        // 해당 달 식단 기록 get
+        List<WeekDto> weekList = requestWeekStatDto.getCalculateWeek();
+        List<List<DietRecord>> weekRecordList = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+
+        // 시작일과 끝일 사이의 식단 기록 가져와 list add
+        weekList.forEach(list -> {
+            String[] listSplit = list.getStart().split("-");
+            int year = Integer.parseInt(listSplit[0]);
+            int month = Integer.parseInt(listSplit[1]);
+            int endDay = Integer.parseInt(list.getEnd().split("-")[2]);
+            int startDay = Integer.parseInt(listSplit[2]);
+
+            temp.add(endDay-startDay+1);
+            weekRecordList.add(dietRecordRepository.findAllByUserCodeWithEatDateBetween(userGoal.getUserCode().getUserCode(), LocalDateTime.of(year, month, startDay, 0, 0), LocalDateTime.of(year, month, endDay, 23, 59)));
+        });
+
+        // 각 주에 대해 탄단지 sum
+        List<List<Double>> weekSumList = getWeekKcalSum(weekRecordList);
+
+        // 각 주에 대해 -> `sum 값/헤리스 베네틱트*해당 주(endDay-startDay+1)`
+        List<List<Double>> weekRecordResult = getWeekRecordList(userGoal, weekSumList, temp);
+
+        return weekRecordResult;
+
+    }
+
+    private static List<List<Double>> getWeekKcalSum(List<List<DietRecord>> weekRecordList) {
+        List<List<Double>> weekSumList = new ArrayList<>();
+
+        weekRecordList.forEach(recordList -> {
+            double sumCarbo = recordList.stream().mapToDouble(DietRecord::getFoodCarbo).sum();
+            double sumProtein = recordList.stream().mapToDouble(DietRecord::getFoodProtein).sum();
+            double sumFat = recordList.stream().mapToDouble(DietRecord::getFoodFat).sum();
+
+            weekSumList.add(Arrays.asList( sumCarbo, sumProtein, sumFat));
+        });
+        return weekSumList;
+    }
+
+    private static List<List<Double>> getWeekRecordList(UserGoal userGoal, List<List<Double>> weekSumList, List<Integer> temp) {
+
+        List<List<Double>> weekRecordList = new ArrayList<>();
+        // 각 주에 대해 -> `sum 값/헤리스 베네틱트*해당 주(endDay-startDay+1)`
+        for(int i = 0; i< temp.size(); i++){
+            double carboResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(0) *100/ (userGoal.getKcal() * temp.get(i)))));
+            double proteinResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(1) *100/ (userGoal.getKcal() * temp.get(i)))));
+            double fatResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(2) *100/ (userGoal.getKcal() * temp.get(i)))));
+            weekRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
+        }
+        return weekRecordList;
+    }
 }

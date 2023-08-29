@@ -30,6 +30,7 @@ public class UserController {
     @PostMapping("/updateInfo")
     public ReturnDto updateUserInfo(@RequestBody RequestUserUpdateDto requestInfoUpdateDto) throws Exception{
 
+
         // 유저 수정
         Long userCode = userService.userUpdate(requestInfoUpdateDto);
 

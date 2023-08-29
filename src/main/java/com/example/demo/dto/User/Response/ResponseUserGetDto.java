@@ -25,10 +25,8 @@ public class ResponseUserGetDto {
     private Double height;
     private Double weight;
 
-    @JsonProperty("activity")
     private String userActivity;
     private Double goalWeight;
-    @JsonProperty("goal")
     private String userGoal;
     private Double kcal;
     private Double carbo;

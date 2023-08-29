@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,16 +18,18 @@ import java.util.List;
         notes = "음식 사진의 인식을 응답한다.")
 public class ResponseFoodRecogDto {
 
-    private List<DietListDto> dietList;
+    private List<DietListDto> dietLists = new ArrayList<>();
 
     public ResponseFoodRecogDto(List<DietList> dietList) {
         for (DietList list : dietList) {
             DietListDto dietListDto = new DietListDto(list);
-            this.dietList.add(dietListDto);
+            this.dietLists.add(dietListDto);
         }
     }
 
-    private class DietListDto {
+    @Getter
+    @NoArgsConstructor
+    protected class DietListDto {
 
         private Long foodCode;
         private String name;

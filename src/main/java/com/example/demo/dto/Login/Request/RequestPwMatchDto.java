@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
         notes = "유저의 비밀번호가 db값과 일치하는지 확인한다.")
 public class RequestPwMatchDto {
 
-    private String email;
+    private String userEmail;
 
-    private String password;
+    private String userPassword;
 }

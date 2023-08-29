@@ -6,8 +6,10 @@ import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Record.Request.RequestRecordDto;
+import com.example.demo.dto.Record.Request.RequestWeekStatDto;
 import com.example.demo.dto.Record.Response.ResponseFoodListDto;
 import com.example.demo.dto.Record.Response.ResponseMonthStatsDto;
+import com.example.demo.dto.Record.Response.ResponseWeekStatsDto;
 import com.example.demo.dto.User.Response.ResponseUserRecordDto;
 import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
@@ -15,12 +17,12 @@ import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,8 +58,7 @@ public class FoodRecordTextController {
     }
 
     @GetMapping("/getRecord")
-    public ResponseUserRecordDto getFoodRecord(Long userCode, LocalDateTime dateTime) throws Exception{
-
+    public ResponseUserRecordDto getFoodRecord(Long userCode,@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTime) throws Exception{
         // 식단 기록 조회
         List<DietRecord> dietRecords = dietService.findDietRecordByUserCodeAndDate(userCode, dateTime);
 
@@ -84,8 +85,24 @@ public class FoodRecordTextController {
     @GetMapping("/getMonthStats")
     public ResponseMonthStatsDto getMonthStats(Long userCode, int year) throws Exception {
 
+        // 유저 목표 조회
         UserGoal userGoal = userService.findUserWithUserGoal(userCode);
+
+        // 월간 통계 조회
         List<List<Double>> monthList = dietService.getMonthList(userGoal, year);
+
         return new ResponseMonthStatsDto(monthList);
+    }
+
+    @PostMapping("/getWeekStats")
+    public ResponseWeekStatsDto getWeekStats(Long userCode, @RequestBody RequestWeekStatDto requestWeekStatDto) throws Exception{
+
+        // 유저 목표 조회
+        UserGoal userGoal = userService.findUserWithUserGoal(userCode);
+
+        // 주간 통계 조회
+        List<List<Double>> weekList = dietService.getWeekList(userGoal, requestWeekStatDto);
+
+        return new ResponseWeekStatsDto(weekList);
     }
 }

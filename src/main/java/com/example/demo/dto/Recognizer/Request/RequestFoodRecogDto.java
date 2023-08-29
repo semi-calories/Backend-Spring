@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
         notes = "사용자가 입력한 음식 사진의 인식을 요청한다.")
 public class RequestFoodRecogDto {
 
-
     private String userCode;
     private MultipartFile image;
 }

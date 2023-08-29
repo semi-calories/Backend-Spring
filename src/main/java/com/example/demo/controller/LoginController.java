@@ -54,7 +54,8 @@ public class LoginController {
      */
     @PostMapping("/passwordMatch")
     public ResponseLoginDto passwordMatch(@RequestBody RequestPwMatchDto requestPwMatchDto){
-        return loginService.matchPw(requestPwMatchDto.getEmail(), requestPwMatchDto.getPassword());
+        ResponseLoginDto responseLoginDto = loginService.matchPw(requestPwMatchDto.getUserEmail(), requestPwMatchDto.getUserPassword());
+        return responseLoginDto;
     }
 
 
