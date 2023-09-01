@@ -163,25 +163,34 @@ public class DietService {
         return weekMap;
     }
 
-
-    @Transactional
     protected void savePrefer(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {
+        // 삭제 대신 업데이트를 진행하기 위한 리스트 생성
+        List<UserDietPrefer> prefersToUpdate = new ArrayList<>();
+        List<UserDietDislike> dislikeToUpdate = new ArrayList<>();
+
         preferSaveDto.getFoodList().stream() // 선호 음식 리스트 스트림 생성
-                .map(dietListRepository::findById) //리스트에서 하나씩 DB에서 객체 찾기
+                .map(dietListRepository::findById) // 리스트에서 하나씩 DB(DietList)에서 객체 찾기
                 .forEach(findDiet -> { // 각 객체에 대해
-                    if(findDiet.isPresent()) {
+                    if (findDiet.isPresent()) {
                         // 존재한다면
-                        if(isPrefer == Boolean.TRUE){
-                            //prefer DB에 저장
-                            preferRepository.save(new UserDietPrefer(user, findDiet.get(), findDiet.get().getFoodName()));
+                        if (isPrefer == Boolean.TRUE) {
+                            prefersToUpdate.add(new UserDietPrefer(user, findDiet.get(), findDiet.get().getFoodName()));
+                        } else {
+                            dislikeToUpdate.add(new UserDietDislike(user, findDiet.get(), findDiet.get().getFoodName()));
+
                         }
-                        // dislike DB에 저장
-                        else dislikeRepository.save(new UserDietDislike(user, findDiet.get(), findDiet.get().getFoodName()));
-                    }
-                    else{
+                    } else {
                         throw new IllegalStateException("존재하지 않는 정보입니다.");
                     }
                 });
+
+        if (isPrefer == Boolean.TRUE) {
+            preferRepository.deleteByUserCode(user.getUserCode());
+            preferRepository.saveAll(prefersToUpdate);
+        } else {
+            dislikeRepository.deleteByUserCode(user.getUserCode());
+            dislikeRepository.saveAll(dislikeToUpdate);
+        }
     }
 
     /**
