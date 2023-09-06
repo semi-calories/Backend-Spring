@@ -27,7 +27,7 @@ class UserServiceTest {
     @Test
     public void 유저조회() throws Exception{
         //given
-        User one = userService.findOne(7L);
+        User one = userService.findOne(1L);
         //when
 
         //then

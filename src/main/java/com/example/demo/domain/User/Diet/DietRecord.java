@@ -1,4 +1,4 @@
-package com.example.demo.domain.Diet;
+package com.example.demo.domain.User.Diet;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;

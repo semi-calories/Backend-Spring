@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.dto.Recognizer.FastAPI.ResponseFoodRecogAPIDto;
 import com.example.demo.dto.Recognizer.Request.RequestFoodRecogDto;
 import com.example.demo.dto.Recognizer.Response.ResponseFoodRecogDto;
@@ -15,9 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

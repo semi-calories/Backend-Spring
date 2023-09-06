@@ -1,16 +1,10 @@
 package com.example.demo.dto.User.Response;
 
-import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.Diet.DietRecord;
-import com.example.demo.domain.Diet.UserSatisfaction;
-import com.example.demo.domain.User.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import net.bytebuddy.matcher.FilterableList;
 
 import java.util.ArrayList;
 import java.util.List;
