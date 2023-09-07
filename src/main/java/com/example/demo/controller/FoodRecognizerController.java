@@ -33,7 +33,7 @@ public class FoodRecognizerController {
     
     private final FastApiFeign fastApiFeign;
     private final DBService dbService;
-    private final DietService dietService;
+    private final Base64ToMultipartFileConverter base64ToMultipartFileConverter;
 
     /**
      * 음식 인식용 이미지 받는 API
@@ -41,49 +41,25 @@ public class FoodRecognizerController {
     @PostMapping(value = "/recognizerFood")
     public ResponseEntity recogFood(@RequestBody RequestFoodRecogDto requestFoodRecogDto) throws IOException {
 
+        // base64 -> MultipartFile 생성
         String fileName = "temp";
+        MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestFoodRecogDto.getFile(), fileName);
 
+        // FAST API - 음식 사진 AI 모델에 전송
+        ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(multipartFile);
+
+        // db에 값 조회해 영양성분 get
+        List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
+
+        // 사진 인식 응답 DTO 생성
         try {
-            // Base64 디코딩
-            byte[] decodedBytes = Base64.getDecoder().decode(requestFoodRecogDto.getFile());
-
-            // 파일로 저장
-            try (FileOutputStream fos = new FileOutputStream(fileName)) {
-                fos.write(decodedBytes);
-            }
-
-            // 파일을 MultipartFile로 변환
-            File testFile = new File(fileName);
-            FileInputStream fileInputStream = new FileInputStream(testFile);
-
-
-
-            MultipartFile multipartFile = new MockMultipartFile(
-                    fileName,           // 파일 이름
-                    fileName,           // 오리지널 파일 이름
-                    "image/png",       // 컨텐츠 타입
-                    fileInputStream);
-
-            // FAST API - 음식 사진 AI 모델에 전송
-            ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(multipartFile);
-
-            // db에 값 조회해 영양성분 get
-            List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
-
-            // 사진 인식 응답 DTO 생성
             ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto(dietLists);
-
-
             return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("오류 발생: " + e.getMessage());
-
             ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseFoodRecogDto);
+            return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
+
         }
-
     }
-
 }
 
