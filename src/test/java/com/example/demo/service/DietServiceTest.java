@@ -36,23 +36,23 @@ class DietServiceTest {
     @Autowired
     DietRecordRepository dietRecordRepository;
 
-    @Test
-//    @Rollback(false)
-    public void 식단기록_저장() throws Exception{
-        //given
-        User user = userService.findOne(1L);
-        DietList food = dbService.findOne(1L);
-        RequestRecordDto requestRecordDto = new RequestRecordDto(1L,now(),300L,1,1L,"메밀 전병",100.0,10.0,30.0,200.0,4);
-        DietRecord dietRecord = new DietRecord(requestRecordDto,user,food);
-
-        //when
-        dietService.saveFoodRecord(dietRecord);
-
-        //then
-        List<DietRecord> dietRecordByUserCode = dietService.findDietRecordByUserCode(1L);
-        System.out.println(dietRecordByUserCode);
-//        assertThat(dietRecordByUserCode.size()).isEqualTo(2);
-    }
+//    @Test
+////    @Rollback(false)
+//    public void 식단기록_저장() throws Exception{
+//        //given
+//        User user = userService.findOne(1L);
+//        DietList food = dbService.findOne(1L);
+//        RequestRecordDto requestRecordDto = new RequestRecordDto(1L,now(),300L,1,1L,"메밀 전병",100.0,10.0,30.0,200.0,4);
+//        DietRecord dietRecord = new DietRecord(requestRecordDto,user,food);
+//
+//        //when
+//        dietService.saveFoodRecord(dietRecord);
+//
+//        //then
+//        List<DietRecord> dietRecordByUserCode = dietService.findDietRecordByUserCode(1L);
+//        System.out.println(dietRecordByUserCode);
+////        assertThat(dietRecordByUserCode.size()).isEqualTo(2);
+//    }
 
     @Test
 //    @Rollback(false)

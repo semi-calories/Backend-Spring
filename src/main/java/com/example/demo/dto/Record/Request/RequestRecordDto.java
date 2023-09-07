@@ -19,11 +19,9 @@ public class RequestRecordDto {
 
     private Long userCode;
 
-    private LocalDateTime eatDate;
+    private String eatDate;
 
     private Long foodWeight;
-
-    private int foodTimes;
 
     private Long foodCode;
 

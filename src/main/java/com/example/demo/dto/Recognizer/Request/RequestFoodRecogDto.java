@@ -13,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class RequestFoodRecogDto {
 
     private String userCode;
-    private MultipartFile image;
+    private String file;
 }
