@@ -30,7 +30,7 @@ public interface FastApiFeign {
      */
     @PostMapping(value = "/request-food-recog", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseFoodRecogAPIDto requestRecognizer(
-            @ModelAttribute MultipartFile file
+            @RequestPart("file") MultipartFile file
             );
 
 }
