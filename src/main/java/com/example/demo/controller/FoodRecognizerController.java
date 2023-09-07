@@ -50,14 +50,13 @@ public class FoodRecognizerController {
         String fileName = "temp";
         MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestFoodRecogDto.getFile(), fileName);
 
-        // FAST API - 음식 사진 AI 모델에 전송
-        ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(multipartFile);
-
-        // db에 값 조회해 영양성분 get
-        List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
-
         // 사진 인식 응답 DTO 생성
         try {
+            // FAST API - 음식 사진 AI 모델에 전송
+            ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(multipartFile);
+
+            // db에 값 조회해 영양성분 get
+            List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
             ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto(dietLists);
             return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
         } catch (Exception e) {

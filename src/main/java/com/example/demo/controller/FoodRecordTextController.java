@@ -45,7 +45,7 @@ public class FoodRecordTextController {
         // db에서 food 검색
         DietList food = dbService.findOne(requestRecordDto.getFoodCode());
 
-        // entity 생성
+        // entity 생성 + string 타입의 eatDate -> LocalDateTime 변경
         String[] eatDateList = requestRecordDto.getEatDate().split("T");
         String[] dateList = eatDateList[0].split("-");
         String[] timeList = eatDateList[1].split(":");
