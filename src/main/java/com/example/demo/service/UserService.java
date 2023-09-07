@@ -33,6 +33,7 @@ public class UserService {
         findUser.change(
                 requestUserInfoUpdateDto.getName(),
                 requestUserInfoUpdateDto.getEmail(),
+                requestUserInfoUpdateDto.getImage(),
                 requestUserInfoUpdateDto.getAge(),
                 requestUserInfoUpdateDto.getGender(),
                 requestUserInfoUpdateDto.getHeight(),
@@ -114,6 +115,14 @@ public class UserService {
             daliyEnerge = 88.362 + 447.593 + 9.24 * findUser.getWeight() + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
         }
 
+        // 목표에 따라
+        if(findGoal.getUserGoal().equals("lose")){
+            daliyEnerge *= 0.9;
+        } else if (findGoal.getUserGoal().equals("gain")) {
+
+            daliyEnerge *= 1.1;
+        }
+
         // 활동계수에 따라
         switch (findGoal.getUserActivity()) {
             case "less":
@@ -124,13 +133,7 @@ public class UserService {
                 break;
             default:
                 daliyEnerge *= 1.7;
-        }
-
-        // 목표에 따라
-        if(findGoal.getUserGoal()=="lose"){
-            daliyEnerge *= 0.9;
-        } else if (findGoal.getUserGoal()=="gain") {
-            daliyEnerge *= 1.1;
+                break;
         }
 
         return Arrays.asList(daliyEnerge, daliyEnerge *0.5 /4 , daliyEnerge * 0.3 /4, daliyEnerge * 0.2/9);

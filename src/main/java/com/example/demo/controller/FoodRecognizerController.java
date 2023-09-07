@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,12 +33,9 @@ public class FoodRecognizerController {
      * 음식 인식용 이미지 받는 API
      */
     @PostMapping(value = "/recognizerFood", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity recogFood(@ModelAttribute RequestFoodRecogDto requestFoodRecogDto) throws IOException {
-        // 음식 이미지 받아옴
-        MultipartFile file = requestFoodRecogDto.getImage();
-        String originalFilename = file.getOriginalFilename();
+    public ResponseEntity recogFood(@RequestParam Long userCode, @RequestParam MultipartFile file) throws IOException {
 
-        // FAST API - AI 모델에 전송
+        // FAST API - 음식 사진 AI 모델에 전송
         ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(file);
 
         // db에 값 조회해 영양성분 get

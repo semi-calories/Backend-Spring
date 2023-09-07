@@ -15,4 +15,5 @@ public interface UserSatisfactionRepository extends JpaRepository<UserSatisfacti
             "left join fetch us.foodCode " +
             "where us.userCode.userCode = :userCode and us.foodCode.foodCode = :foodCode")
     Optional<UserSatisfaction> findByUserCodeAndFoodCode(@Param("userCode") Long userCode, @Param("foodCode") Long foodCode);
+
 }

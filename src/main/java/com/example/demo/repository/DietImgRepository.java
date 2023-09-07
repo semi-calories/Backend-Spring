@@ -24,10 +24,7 @@ public interface DietImgRepository extends JpaRepository<DietImg, Long> {
      */
 
     Optional<DietImg> findByMainCategory(@Param("foodMainCategory") String foodMainCategory);
+    //List?
 
-    //findAllBy와 findBy?
-    //left join fetch
-    //:userCode?
-    //dr.userCode.userCode
 }
 

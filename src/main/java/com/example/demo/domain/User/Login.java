@@ -16,7 +16,7 @@ public class Login {
     @Column(name = "login_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name="user_code")
     private User userCode;
 

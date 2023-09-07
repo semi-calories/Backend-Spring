@@ -10,6 +10,8 @@ import com.example.demo.dto.Recommend.Request.RequestRecommendDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
+// Image
+import com.example.demo.service.ImgService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -31,6 +34,9 @@ public class RecommendController {
     private final UserService userService;
     private final DietService dietService;
 
+    // Image
+    private final ImgService imgService;
+
     /**
      * 음식 추천 요청 받는 api
      */
@@ -43,7 +49,7 @@ public class RecommendController {
         // 유저 선호, 비선호, 기록 조회
         List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(requestRecommendDto.getUserCode());
         List<UserDietDislike> dislikeDiet = dietService.findDislikeByUserCode(requestRecommendDto.getUserCode());
-        List<DietRecord> dietRecords = dietService.findDietRecordByUserCodeAndDate(requestRecommendDto.getUserCode(), now());
+        List<DietRecord> dietRecords = dietService.findDietRecordByUserCodeAndDate(requestRecommendDto.getUserCode(), LocalDate.now());
 
 
         // FASTAPI 서버에 api 요청
@@ -52,6 +58,8 @@ public class RecommendController {
 
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
+        // Image 조회
+        response.getFoodMainCategoryList();
 
         // return 결과;
         return response;

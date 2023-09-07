@@ -1,5 +1,6 @@
 package com.example.demo.domain.User.Diet;
 
+import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Table(schema = "User_satisfaction")
 @ToString
-public class UserSatisfaction {
+public class UserSatisfaction extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +40,11 @@ public class UserSatisfaction {
         this.userCode = userCode;
         this.foodCode = foodCode;
         this.foodName = foodName;
+        this.satisfaction = satisfaction;
+    }
+
+    //==update 로직==//
+    public void updateSatisfaction(int satisfaction){
         this.satisfaction = satisfaction;
     }
 }

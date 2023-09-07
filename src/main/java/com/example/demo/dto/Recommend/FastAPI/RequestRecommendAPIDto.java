@@ -29,7 +29,7 @@ public class RequestRecommendAPIDto {
     private double height;
     private double weight;
     private int age;
-    private String activity;
+    private String userActivity;
     private List<Long> prefer;
     private List<Long> dislike;
 
@@ -49,7 +49,7 @@ public class RequestRecommendAPIDto {
         this.height = user.getUserCode().getHeight();
         this.weight = user.getUserCode().getWeight();
         this.age = user.getUserCode().getAge();
-        this.activity = user.getUserActivity();
+        this.userActivity = user.getUserActivity();
         this.prefer = preferCollect;
         this.dislike = dislikeCollect;
         this.eatTimes = eatTimes;

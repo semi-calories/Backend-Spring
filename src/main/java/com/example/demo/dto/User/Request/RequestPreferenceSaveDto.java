@@ -18,8 +18,8 @@ import java.util.List;
         notes = "유저의 선호도 음식을 저장한다.")
 public class RequestPreferenceSaveDto {
 
-    @JsonProperty("user-code")
+
     private Long userCode;
-    @JsonProperty("food-list")
+
     private List<Long> foodList = new ArrayList<>();
 }

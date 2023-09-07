@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
         notes = "유저의 정보를 수정한다.")
 public class RequestUserUpdateDto {
 
-    @JsonProperty("user-code")
     private Long userCode;
     private String email;
     private String image;
@@ -25,10 +24,7 @@ public class RequestUserUpdateDto {
     private double height;
     private double weight;
 
-    @JsonProperty("activity")
     private String userActivity;
-    @JsonProperty("goal-weight")
     private double goalWeight;
-    @JsonProperty("goal")
     private String userGoal;
 }

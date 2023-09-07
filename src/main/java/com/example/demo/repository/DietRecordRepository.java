@@ -24,5 +24,4 @@ public interface DietRecordRepository extends JpaRepository<DietRecord, Long> {
     @Query("select dr from DietRecord dr left join fetch dr.userCode where  dr.userCode.userCode = :userCode ")
     List<DietRecord> findAllByUserCode(@Param("userCode") Long userCode);
 
-
 }

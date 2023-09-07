@@ -65,7 +65,7 @@ public class DietRecord extends BaseEntity {
         this.foodTimes = recordDto.getFoodTimes();
         this.foodCode = foodCode;
         this.eatDate = recordDto.getEatDate();
-        this.foodName = recordDto.getFoodName();
+        this.foodName = foodCode.getFoodName();
         this.foodWeight = recordDto.getFoodWeight();
         this.foodKcal = recordDto.getFoodKcal();
         this.foodCarbo = recordDto.getFoodCarbo();
