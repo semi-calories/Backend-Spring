@@ -32,25 +32,25 @@ public class ResponseFoodRecogDto {
     protected class DietListDto {
 
         private Long foodCode;
-        private String name;
-        private String mainCategory;
-        private String detailCategory;
-        private Long weight;
-        private double kcal;
-        private double carbo;
-        private double protein;
-        private double fat;
+        private String foodName;
+        private String foodMainCategory;
+        private String foodDetailClassification;
+        private Long foodWeight;
+        private double foodKcal;
+        private double foodCarbo;
+        private double foodProtein;
+        private double foodFat;
 
         public DietListDto(DietList dietList) {
             this.foodCode = dietList.getFoodCode();
-            this.name = dietList.getFoodName();
-            this.mainCategory = dietList.getFoodMainCategory();
-            this.detailCategory = dietList.getFoodDetailedClassification();
-            this.weight = dietList.getFoodWeight();
-            this.kcal = dietList.getFoodKcal();
-            this.carbo = dietList.getFoodCarbo();
-            this.protein = dietList.getFoodProtein();
-            this.fat = dietList.getFoodFat();
+            this.foodName = dietList.getFoodName();
+            this.foodMainCategory = dietList.getFoodMainCategory();
+            this.foodDetailClassification = dietList.getFoodDetailedClassification();
+            this.foodWeight = dietList.getFoodWeight();
+            this.foodKcal = dietList.getFoodKcal();
+            this.foodCarbo = dietList.getFoodCarbo();
+            this.foodProtein = dietList.getFoodProtein();
+            this.foodFat = dietList.getFoodFat();
         }
     }
 }

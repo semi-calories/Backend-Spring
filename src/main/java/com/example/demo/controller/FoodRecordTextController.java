@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,11 @@ public class FoodRecordTextController {
         DietList food = dbService.findOne(requestRecordDto.getFoodCode());
 
         // entity 생성
-        DietRecord dietRecord = new DietRecord(requestRecordDto , user, food);
+        String[] eatDateList = requestRecordDto.getEatDate().split("T");
+        String[] dateList = eatDateList[0].split("-");
+        String[] timeList = eatDateList[1].split(":");
+        LocalDateTime eatDate = LocalDateTime.of(Integer.parseInt(dateList[0]),Integer.parseInt(dateList[1]),Integer.parseInt( dateList[2]),Integer.parseInt(timeList[0]),Integer.parseInt(timeList[1]));
+        DietRecord dietRecord = new DietRecord(requestRecordDto ,eatDate, user, food);
 
         // food record에 저장
         dietService.saveFoodRecord(dietRecord);

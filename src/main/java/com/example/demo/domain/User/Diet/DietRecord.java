@@ -60,11 +60,10 @@ public class DietRecord extends BaseEntity {
 
     //== DB 저장용 생성자 ==//
 
-    public DietRecord(RequestRecordDto recordDto, User userCode, DietList foodCode) {
+    public DietRecord(RequestRecordDto recordDto, LocalDateTime eatDate, User userCode, DietList foodCode) {
         this.userCode = userCode;
-        this.foodTimes = recordDto.getFoodTimes();
         this.foodCode = foodCode;
-        this.eatDate = recordDto.getEatDate();
+        this.eatDate = eatDate;
         this.foodName = foodCode.getFoodName();
         this.foodWeight = recordDto.getFoodWeight();
         this.foodKcal = recordDto.getFoodKcal();
