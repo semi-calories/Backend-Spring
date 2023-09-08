@@ -8,14 +8,17 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @ApiOperation(
         value = "음식 추천 FastAPI 요청",
         notes = "FastAPI에 사용자가 먹을 음식 추천을 요청한다.")
@@ -29,7 +32,7 @@ public class RequestRecommendAPIDto {
     private double height;
     private double weight;
     private int age;
-    private String userActivity;
+    private String activity;
     private List<Long> prefer;
     private List<Long> dislike;
 
@@ -49,7 +52,7 @@ public class RequestRecommendAPIDto {
         this.height = user.getUserCode().getHeight();
         this.weight = user.getUserCode().getWeight();
         this.age = user.getUserCode().getAge();
-        this.userActivity = user.getUserActivity();
+        this.activity = user.getUserActivity();
         this.prefer = preferCollect;
         this.dislike = dislikeCollect;
         this.eatTimes = eatTimes;
@@ -69,14 +72,19 @@ public class RequestRecommendAPIDto {
     private static List<Double> getDietRecords(List<DietRecord> dietRecords){
         // 0 총칼로리, 123 탄단지
         List<Double> arr = new ArrayList<>();
-        Double totalKcal = dietRecords.stream().map(dr -> dr.getFoodKcal()).mapToDouble(i->i).sum();
-        Double totalCarbo = dietRecords.stream().map(dr -> dr.getFoodCarbo()).mapToDouble(i->i).sum();
-        Double totalProtein = dietRecords.stream().map(dr -> dr.getFoodProtein()).mapToDouble(i->i).sum();
-        Double totalFat = dietRecords.stream().map(dr -> dr.getFoodFat()).mapToDouble(i->i).sum();
-        arr.add(totalKcal);
-        arr.add(totalCarbo);
-        arr.add(totalProtein);
-        arr.add(totalFat);
+        if(dietRecords.size()>1){
+            Double totalKcal = dietRecords.stream().map(dr -> dr.getFoodKcal()).mapToDouble(i->i).sum();
+            Double totalCarbo = dietRecords.stream().map(dr -> dr.getFoodCarbo()).mapToDouble(i->i).sum();
+            Double totalProtein = dietRecords.stream().map(dr -> dr.getFoodProtein()).mapToDouble(i->i).sum();
+            Double totalFat = dietRecords.stream().map(dr -> dr.getFoodFat()).mapToDouble(i->i).sum();
+            arr.add(totalKcal);
+            arr.add(totalCarbo);
+            arr.add(totalProtein);
+            arr.add(totalFat);
+        }else{
+            arr = Arrays.asList(0.0,0.0,0.0,0.0);
+        }
+
         return arr;
     }
 
