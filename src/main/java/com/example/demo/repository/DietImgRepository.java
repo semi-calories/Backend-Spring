@@ -13,18 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DietImgRepository extends JpaRepository<DietImg, Long> {
-    // Optional<List<DietImg>> findByFoodMainCategory(String foodMainCategory);
-
-    //추천 음식명, 사진, 칼로리, 탄, 단, 지
-
-    //Optional<List<DietList>> findByFoodMainCategory(String foodName);
-
     /**
      * diet img 조회 by food MainCategory
      */
-
-    Optional<DietImg> findByMainCategory(@Param("foodMainCategory") String foodMainCategory);
-    //List?
-
+    Optional<DietImg> findByFoodMainCategory(@Param("foodMainCategory") String foodMainCategory);
 }
 

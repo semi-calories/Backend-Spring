@@ -26,14 +26,26 @@ public class ImgService {
 
     // Image
 
-    public List<DietImg> findDietImgByMainCategory(List<String> foodMainCategoryList){
+    public List<DietImg> findDietImgByFoodMainCategory(List<String> foodMainCategoryList){
         List<DietImg> DietCategoryImg = new ArrayList<>();
         for(int i=0; i<foodMainCategoryList.size(); i++){
             //DietImg temp = new DietImg(foodMainCategoryList[i],);
-            DietImg temp = new DietImg(dietImgRepository.findByMainCategory(foodMainCategoryList.get(i)));
-            DietCategoryImg.add(temp);
+            String foodMainCategory = foodMainCategoryList.get(i);
+            System.out.println("foodMainCategory = " + foodMainCategory);
+            Optional<DietImg> tempImg = dietImgRepository.findByFoodMainCategory(foodMainCategory);
+            if (tempImg.isEmpty()){
+                System.out.println(" 없음!!!!!!!!!!!!!!!!!!"  );
+            }
+            DietCategoryImg.add(tempImg.get());
         }
-       //우선 for문으로
+
+       return DietCategoryImg;
+
+    }
+}
+
+
+//우선 for문으로
        /*List<DietImg> foodImg = foodMainCategoryList.stream()
                .map(foodMainCategory -> dietImgRepository.findByMainCategory(foodMainCategory))
                .filter(Optional::isPresent) // 찾은 dietList가 존재하는 것만 filter
@@ -48,10 +60,3 @@ public class ImgService {
        }
        );
         */
-
-
-
-       return DietCategoryImg;
-
-    }
-}

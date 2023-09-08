@@ -19,15 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-<<<<<<< HEAD
-
-import java.io.IOException;
-=======
 import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import java.io.*;
 import java.util.Base64;
->>>>>>> 44c5987cbf32614baf0d624cef1fd6ef9b4853e4
 import java.util.List;
 
 @RestController

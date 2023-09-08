@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.DB.DietImg;
 import com.example.demo.domain.User.Diet.DietRecord;
 import com.example.demo.domain.User.Diet.UserDietDislike;
 import com.example.demo.domain.User.Diet.UserDietPrefer;
@@ -41,7 +42,7 @@ public class RecommendController {
      * 음식 추천 요청 받는 api
      */
     @PostMapping("/request")
-    public ResponseRecommendAPIDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+    public void requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
         // DB에서 해당 정보 가져옴
         // 유저 목표 및 유저 조회
         UserGoal user = userService.findUserWithUserGoal(requestRecommendDto.getUserCode());
@@ -59,9 +60,10 @@ public class RecommendController {
         ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
         // Image 조회
-        response.getFoodMainCategoryList();
-
+        List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(response.getFoodMainCategoryList());
+        System.out.println("dietImgByMainCategory = " + dietImgByMainCategory);
+        //DietImg(id=5, foodMainCategory=밥류, foodDetailedClassification=https://semibucket.s3.amazonaws.com/icons/6rice.png)
         // return 결과;
-        return response;
+
     }
 }

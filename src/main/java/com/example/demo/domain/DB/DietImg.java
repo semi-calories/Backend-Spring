@@ -1,10 +1,7 @@
 package com.example.demo.domain.DB;
 
 import com.example.demo.domain.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -13,6 +10,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DietImg {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="food_main_category_id")
+    private Long id;
 
     @Column(name="food_main_category")
     private String foodMainCategory;

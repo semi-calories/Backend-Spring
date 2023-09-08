@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
         notes = "사용자가 먹을 음식 추천을 요청한다.")
 public class RequestRecommendDto {
 
-
     private Long userCode;
 
     private int eatTimes;
