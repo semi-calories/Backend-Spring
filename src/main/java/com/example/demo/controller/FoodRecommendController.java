@@ -30,7 +30,7 @@ import static java.time.LocalDateTime.now;
 @RequestMapping("/recommend")
 @RequiredArgsConstructor
 @Slf4j
-public class RecommendController {
+public class FoodRecommendController {
 
     private final FastApiFeign fastApiFeign;
     private final UserService userService;
