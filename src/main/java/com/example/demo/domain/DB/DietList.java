@@ -29,7 +29,7 @@ public class DietList {
 
 
     @Column(name = "food_weight")
-    private Long foodWeight;
+    private Double foodWeight;
 
     @Column(name="food_kcal")
     private Long foodKcal;

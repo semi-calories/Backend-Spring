@@ -78,8 +78,7 @@ public class UserController {
         // 선호 음식 저장
         Long userCode = dietService.savePreferDiet(user, requestPreferSaveDto, true);
 
-        ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
-        return  returnDto;
+        return new ReturnDto<>(true);
     }
 
     /**
@@ -109,8 +108,7 @@ public class UserController {
         // 비선호음식 저장
         Long userCode = dietService.saveDislikeDiet(user, requestDislikeSaveDto, false);
 
-        ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
-        return  returnDto;
+        return new ReturnDto<>(true);
     }
 
     /**

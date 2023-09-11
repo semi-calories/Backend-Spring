@@ -73,9 +73,8 @@ public class RecommendController {
                 .collect(Collectors.toList());
 
         // 응답 DTO 생성
-        ResponseRecommendDto response = new ResponseRecommendDto(recommendDtoList);
 
         // return 결과;
-        return response;
+        return new ResponseRecommendDto(recommendDtoList);
     }
 }

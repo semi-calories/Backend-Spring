@@ -8,6 +8,7 @@ import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 
 import com.example.demo.domain.User.UserGoal;
+import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
 import com.example.demo.dto.Record.Request.RequestWeekStatDto;
 import com.example.demo.dto.Record.Request.WeekDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
@@ -47,7 +48,6 @@ public class DietService {
      */
     public List<UserDietDislike> findDislikeByUserCode(Long userCode) throws Exception{
         List<UserDietDislike> dislikeDietList = dislikeRepository.findByUserCode(userCode);
-        System.out.println("############## dislikeDietList = " + dislikeDietList);
         return dislikeDietList;
     }
 
@@ -62,7 +62,7 @@ public class DietService {
 
 
     /**
-     * 식단 기록 조회 by user code & date
+     * 식단 기록 하루치 조회 by user code & date
      */
     public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDate date) throws Exception{
 
@@ -81,6 +81,61 @@ public class DietService {
         dietRecordRepository.save(dietRecord);
         return dietRecord.getId();
     }
+
+    /**
+     * 식단 기록 단일 삭제
+     */
+    @Transactional
+    public void deleteFoodRecord(Long userCode,Long foodCode,LocalDateTime dateTime) throws Exception{
+
+        // 식단 기록 조회
+        List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeAndFoodCodeWithEatDateBetween(userCode, foodCode, dateTime);
+
+        //만족도 조회
+        Optional<UserSatisfaction> userSatisfaction = findUserSatisfaction(userCode, foodCode);
+
+        // 존재한다면 기록 및 만족도 삭제
+        if(dietList.size()>0){
+            dietRecordRepository.delete(dietList.get(0));
+            // 만족도 존재한다면 삭제
+            if (userSatisfaction.isPresent()){
+                userSatisfactionRepository.delete(userSatisfaction.get());
+            }
+        }else{
+            throw new IllegalStateException("존재하지 않는 정보입니다.");
+        }
+    }
+
+    /**
+     * 식단 기록 수정
+     */
+    @Transactional
+    public void updateFoodRecord(Long userCode, Long foodCode, LocalDateTime dateTime, LocalDateTime newEatDate, RequestUpdateRecordDto requestUpdateRecordDto){
+
+        // 식단 기록 조회
+        List<DietRecord> findRecord = dietRecordRepository.findAllByUserCodeAndFoodCodeWithEatDateBetween(userCode, foodCode, dateTime);
+
+        // 존재한다면 수정
+        if (findRecord.size()>0){
+            Optional<DietList> findFood = dietListRepository.findById(requestUpdateRecordDto.getFoodCode());
+
+            // 식단 기록 수정
+            if (findFood.isPresent()){
+                findRecord.get(0).change(
+                        findFood.get(),
+                        newEatDate,
+                        requestUpdateRecordDto.getFoodWeight(),
+                        requestUpdateRecordDto.getFoodKcal(),
+                        requestUpdateRecordDto.getFoodCarbo(),
+                        requestUpdateRecordDto.getFoodProtein(),
+                        requestUpdateRecordDto.getFoodFat()
+                );
+            }
+
+        }
+
+    }
+
 
 
     /**
