@@ -161,7 +161,7 @@ public class DietService {
     }
 
     /**
-     * 선호 음식 저장
+     * 비/선호 음식 저장
      */
     @Transactional
     public Long savePreferDiet(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer){
@@ -193,30 +193,6 @@ public class DietService {
      */
     public List<UserDietDislike> getDislikeDiet(Long userCode){
         return dislikeRepository.findByUserCode(userCode);
-    }
-
-    /**
-     * 한달동안 기록 get
-     */
-    public MultiValueMap<Integer,DietRecord> getWeekList(User user, int year, int month){
-        // 해당 달 식단 기록 get
-        Calendar cal = Calendar.getInstance();
-        cal.set(year,month,1);
-        List<DietRecord> dietRecordList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(user.getUserCode(), LocalDateTime.of(year, month, 1, 0, 0), LocalDateTime.of(year, month, cal.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59));
-
-        // 뽑아온 list에서 각 주간별로 탄단지 sum
-        Calendar calendar = Calendar.getInstance(Locale.KOREA);
-        // 한 주의 시작 요일 설정
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-        // 첫 주를 계산할 때 최소로 있어야 하는 날짜 수 설정
-        calendar.setMinimalDaysInFirstWeek(4);
-
-        // 해당 월의 몇 주차인지 계산
-        int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        MultiValueMap<Integer,DietRecord> weekMap= new LinkedMultiValueMap<>();
-
-        return weekMap;
     }
 
     protected void savePrefer(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {

@@ -53,7 +53,7 @@ public class UserController {
      * 회원 정보 조회
      */
     @GetMapping("/getInfo")
-    public ResponseUserGetDto getInfo(Long userCode) throws Exception {
+    public ResponseUserGetDto getUserInfo(Long userCode) throws Exception {
 
         // 기본 정보 조회
         User findUser = userService.findOne(userCode);

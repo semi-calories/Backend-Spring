@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,25 +30,16 @@ public class DBService {
     /**
      * 음식 여러번 검색
      */
-    public List<DietList> findByList(List<Long> foodCodeList){
-
-        List<DietList> dietList = getDietLists(foodCodeList);
-
-        if (dietList.isEmpty()){
-            throw new IllegalStateException("인식된 음식의 정보가 없습니다.");
-        }
-
-        return dietList;
-    }
-
-
     // food code list 통해 DB 읽어와 diet 객체 리스트(Diet List)로 반환
-    private List<DietList> getDietLists(List<Long> foodCodeList) {
+    public List<DietList> findByList(List<Long> foodCodeList) {
         List<DietList> dietList = foodCodeList.stream()
                 .map(foodCode -> dietListRepository.findById(foodCode)) //각 코드를통해 dietList 찾기
                 .filter(Optional::isPresent) // 찾은 dietList가 존재하는 것만 filter
                 .map(Optional::get) // 존재하면 get
                 .collect(Collectors.toList());// 리스트로 리턴
+        if (dietList.isEmpty()){
+            throw new IllegalStateException("인식된 음식의 정보가 없습니다.");
+        }
         return dietList;
     }
 
