@@ -36,4 +36,10 @@ public class UserWeight {
     private Double weight;
 
     private LocalDateTime timestamp;
+
+    public UserWeight(User userCode, Double weight) {
+        this.userCode = userCode;
+        this.weight = weight;
+        this.timestamp = LocalDateTime.now();
+    }
 }

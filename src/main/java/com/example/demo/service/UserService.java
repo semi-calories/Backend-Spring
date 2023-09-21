@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.User.Gender;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
+import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -106,7 +107,7 @@ public class UserService {
      */
     @Transactional
     public void saveWeight(Long userCode, double weight) throws  Exception {
-        userWeightRepository.insertUserWeight(userCode, weight);
+        userWeightRepository.save(new UserWeight(findOne(userCode), weight));
     }
 
     /**
