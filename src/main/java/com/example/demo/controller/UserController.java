@@ -125,6 +125,14 @@ public class UserController {
 
     }
 
+    /**
+     * 유저 몸무게 저장
+     */
+    @PostMapping("/saveWeight")
+    public void saveWeight(@RequestBody RequestSaveWeightDto requestSaveWeightDto) throws Exception {
+        userService.saveWeight(requestSaveWeightDto.getUserCode(), requestSaveWeightDto.getUserWeight());
+    }
+
 
     @AllArgsConstructor
     @Getter

@@ -6,6 +6,7 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.UserWeightRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserGoalRepository userGoalRepository;
+    private final UserWeightRepository userWeightRepository;
 
 
     /**
@@ -97,6 +99,14 @@ public class UserService {
             findGoal.harrisBenedict(doubles);
         }
 
+    }
+
+    /**
+     * 유저 몸무게 저장
+     */
+    @Transactional
+    public void saveWeight(Long userCode, double weight) throws  Exception {
+        userWeightRepository.insertUserWeight(userCode, weight);
     }
 
     /**
