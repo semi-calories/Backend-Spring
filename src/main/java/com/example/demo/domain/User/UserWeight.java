@@ -1,28 +1,19 @@
 package com.example.demo.domain.User;
 
+import com.example.demo.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 
-//@NamedStoredProcedureQuery(
-//        name = "UserWeight.inserUserWeight",
-//        procedureName = "insert_user_weight",
-//        resultClasses = UserWeight.class,
-//        parameters = {
-//                @StoredProcedureParameter(name = "p_user_code", type = Long.class, mode = ParameterMode.IN),
-//                @StoredProcedureParameter(name = "p_weight", type = Double.class, mode = ParameterMode.IN),
-//                @StoredProcedureParameter(name = "RESULT", type = Integer.class, mode = ParameterMode.OUT),
-//        }
-//)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
 @Table(schema = "User_weight")
-public class UserWeight {
+public class UserWeight extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +32,16 @@ public class UserWeight {
         this.userCode = userCode;
         this.weight = weight;
         this.timestamp = LocalDateTime.now();
+    }
+
+    public UserWeight(User userCode, Double weight, LocalDateTime dateTime) {
+        this.userCode = userCode;
+        this.weight = weight;
+        this.timestamp = dateTime;
+    }
+
+    //==비즈니스 로직==//
+    public void change(Double weight){
+        this.weight = weight;
     }
 }

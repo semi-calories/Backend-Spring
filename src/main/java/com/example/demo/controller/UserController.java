@@ -42,7 +42,7 @@ public class UserController {
         userService.userGoalUpdate(requestInfoUpdateDto);
 
         // 헤리스 베네딕트 수정
-        userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode());
+        userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getWeight());
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return returnDto;
@@ -125,13 +125,7 @@ public class UserController {
 
     }
 
-    /**
-     * 유저 몸무게 저장
-     */
-    @PostMapping("/saveWeight")
-    public void saveWeight(@RequestBody RequestSaveWeightDto requestSaveWeightDto) throws Exception {
-        userService.saveWeight(requestSaveWeightDto.getUserCode(), requestSaveWeightDto.getUserWeight());
-    }
+
 
 
     @AllArgsConstructor

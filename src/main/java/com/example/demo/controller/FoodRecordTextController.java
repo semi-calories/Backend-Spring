@@ -5,10 +5,8 @@ import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
-import com.example.demo.dto.Record.Request.RequestDeleteRecordDto;
-import com.example.demo.dto.Record.Request.RequestRecordDto;
-import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
-import com.example.demo.dto.Record.Request.RequestWeekStatDto;
+import com.example.demo.domain.User.UserWeight;
+import com.example.demo.dto.Record.Request.*;
 import com.example.demo.dto.Record.Response.ResponseFoodListDto;
 import com.example.demo.dto.Record.Response.ResponseMonthStatsDto;
 import com.example.demo.dto.Record.Response.ResponseWeekStatsDto;
@@ -171,8 +169,42 @@ public class FoodRecordTextController {
         return new ResponseWeekStatsDto(weekList);
     }
 
-    private static LocalDateTime getLocalDateTime(String eatDate) {
-        String[] eatDateList = eatDate.split("T");
+    /**
+     * 유저 몸무게 저장/수정
+     */
+    @PostMapping("/saveWeight")
+    public void saveWeight(@RequestBody RequestWeightSaveDto requestSaveWeightDto) throws Exception {
+
+        // 몸무게 테이블에 저장
+        LocalDateTime dateTime = getLocalDateTime(requestSaveWeightDto.getTimestamp());
+        userService.saveUserWeight(requestSaveWeightDto.getUserCode(),dateTime,requestSaveWeightDto.getUserWeight());
+    }
+
+    /**
+     * 유저 몸무게 삭제
+     */
+    @PostMapping("/deleteWeight")
+    public void deleteWeight(@RequestBody RequestWeightDeleteDto requestWeightDeleteDto) throws Exception {
+
+        // 몸무게 테이블에서 삭제
+        LocalDateTime dateTime = getLocalDateTime(requestWeightDeleteDto.getTimestamp());
+        userService.deleteUserWeight(requestWeightDeleteDto.getUserCode(), dateTime);
+    }
+
+    /**
+     * 유저 몸무게 찾기
+     */
+    @GetMapping("/getWeight")
+    public ReturnDto getWeight(Long userCode, String timestamp){
+        LocalDateTime dateTime = getLocalDateTime(timestamp);
+        Optional<UserWeight> userWeight = userService.getUserWeight(userCode, LocalDate.from(dateTime));
+        if (userWeight.isPresent()){
+            return new ReturnDto(userWeight.get().getWeight());
+        }else return new ReturnDto<>(0);
+    }
+
+    private static LocalDateTime getLocalDateTime(String date) {
+        String[] eatDateList = date.split("T");
         String[] dateList = eatDateList[0].split("-"); // "2023-09-11"
         String[] timeList = eatDateList[1].split(":");// "13:11"
         LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateList[0]), Integer.parseInt(dateList[1]), Integer.parseInt(dateList[2]), Integer.parseInt(timeList[0]), Integer.parseInt(timeList[1]),Integer.parseInt(timeList[2]));
