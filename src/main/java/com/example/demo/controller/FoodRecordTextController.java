@@ -208,11 +208,11 @@ public class FoodRecordTextController {
     }
 
     /**
-     * 유저 몸무게 3개월치 찾기
+     * 유저 몸무게 기간으로 찾기
      */
     @GetMapping("/getMonthRangeWeight")
-    public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int year, int startMonth, int endMonth ){
-        List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, year, startMonth, endMonth);
+    public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay ){
+        List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, startYear, startMonth, startDay, endYear, endMonth, endDay);
         return new ResponseWeightRangeDto(monthWeight);
     }
 

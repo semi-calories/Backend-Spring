@@ -185,17 +185,10 @@ public class UserService {
     /**
      * 유저 몸무게 3개월치
      */
-    public List<UserWeight> getMonthRangeWeight(Long userCode, int year, int startMonth, int endMonth) {
+    public List<UserWeight> getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
 
-        //해당 마지막 달의 마지막 날
-        String end = String.valueOf(endMonth);
-        if(end.length()==1){
-            end= "0"+end;
-        }
-        LocalDate lastDate = LocalDate.parse(year+"-"+end+"-01").withDayOfMonth(LocalDate.parse(year+"-"+end+"-01").lengthOfMonth());
-
-        LocalDateTime startDatetime = LocalDateTime.of(year,startMonth,1,0,0);
-        LocalDateTime endDatetime = LocalDateTime.of(lastDate,LocalTime.of(23,59));
+        LocalDateTime startDatetime = LocalDateTime.of(startYear,startMonth,startDay,0,0);
+        LocalDateTime endDatetime = LocalDateTime.of(endYear,endMonth,endDay,23,59);
         List<UserWeight> userWeightList = userWeightRepository.findByUserCodeWithDateBetween(userCode, startDatetime, endDatetime);
         return userWeightList;
     }
