@@ -40,7 +40,7 @@ public class DietRecord extends BaseEntity {
     private LocalDateTime eatDate;
 
     @Column(name="food_weight")
-    private Long foodWeight;
+    private Double foodWeight;
 
     @Column(name="food_name")
     private String foodName;
@@ -70,5 +70,17 @@ public class DietRecord extends BaseEntity {
         this.foodCarbo = recordDto.getFoodCarbo();
         this.foodProtein = recordDto.getFoodProtein();
         this.foodFat = recordDto.getFoodFat();
+    }
+
+    //==비즈니스 로직==//
+    public void change(DietList foodCode, LocalDateTime eatDate, Double foodWeight, Double foodKcal, Double foodCarbo, Double foodProtein, Double foodFat){
+        this.foodCode = foodCode;
+        this.eatDate = eatDate;
+        this.foodName = foodCode.getFoodName();
+        this.foodWeight = foodWeight;
+        this.foodKcal = foodKcal;
+        this.foodCarbo = foodCarbo;
+        this.foodProtein = foodProtein;
+        this.foodFat = foodFat;
     }
 }

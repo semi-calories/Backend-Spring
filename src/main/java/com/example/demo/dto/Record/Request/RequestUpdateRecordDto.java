@@ -1,24 +1,25 @@
 package com.example.demo.dto.Record.Request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @ApiOperation(
-        value = "식단 기록 저장 요청 by 텍스트",
-        notes = "사용자가 텍스트로 입력한 식단 기록 저장을 요청한다.")
-public class RequestRecordDto {
+        value = "식단 기록 수정 요청",
+        notes = "사용자가 입력한 식단 기록 수정을 요청한다.")
+public class RequestUpdateRecordDto {
 
     private Long userCode;
 
+    private String originalEatDate;
+
+    private Long originalFoodCode;
+
+    // 여기서 부터 수정
     private String eatDate;
 
     private Double foodWeight;

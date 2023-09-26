@@ -33,7 +33,7 @@ import static java.time.LocalDateTime.now;
 @RequestMapping("/recommend")
 @RequiredArgsConstructor
 @Slf4j
-public class RecommendController {
+public class FoodRecommendController {
 
     private final FastApiFeign fastApiFeign;
     private final UserService userService;
@@ -94,10 +94,9 @@ public class RecommendController {
         //DietImg(id=5, foodMainCategory=밥류, foodDetailedClassification=https://semibucket.s3.amazonaws.com/icons/6rice.png)
 
         // 응답 DTO 생성
-        ResponseRecommendDto response = new ResponseRecommendDto(recommendDtoList);
 
 
         // return 결과;
-        return response;
+        return new ResponseRecommendDto(recommendDtoList);
     }
 }

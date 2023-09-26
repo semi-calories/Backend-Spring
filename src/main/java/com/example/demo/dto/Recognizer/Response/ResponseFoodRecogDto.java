@@ -35,7 +35,7 @@ public class ResponseFoodRecogDto {
         private String foodName;
         private String foodMainCategory;
         private String foodDetailClassification;
-        private Long foodWeight;
+        private double foodWeight;
         private double foodKcal;
         private double foodCarbo;
         private double foodProtein;

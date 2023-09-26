@@ -44,9 +44,13 @@ public class LoginController {
      * 비밀번호 변경
      */
     @PostMapping("/passwordUpdate")
-    public ReturnDto passwordUpdate(@RequestBody RequestPwUpdateDto requestPwUpdateDto){
-        loginService.updatePw(requestPwUpdateDto.getUserCode(), requestPwUpdateDto.getPassword());
-        return new ReturnDto<>(true);
+    public ReturnDto passwordUpdate(@RequestBody RequestPwUpdateDto requestPwUpdateDto) throws Exception {
+        try {
+            loginService.updatePw(requestPwUpdateDto.getUserCode(), requestPwUpdateDto.getPassword());
+            return new ReturnDto<>(true);
+        }catch (Exception e){
+            return new ReturnDto<>(false);
+        }
     }
 
     /**

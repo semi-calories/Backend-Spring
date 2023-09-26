@@ -8,6 +8,7 @@ import com.example.demo.domain.User.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 
 import com.example.demo.domain.User.UserGoal;
+import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
 import com.example.demo.dto.Record.Request.RequestWeekStatDto;
 import com.example.demo.dto.Record.Request.WeekDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
@@ -47,7 +48,6 @@ public class DietService {
      */
     public List<UserDietDislike> findDislikeByUserCode(Long userCode) throws Exception{
         List<UserDietDislike> dislikeDietList = dislikeRepository.findByUserCode(userCode);
-        System.out.println("############## dislikeDietList = " + dislikeDietList);
         return dislikeDietList;
     }
 
@@ -62,7 +62,7 @@ public class DietService {
 
 
     /**
-     * 식단 기록 조회 by user code & date
+     * 식단 기록 하루치 조회 by user code & date
      */
     public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDate date) throws Exception{
 
@@ -81,6 +81,61 @@ public class DietService {
         dietRecordRepository.save(dietRecord);
         return dietRecord.getId();
     }
+
+    /**
+     * 식단 기록 단일 삭제
+     */
+    @Transactional
+    public void deleteFoodRecord(Long userCode,Long foodCode,LocalDateTime dateTime) throws Exception{
+
+        // 식단 기록 조회
+        List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeAndFoodCodeWithEatDateBetween(userCode, foodCode, dateTime);
+
+        //만족도 조회
+        Optional<UserSatisfaction> userSatisfaction = findUserSatisfaction(userCode, foodCode);
+
+        // 존재한다면 기록 및 만족도 삭제
+        if(dietList.size()>0){
+            dietRecordRepository.delete(dietList.get(0));
+            // 만족도 존재한다면 삭제
+            if (userSatisfaction.isPresent()){
+                userSatisfactionRepository.delete(userSatisfaction.get());
+            }
+        }else{
+            throw new IllegalStateException("존재하지 않는 정보입니다.");
+        }
+    }
+
+    /**
+     * 식단 기록 수정
+     */
+    @Transactional
+    public void updateFoodRecord(Long userCode, Long foodCode, LocalDateTime dateTime, LocalDateTime newEatDate, RequestUpdateRecordDto requestUpdateRecordDto){
+
+        // 식단 기록 조회
+        List<DietRecord> findRecord = dietRecordRepository.findAllByUserCodeAndFoodCodeWithEatDateBetween(userCode, foodCode, dateTime);
+
+        // 존재한다면 수정
+        if (findRecord.size()>0){
+            Optional<DietList> findFood = dietListRepository.findById(requestUpdateRecordDto.getFoodCode());
+
+            // 식단 기록 수정
+            if (findFood.isPresent()){
+                findRecord.get(0).change(
+                        findFood.get(),
+                        newEatDate,
+                        requestUpdateRecordDto.getFoodWeight(),
+                        requestUpdateRecordDto.getFoodKcal(),
+                        requestUpdateRecordDto.getFoodCarbo(),
+                        requestUpdateRecordDto.getFoodProtein(),
+                        requestUpdateRecordDto.getFoodFat()
+                );
+            }
+
+        }
+
+    }
+
 
 
     /**
@@ -106,7 +161,7 @@ public class DietService {
     }
 
     /**
-     * 선호 음식 저장
+     * 비/선호 음식 저장
      */
     @Transactional
     public Long savePreferDiet(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer){
@@ -138,30 +193,6 @@ public class DietService {
      */
     public List<UserDietDislike> getDislikeDiet(Long userCode){
         return dislikeRepository.findByUserCode(userCode);
-    }
-
-    /**
-     * 한달동안 기록 get
-     */
-    public MultiValueMap<Integer,DietRecord> getWeekList(User user, int year, int month){
-        // 해당 달 식단 기록 get
-        Calendar cal = Calendar.getInstance();
-        cal.set(year,month,1);
-        List<DietRecord> dietRecordList = dietRecordRepository.findAllByUserCodeWithEatDateBetween(user.getUserCode(), LocalDateTime.of(year, month, 1, 0, 0), LocalDateTime.of(year, month, cal.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59));
-
-        // 뽑아온 list에서 각 주간별로 탄단지 sum
-        Calendar calendar = Calendar.getInstance(Locale.KOREA);
-        // 한 주의 시작 요일 설정
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
-        // 첫 주를 계산할 때 최소로 있어야 하는 날짜 수 설정
-        calendar.setMinimalDaysInFirstWeek(4);
-
-        // 해당 월의 몇 주차인지 계산
-        int weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH);
-
-        MultiValueMap<Integer,DietRecord> weekMap= new LinkedMultiValueMap<>();
-
-        return weekMap;
     }
 
     protected void savePrefer(User user, RequestPreferenceSaveDto preferSaveDto, Boolean isPrefer) {
