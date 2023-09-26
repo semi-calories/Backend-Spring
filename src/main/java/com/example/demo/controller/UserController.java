@@ -42,7 +42,7 @@ public class UserController {
         userService.userGoalUpdate(requestInfoUpdateDto);
 
         // 헤리스 베네딕트 수정
-        userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode());
+        userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getWeight());
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return returnDto;
@@ -124,6 +124,8 @@ public class UserController {
         return  returnDto;
 
     }
+
+
 
 
     @AllArgsConstructor
