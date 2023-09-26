@@ -13,8 +13,13 @@ public interface DislikeDietRepository  extends JpaRepository<UserDietDislike, L
     /**
      * dislike diet 조회 by user code
      */
+//    @Query("select udd from UserDietDislike udd left join fetch udd.userCode where udd.userCode.userCode = :userCode")
+//    List<UserDietDislike> findByUserCode(@Param("userCode") Long userCode);
     @Query("select udd from UserDietDislike udd left join fetch udd.userCode where udd.userCode.userCode = :userCode")
     List<UserDietDislike> findByUserCode(@Param("userCode") Long userCode);
+
+
+
 
     @Modifying
     @Query("delete from UserDietDislike udd where udd.userCode.userCode = :userCode")

@@ -47,6 +47,7 @@ public class DietService {
      */
     public List<UserDietDislike> findDislikeByUserCode(Long userCode) throws Exception{
         List<UserDietDislike> dislikeDietList = dislikeRepository.findByUserCode(userCode);
+        System.out.println("############## dislikeDietList = " + dislikeDietList);
         return dislikeDietList;
     }
 

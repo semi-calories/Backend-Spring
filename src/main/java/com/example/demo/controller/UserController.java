@@ -119,7 +119,7 @@ public class UserController {
     @GetMapping("/getDislike")
     public ReturnDto getDislike(Long userCode) throws Exception{
 
-        // 선호음식 조회
+        // 비선호음식 조회
         List<UserDietDislike> dislikeDiet = dietService.getDislikeDiet(userCode);
 
         ReturnDto<List<UserDietDislike>> returnDto = new ReturnDto<>(dislikeDiet);

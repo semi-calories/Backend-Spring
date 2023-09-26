@@ -5,16 +5,15 @@ import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 @Table(schema = "User_diet_dislike")
+
 public class UserDietDislike extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

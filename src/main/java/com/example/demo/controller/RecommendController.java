@@ -8,6 +8,8 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import com.example.demo.dto.Recommend.Request.RequestRecommendDto;
+import com.example.demo.dto.Recommend.Response.RecommendDto;
+import com.example.demo.dto.Recommend.Response.ResponseRecommendDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.time.LocalDateTime.now;
 
@@ -42,7 +46,9 @@ public class RecommendController {
      * 음식 추천 요청 받는 api
      */
     @PostMapping("/request")
-    public void requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+
+    public ResponseRecommendDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+
         // DB에서 해당 정보 가져옴
         // 유저 목표 및 유저 조회
         UserGoal user = userService.findUserWithUserGoal(requestRecommendDto.getUserCode());
@@ -57,13 +63,41 @@ public class RecommendController {
         RequestRecommendAPIDto requestRecommendAPIDto =
                 new RequestRecommendAPIDto(user, requestRecommendDto.getEatTimes(), preferDiet, dislikeDiet, dietRecords);
 
-        ResponseRecommendAPIDto response = fastApiFeign.requestRecommend(requestRecommendAPIDto);
+        ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
+
+
+
+        // FASTAPI 응답 DTO로 list별로 음식 접근가능케 함 (fast api: 인덱스별로 접근)
+        List<RecommendDto> recommendDtoList = IntStream.range(0, responseAPIDto.getFoodCodeList().size()) // 음식 추천 수만큼 반복
+                .mapToObj(i -> new RecommendDto(
+                        responseAPIDto.getFoodCodeList().get(i),
+                        responseAPIDto.getFoodNameList().get(i),
+                        responseAPIDto.getFoodMainCategoryList().get(i),
+                        responseAPIDto.getFoodDetailedClassificationList().get(i),
+                        responseAPIDto.getFoodWeightList().get(i),
+                        responseAPIDto.getFoodKcalList().get(i),
+                        responseAPIDto.getFoodCarbonList().get(i),
+                        responseAPIDto.getFoodProteinList().get(i),
+                        responseAPIDto.getFoodFatList().get(i)
+                ))
+                .collect(Collectors.toList());
+
 
         // Image 조회
-        List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(response.getFoodMainCategoryList());
-        System.out.println("dietImgByMainCategory = " + dietImgByMainCategory);
-        //DietImg(id=5, foodMainCategory=밥류, foodDetailedClassification=https://semibucket.s3.amazonaws.com/icons/6rice.png)
-        // return 결과;
+        //List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(response.getFoodMainCategoryList());
+        List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(recommendDtoList;
 
+
+        //System.out.println("dietImgByMainCategory = " + dietImgByMainCategory);
+
+
+        //DietImg(id=5, foodMainCategory=밥류, foodDetailedClassification=https://semibucket.s3.amazonaws.com/icons/6rice.png)
+
+        // 응답 DTO 생성
+        ResponseRecommendDto response = new ResponseRecommendDto(recommendDtoList);
+
+
+        // return 결과;
+        return response;
     }
 }
