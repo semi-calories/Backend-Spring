@@ -1,6 +1,7 @@
 package com.example.demo.domain.User;
 
 import com.example.demo.domain.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class UserWeight extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_code")
+    @JsonIgnore
     private User userCode;
 
     private Double weight;

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,16 +45,16 @@ public class UserService {
                 requestUserInfoUpdateDto.getWeight()
         );
 
-        // 몸무게 테이블 오늘날짜로 저장
-        getUserWeight(requestUserInfoUpdateDto.getUserCode(), LocalDate.now()).ifPresentOrElse(
-                // 있으면 수정
-                userWeight -> {
-                    userWeight.change(requestUserInfoUpdateDto.getWeight());
-                    changeHarrisBenedict(requestUserInfoUpdateDto.getUserCode(), requestUserInfoUpdateDto.getWeight());
-                },
-                // 없으면 저장
-                ()-> userWeightRepository.save(new UserWeight(findOne(requestUserInfoUpdateDto.getUserCode()), requestUserInfoUpdateDto.getWeight()))
-        );
+        // 몸무게 테이블 오늘날짜로 저장(있으면 수정 없으면 저장)
+        List<UserWeight> userWeights = getUserWeight(requestUserInfoUpdateDto.getUserCode(), LocalDate.now());
+
+        if (!userWeights.isEmpty()) {
+            UserWeight userWeight = userWeights.get(0); // 첫 번째 요소 사용
+            userWeight.change(requestUserInfoUpdateDto.getWeight());
+            changeHarrisBenedict(requestUserInfoUpdateDto.getUserCode(), requestUserInfoUpdateDto.getWeight());
+        } else {
+            userWeightRepository.save(new UserWeight(findOne(requestUserInfoUpdateDto.getUserCode()), requestUserInfoUpdateDto.getWeight()));
+        }
 
         return findUser.getUserCode();
     }
@@ -74,11 +74,13 @@ public class UserService {
             changeHarrisBenedict(userCode, weight);
         }
 
-        // 몸무게 테이블에 저장
-        getUserWeight(userCode, LocalDate.from(dateTime)).ifPresentOrElse(
-                userWeight -> userWeight.change(weight), // 있으면 수정
-                ()-> userWeightRepository.save(new UserWeight(findOne(userCode), weight, dateTime)) // 없으면 저장
-        );
+        // 몸무게 테이블에 저장 (있으면 수정 없으면 저장)
+        List<UserWeight> weightList = getUserWeight(userCode, LocalDate.from(dateTime));
+        if(!weightList.isEmpty()){
+            weightList.get(0).change(weight);
+        }else{
+            userWeightRepository.save(new UserWeight(findOne(userCode), weight, dateTime));
+        }
 
 
         return findUser.getUserCode();
@@ -89,13 +91,14 @@ public class UserService {
      */
     @Transactional
     public void deleteUserWeight(Long userCode, LocalDateTime dateTime) throws Exception {
-        Optional<UserWeight> userWeight = getUserWeight(userCode, LocalDate.from(dateTime));
 
-        getUserWeight(userCode, LocalDate.from(dateTime)).ifPresent(weight -> {
-            // 삭제하려는 몸무게 값이 있는 경우
+        List<UserWeight> weightList = getUserWeight(userCode, LocalDate.from(dateTime));
+
+        if(!weightList.isEmpty()){
+            UserWeight weight = weightList.get(0);
             userWeightRepository.deleteById(weight.getId());
 
-            if (LocalDate.from(userWeight.get().getTimestamp()).isEqual(LocalDate.from(dateTime))) {
+            if (LocalDate.from(weight.getTimestamp()).isEqual(LocalDate.from(dateTime))) {
                 // 유저 정보가 저장된 날짜의 값을 삭제할 경우
                 // 가장 최신 값으로 변경
 
@@ -106,8 +109,7 @@ public class UserService {
                             changeHarrisBenedict(userCode, latestWeight.getWeight());
                         });
             }
-
-        });
+        }
     }
 
 
@@ -173,11 +175,29 @@ public class UserService {
     /**
      * 유저 몸무게 찾기
      */
-    public Optional<UserWeight> getUserWeight(Long userCode, LocalDate date) {
+    public List<UserWeight> getUserWeight(Long userCode, LocalDate date) {
         LocalDateTime startDatetime = LocalDateTime.of(date, LocalTime.of(0,0,0));
         LocalDateTime endDatetime = LocalDateTime.of(date, LocalTime.of(23,59,59));
-        Optional<UserWeight> userWeight = userWeightRepository.findByUserCodeWithDateBetween(userCode, startDatetime, endDatetime);
-        return userWeight;
+        List<UserWeight> weightList = userWeightRepository.findByUserCodeWithDateBetween(userCode, startDatetime, endDatetime);
+        return weightList;
+    }
+
+    /**
+     * 유저 몸무게 3개월치
+     */
+    public List<UserWeight> getMonthRangeWeight(Long userCode, int year, int startMonth, int endMonth) {
+
+        //해당 마지막 달의 마지막 날
+        String end = String.valueOf(endMonth);
+        if(end.length()==1){
+            end= "0"+end;
+        }
+        LocalDate lastDate = LocalDate.parse(year+"-"+end+"-01").withDayOfMonth(LocalDate.parse(year+"-"+end+"-01").lengthOfMonth());
+
+        LocalDateTime startDatetime = LocalDateTime.of(year,startMonth,1,0,0);
+        LocalDateTime endDatetime = LocalDateTime.of(lastDate,LocalTime.of(23,59));
+        List<UserWeight> userWeightList = userWeightRepository.findByUserCodeWithDateBetween(userCode, startDatetime, endDatetime);
+        return userWeightList;
     }
 
 

@@ -10,6 +10,7 @@ import com.example.demo.dto.Record.Request.*;
 import com.example.demo.dto.Record.Response.ResponseFoodListDto;
 import com.example.demo.dto.Record.Response.ResponseMonthStatsDto;
 import com.example.demo.dto.Record.Response.ResponseWeekStatsDto;
+import com.example.demo.dto.Record.Response.ResponseWeightRangeDto;
 import com.example.demo.dto.User.Response.ResponseUserRecordDto;
 import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
@@ -197,10 +198,22 @@ public class FoodRecordTextController {
     @GetMapping("/getWeight")
     public ReturnDto getWeight(Long userCode, String timestamp){
         LocalDateTime dateTime = getLocalDateTime(timestamp);
-        Optional<UserWeight> userWeight = userService.getUserWeight(userCode, LocalDate.from(dateTime));
-        if (userWeight.isPresent()){
-            return new ReturnDto(userWeight.get().getWeight());
-        }else return new ReturnDto<>(0);
+        List<UserWeight> weightList = userService.getUserWeight(userCode, LocalDate.from(dateTime));
+        if(!weightList.isEmpty()){
+            return new ReturnDto(weightList.get(0));
+        }else{
+            return new ReturnDto(0);
+        }
+
+    }
+
+    /**
+     * 유저 몸무게 3개월치 찾기
+     */
+    @GetMapping("/getMonthRangeWeight")
+    public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int year, int startMonth, int endMonth ){
+        List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, year, startMonth, endMonth);
+        return new ResponseWeightRangeDto(monthWeight);
     }
 
     private static LocalDateTime getLocalDateTime(String date) {
