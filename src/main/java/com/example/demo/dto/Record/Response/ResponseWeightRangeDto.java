@@ -1,0 +1,17 @@
+package com.example.demo.dto.Record.Response;
+
+import com.example.demo.domain.User.UserWeight;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class ResponseWeightRangeDto {
+
+    private List<UserWeight> weightList = new ArrayList<>();
+}
