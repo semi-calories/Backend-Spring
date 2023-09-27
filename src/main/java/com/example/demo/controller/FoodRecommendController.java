@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DB.DietImg;
 import com.example.demo.domain.User.Diet.DietRecord;
 import com.example.demo.domain.User.Diet.UserDietDislike;
 import com.example.demo.domain.User.Diet.UserDietPrefer;
@@ -8,8 +7,9 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;
 import com.example.demo.dto.Recommend.Request.RequestRecommendDto;
-import com.example.demo.dto.Recommend.Response.RecommendDto;
 import com.example.demo.dto.Recommend.Response.ResponseRecommendDto;
+import com.example.demo.dto.Recommend.Response.RecommendDto;
+import com.example.demo.dto.Recommend.Response.ResponseRecommendListDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
@@ -47,7 +47,9 @@ public class FoodRecommendController {
      */
     @PostMapping("/request")
 
-    public ResponseRecommendDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+    //public ResponseRecommendDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+    public ResponseRecommendListDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+    //public List<ResponseRecommendDto> requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
 
         // DB에서 해당 정보 가져옴
         // 유저 목표 및 유저 조회
@@ -85,7 +87,7 @@ public class FoodRecommendController {
 
         // Image 조회
         //List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(response.getFoodMainCategoryList());
-        List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(recommendDtoList;
+        List<ResponseRecommendDto> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(recommendDtoList);
 
 
         //System.out.println("dietImgByMainCategory = " + dietImgByMainCategory);
@@ -97,6 +99,8 @@ public class FoodRecommendController {
 
 
         // return 결과;
-        return new ResponseRecommendDto(recommendDtoList);
+        //return new ResponseRecommendDto(recommendDtoList);
+        return new ResponseRecommendListDto(dietImgByMainCategory);
+        //return dietImgByMainCategory;
     }
 }

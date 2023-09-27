@@ -2,7 +2,8 @@ package com.example.demo.service;
 // Image
 import com.example.demo.domain.DB.DietImg;
 
-import com.example.demo.domain.User.Diet.DietRecord;
+import com.example.demo.dto.Recommend.Response.RecommendDto;
+import com.example.demo.dto.Recommend.Response.ResponseRecommendDto;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -26,17 +26,34 @@ public class ImgService {
 
     // Image
 
-    public List<DietImg> findDietImgByFoodMainCategory(List<String> foodMainCategoryList){
-        List<DietImg> DietCategoryImg = new ArrayList<>();
-        for(int i=0; i<foodMainCategoryList.size(); i++){
+    public List<ResponseRecommendDto> findDietImgByFoodMainCategory(List<RecommendDto> recommendDtoList){
+        List<ResponseRecommendDto> DietCategoryImg = new ArrayList<>();
+        for(int i=0; i<recommendDtoList.size(); i++){
             //DietImg temp = new DietImg(foodMainCategoryList[i],);
-            String foodMainCategory = foodMainCategoryList.get(i);
+            //String foodMainCategory = foodMainCategoryList.get(i);
+            String foodMainCategory = recommendDtoList.get(i).getFoodMainCategory();
             System.out.println("foodMainCategory = " + foodMainCategory);
+
             Optional<DietImg> tempImg = dietImgRepository.findByFoodMainCategory(foodMainCategory);
+
+            System.out.println("tempImg = " + tempImg);
             if (tempImg.isEmpty()){
                 System.out.println(" 없음!!!!!!!!!!!!!!!!!!"  );
+                tempImg = dietImgRepository.findByFoodMainCategory("조림류");
             }
-            DietCategoryImg.add(tempImg.get());
+            DietCategoryImg.add(new ResponseRecommendDto(
+                    recommendDtoList.get(i).getFoodCode(),
+                    recommendDtoList.get(i).getFoodName(),
+                    recommendDtoList.get(i).getFoodMainCategory(),
+                    tempImg.get().getFoodImage(),
+                    recommendDtoList.get(i).getFoodDetailedClassification(),
+                    recommendDtoList.get(i).getFoodWeight(),
+                    recommendDtoList.get(i).getFoodKcal(),
+                    recommendDtoList.get(i).getFoodCarbon(),
+                    recommendDtoList.get(i).getFoodProtein(),
+                    recommendDtoList.get(i).getFoodFat()
+            ));
+            System.out.println("추천결과 = \n" + DietCategoryImg.get(i));
         }
 
        return DietCategoryImg;

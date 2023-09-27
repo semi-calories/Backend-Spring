@@ -19,6 +19,6 @@ public class DietImg {
     private String foodMainCategory;
 
     @Column(name="food_image")
-    private String foodDetailedClassification;
+    private String foodImage;
 
 }

@@ -17,6 +17,5 @@ import lombok.NoArgsConstructor;
 public class RequestRecommendDto {
 
     private Long userCode;
-
     private int eatTimes;
 }
