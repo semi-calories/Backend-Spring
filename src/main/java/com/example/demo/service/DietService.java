@@ -348,9 +348,6 @@ public class DietService {
             double proteinResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(1) * 4 *100/ (userGoal.getKcal() * temp.get(i)))));
             double fatResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(2) * 9 *100/ (userGoal.getKcal() * temp.get(i)))));
 
-            System.out.println(temp.get(i));
-            System.out.println( "############# 각 주별 적절 섭취양" +(userGoal.getKcal() * temp.get(i)));
-            System.out.println("######## 각 주별 먹은 양" + weekSumList.get(i).get(0));
             weekRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
         }
         return weekRecordList;
