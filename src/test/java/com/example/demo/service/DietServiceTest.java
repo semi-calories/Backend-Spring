@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.Diet.DietRecord;
-import com.example.demo.domain.Diet.UserDietDislike;
-import com.example.demo.domain.Diet.UserDietPrefer;
+import com.example.demo.domain.User.Diet.DietRecord;
+import com.example.demo.domain.User.Diet.UserDietDislike;
+import com.example.demo.domain.User.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Record.Request.RequestRecordDto;
@@ -12,7 +12,6 @@ import com.example.demo.repository.DietRecordRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 

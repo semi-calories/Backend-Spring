@@ -1,14 +1,12 @@
 package com.example.demo.dto.User.Response;
 
-import com.example.demo.domain.Diet.DietRecord;
-import com.example.demo.domain.Diet.UserSatisfaction;
+import com.example.demo.domain.User.Diet.DietRecord;
+import com.example.demo.domain.User.Diet.UserSatisfaction;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

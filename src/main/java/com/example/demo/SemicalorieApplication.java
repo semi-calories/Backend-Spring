@@ -14,7 +14,6 @@ import org.springframework.retry.annotation.EnableRetry;
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 @EnableRetry
 public class SemicalorieApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SemicalorieApplication.class, args);
 	}
