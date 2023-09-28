@@ -13,7 +13,6 @@ import com.example.demo.dto.Recommend.Response.ResponseRecommendListDto;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
-// Image
 import com.example.demo.service.ImgService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import static java.time.LocalDateTime.now;
 
 @RestController
@@ -38,18 +35,13 @@ public class FoodRecommendController {
     private final FastApiFeign fastApiFeign;
     private final UserService userService;
     private final DietService dietService;
-
-    // Image
     private final ImgService imgService;
 
     /**
      * 음식 추천 요청 받는 api
      */
     @PostMapping("/request")
-
-    //public ResponseRecommendDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
     public ResponseRecommendListDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
-    //public List<ResponseRecommendDto> requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
 
         // DB에서 해당 정보 가져옴
         // 유저 목표 및 유저 조회
@@ -86,21 +78,9 @@ public class FoodRecommendController {
 
 
         // Image 조회
-        //List<DietImg> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(response.getFoodMainCategoryList());
         List<ResponseRecommendDto> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(recommendDtoList);
 
-
-        //System.out.println("dietImgByMainCategory = " + dietImgByMainCategory);
-
-
-        //DietImg(id=5, foodMainCategory=밥류, foodDetailedClassification=https://semibucket.s3.amazonaws.com/icons/6rice.png)
-
-        // 응답 DTO 생성
-
-
-        // return 결과;
-        //return new ResponseRecommendDto(recommendDtoList);
+        // 응답 DTO 생성 및 return
         return new ResponseRecommendListDto(dietImgByMainCategory);
-        //return dietImgByMainCategory;
     }
 }

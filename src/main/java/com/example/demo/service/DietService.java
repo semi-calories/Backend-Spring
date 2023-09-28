@@ -6,9 +6,7 @@ import com.example.demo.domain.User.Diet.UserDietPrefer;
 import com.example.demo.domain.User.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
-
 import com.example.demo.domain.DB.DietList;
-
 import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
 import com.example.demo.dto.Record.Request.RequestWeekStatDto;
 import com.example.demo.dto.Record.Request.WeekDto;

@@ -15,7 +15,6 @@ import java.util.List;
         value = "음식 추천 응답",
         notes = "사용자가 먹을 음식 목록을 추천한다.")
 public class ResponseRecommendListDto {
-
-    //private List<RecommendDto> recommendList = new ArrayList<>();
+    //이미지 포함된 DTO의 List
     private List<ResponseRecommendDto> recommendList = new ArrayList<>();
 }

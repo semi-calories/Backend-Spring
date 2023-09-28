@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
         value = "음식 추천 응답",
         notes = "FASTAPI에서 사용자가 먹을 음식 목록을 추천한다.")
 public class RecommendDto {
+    // Image 없음
     private Integer foodCode;
     private String foodName;
     private String foodMainCategory;

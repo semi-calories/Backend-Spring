@@ -1,5 +1,4 @@
 package com.example.demo.service;
-// Image
 import com.example.demo.domain.DB.DietImg;
 
 import com.example.demo.dto.Recommend.Response.RecommendDto;
@@ -20,27 +19,23 @@ import java.util.Optional;
 public class ImgService {
 
     private final DietImgRepository dietImgRepository;
+
     /**
      * 음식 대분류 이름으로 아이콘 이미지 검색
      */
-
-    // Image
-
     public List<ResponseRecommendDto> findDietImgByFoodMainCategory(List<RecommendDto> recommendDtoList){
         List<ResponseRecommendDto> DietCategoryImg = new ArrayList<>();
         for(int i=0; i<recommendDtoList.size(); i++){
-            //DietImg temp = new DietImg(foodMainCategoryList[i],);
-            //String foodMainCategory = foodMainCategoryList.get(i);
+            // 음식 대분류 정보로 이미지 url 받아오기
             String foodMainCategory = recommendDtoList.get(i).getFoodMainCategory();
-            System.out.println("foodMainCategory = " + foodMainCategory);
-
             Optional<DietImg> tempImg = dietImgRepository.findByFoodMainCategory(foodMainCategory);
 
-            System.out.println("tempImg = " + tempImg);
+            // 만약 이미지가 DB에 없으면 다른 이미지로 대체
             if (tempImg.isEmpty()){
-                System.out.println(" 없음!!!!!!!!!!!!!!!!!!"  );
                 tempImg = dietImgRepository.findByFoodMainCategory("조림류");
             }
+
+            // DTO에 이미지 정보도 같이 저장
             DietCategoryImg.add(new ResponseRecommendDto(
                     recommendDtoList.get(i).getFoodCode(),
                     recommendDtoList.get(i).getFoodName(),
@@ -53,27 +48,8 @@ public class ImgService {
                     recommendDtoList.get(i).getFoodProtein(),
                     recommendDtoList.get(i).getFoodFat()
             ));
-            System.out.println("추천결과 = \n" + DietCategoryImg.get(i));
         }
 
        return DietCategoryImg;
-
     }
 }
-
-
-//우선 for문으로
-       /*List<DietImg> foodImg = foodMainCategoryList.stream()
-               .map(foodMainCategory -> dietImgRepository.findByMainCategory(foodMainCategory))
-               .filter(Optional::isPresent) // 찾은 dietList가 존재하는 것만 filter
-               .map(Optional::get) // 존재하면 get
-               .collect(Collectors.toList());// 리스트로 리턴
-       //        .findAllByMainCategory(param);
-       List<DietImg> list = new ArrayList<>();
-       foodMainCategoryList.forEach(img->{
-           Optional<DietImg> mainImg = dietImgRepository.findByMainCategory(img);
-          if mainImg.isPresent()
-           list.add(mainImg);
-       }
-       );
-        */
