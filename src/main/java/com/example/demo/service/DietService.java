@@ -13,14 +13,14 @@ import com.example.demo.dto.Record.Request.WeekDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Range;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.time.*;
-import java.time.temporal.TemporalAdjusters;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -284,9 +284,10 @@ public class DietService {
             // 각 탄단지 sum get / 한달동안 먹을양
             // 소수 첫째자리까지 반환
 
-            double carboResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(0)*4) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
-            double proteinResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(1)*4) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
-            double fatResult =Double.parseDouble(String.format("%.1f", (monthList.get(month).get(2)*9) *100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+            double carboResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(0) * 4 * 100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+            double proteinResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(1) * 4 * 100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+            double fatResult =Double.parseDouble(String.format("%.1f", monthList.get(month).get(2) * 9 * 100/ (userGoal.getKcal() * cal.getActualMaximum(Calendar.DAY_OF_MONTH))));
+
 
             monthRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
         }
@@ -343,9 +344,10 @@ public class DietService {
         List<List<Double>> weekRecordList = new ArrayList<>();
         // 각 주에 대해 -> `sum 값/헤리스 베네틱트*해당 주(endDay-startDay+1)`
         for(int i = 0; i< temp.size(); i++){
-            double carboResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(0) *100/ (userGoal.getKcal() * temp.get(i)))));
-            double proteinResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(1) *100/ (userGoal.getKcal() * temp.get(i)))));
-            double fatResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(2) *100/ (userGoal.getKcal() * temp.get(i)))));
+            double carboResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(0) * 4 *100/ (userGoal.getKcal() * temp.get(i)))));
+            double proteinResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(1) * 4 *100/ (userGoal.getKcal() * temp.get(i)))));
+            double fatResult = Double.parseDouble(String.format("%.1f", (weekSumList.get(i).get(2) * 9 *100/ (userGoal.getKcal() * temp.get(i)))));
+
             weekRecordList.add(Arrays.asList(carboResult,proteinResult,fatResult));
         }
         return weekRecordList;

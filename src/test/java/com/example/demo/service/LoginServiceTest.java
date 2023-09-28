@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 class LoginServiceTest {
@@ -44,7 +42,6 @@ class LoginServiceTest {
         // 비밀번호 매칭
         ResponseLoginDto responseLoginDto = loginService.matchPw("zeun@email", pw);
 
-        System.out.println(responseLoginDto);
 
         //then
         Assertions.assertThat(responseLoginDto.isMatchResult()).isTrue();
