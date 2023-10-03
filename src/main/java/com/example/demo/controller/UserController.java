@@ -7,6 +7,7 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.*;
 import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.DietService;
+import com.example.demo.service.LoginService;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final DietService dietService;
+    private final LoginService loginService;
 
 
 
@@ -37,6 +39,8 @@ public class UserController {
 
         // 유저 수정
         Long userCode = userService.userUpdate(requestInfoUpdateDto);
+        loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
+
 
         // 유저 목표 수정
         userService.userGoalUpdate(requestInfoUpdateDto);

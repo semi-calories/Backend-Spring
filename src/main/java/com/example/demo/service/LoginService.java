@@ -43,6 +43,17 @@ public class LoginService {
         return saveUser.getUserCode();
     }
 
+    /**
+     * 유저 이메일 수정
+     */
+    public void updateEmail(Long userCode, String email){
+        Optional<Login> findUserLogin = loginRepository.findByUserCode(userCode);
+
+        findUserLogin.ifPresent(
+                userLogin -> userLogin.changeEmail(email)
+        );
+    }
+
 
     /**
      * 유저 아이디 중복 체크
