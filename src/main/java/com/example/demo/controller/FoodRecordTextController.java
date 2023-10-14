@@ -16,6 +16,7 @@ import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class FoodRecordTextController {
      * 식단 기록 저장
      */
     @PostMapping("/text")
-    public ReturnDto foodRecordByText(@RequestBody RequestRecordDto requestRecordDto) throws Exception {
+    public ReturnDto foodRecordByText(@RequestBody @Valid RequestRecordDto requestRecordDto) throws Exception {
 
         // db에서 유저 검색
         User user = userService.findOne(requestRecordDto.getUserCode());

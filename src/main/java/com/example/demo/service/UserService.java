@@ -66,6 +66,7 @@ public class UserService {
     public Long saveUserWeight(Long userCode, LocalDateTime dateTime ,Double weight) throws Exception{
 
         User findUser = findOne(userCode);
+        UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
         // 유저 정보 modified_at 보다 이후에 저장/수정 한다면 유저 정보 갱신
         if ( findUser.getModifiedAt().isBefore(dateTime)){
@@ -102,10 +103,11 @@ public class UserService {
                 // 유저 정보가 저장된 날짜의 값을 삭제할 경우
                 // 가장 최신 값으로 변경
 
-                User user = findOne(userCode);
-                userWeightRepository.findTopByUserCodeOrderByTimestampDesc(user)
+                User findUser = findOne(userCode);
+                UserGoal findUserGoal = findUserWithUserGoal(userCode);
+                userWeightRepository.findTopByUserCodeOrderByTimestampDesc(findUser)
                         .ifPresent(latestWeight -> {
-                            user.weightChange(latestWeight.getWeight());
+                            findUser.weightChange(latestWeight.getWeight());
                             changeHarrisBenedict(userCode, latestWeight.getWeight());
                         });
             }
@@ -124,7 +126,8 @@ public class UserService {
         findGoal.change(
                 requestUserUpdateDto.getUserActivity(),
                 requestUserUpdateDto.getUserGoal(),
-                requestUserUpdateDto.getGoalWeight()
+                requestUserUpdateDto.getGoalWeight(),
+                requestUserUpdateDto.getPeriod()
         );
 
 
@@ -158,13 +161,15 @@ public class UserService {
     @Transactional
     public void changeHarrisBenedict(Long userCode, Double weight){
         User findUser = findOne(userCode);
-        UserGoal findGoal = findUserWithUserGoal(userCode);
+        UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
         if ( findUser.getAge() != null && findUser.getHeight() != null && findUser.getWeight() !=null
-                && findGoal.getUserGoal() != null && findGoal.getUserActivity()!=null){
+                && findUserGoal.getUserGoal() != null && findUserGoal.getUserActivity()!=null){
+
             try {
+
                 // 필요한 값 다 있으면 헤리스 베네딕트 값 생성
-                findGoal.harrisBenedict(findUser, weight);
+                findUserGoal.harrisBenedict(findUser, weight, ((Math.abs(findUser.getWeight()-findUserGoal.getGoalWeight()))*9000)/ findUserGoal.getGoalPeriod());
             } catch (Exception e) {
                 throw new RuntimeException("헤리스 베네딕트 값을 생성할 수 없습니다.");
             }

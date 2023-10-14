@@ -29,6 +29,9 @@ public class UserGoal extends BaseEntity {
     @Column(name="user_goal")
     private String userGoal;
 
+    @Column(name="goal_period")
+    private Integer goalPeriod;
+
     @Column(name="user_kcal")
     private Double kcal;
     @Column(name="user_carbo")
@@ -38,6 +41,7 @@ public class UserGoal extends BaseEntity {
     @Column(name="user_fat")
     private Double fat;
 
+
     //==생성자==//
 
 
@@ -46,23 +50,18 @@ public class UserGoal extends BaseEntity {
     }
 
     //==비즈니스 로직==//
-    public void change(String userActivity, String userGoal, double goalWeight){
+    public void change(String userActivity, String userGoal, double goalWeight, int goalPeriod){
         this.userActivity = userActivity;
         this.goalWeight = goalWeight;
         this.userGoal = userGoal;
+        this.goalPeriod = goalPeriod;
     }
 
-//    public void harrisBenedict(List<Double> hbList){
-//        this.kcal = hbList.get(0);
-//        this.carbo = hbList.get(1);
-//        this.protein = hbList.get(2);
-//        this.fat = hbList.get(3);
-//    }
 
     /**
      *  유저 Harris-Benedict 알고리즘
      */
-    public void harrisBenedict(User findUser, Double weight) throws Exception{
+    public void harrisBenedict(User findUser, Double weight, Double goalKcal) throws Exception{
 
 
         double daliyEnerge = 0;
@@ -73,14 +72,6 @@ public class UserGoal extends BaseEntity {
         }
         else{
             daliyEnerge = 88.362 + 447.593 + 9.24 * weight + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
-        }
-
-        // 목표에 따라
-        if(userGoal.equals("lose")){
-            daliyEnerge *= 0.9;
-        } else if (userGoal.equals("gain")) {
-
-            daliyEnerge *= 1.1;
         }
 
         // 활동계수에 따라
@@ -95,6 +86,15 @@ public class UserGoal extends BaseEntity {
                 daliyEnerge *= 1.7;
                 break;
         }
+
+        // 목표에 따라
+        if(userGoal.equals("lose")){
+            daliyEnerge -= goalKcal;
+        } else if (userGoal.equals("gain")) {
+            daliyEnerge += goalKcal;
+        }
+
+
 
 
         this.kcal = daliyEnerge;

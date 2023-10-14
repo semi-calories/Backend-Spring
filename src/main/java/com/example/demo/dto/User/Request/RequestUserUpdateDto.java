@@ -1,7 +1,6 @@
 package com.example.demo.dto.User.Request;
 
 import com.example.demo.domain.User.Gender;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +22,7 @@ public class RequestUserUpdateDto {
     private int age;
     private double height;
     private double weight;
+    private int period;
 
     private String userActivity;
     private double goalWeight;
