@@ -1,21 +1,12 @@
 package com.example.demo.dto.Recommend.Response;
 
 //
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietDislike;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
-import com.example.demo.domain.User.UserGoal;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 //
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @AllArgsConstructor

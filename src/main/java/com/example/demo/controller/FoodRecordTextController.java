@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserSatisfaction;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
