@@ -7,10 +7,7 @@ import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.Record.Request.*;
-import com.example.demo.dto.Record.Response.ResponseFoodListDto;
-import com.example.demo.dto.Record.Response.ResponseMonthStatsDto;
-import com.example.demo.dto.Record.Response.ResponseWeekStatsDto;
-import com.example.demo.dto.Record.Response.ResponseWeightRangeDto;
+import com.example.demo.dto.Record.Response.*;
 import com.example.demo.dto.User.Response.ResponseUserRecordDto;
 import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
@@ -215,6 +212,30 @@ public class FoodRecordTextController {
     public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay ){
         List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, startYear, startMonth, startDay, endYear, endMonth, endDay);
         return new ResponseWeightRangeDto(monthWeight);
+    }
+
+    /**
+     * 예상 몸무게 저장
+     */
+    @PostMapping("/savePredictWeight")
+    public void savePredictWeight(@RequestBody RequestSavePredictWeightDto requestSavePredictWeightDto){
+
+        // 유저 목표 몸무게 수정
+        userService.userGoalWeightUpdate(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getGoalWeight(), requestSavePredictWeightDto.getPeriod());
+
+        // 헤리스 베네딕트 수정
+        userService.changeHarrisBenedict(requestSavePredictWeightDto.getUserCode(),requestSavePredictWeightDto.getGoalWeight());
+
+        // 유저 예상 몸무게 추이 저장
+        userService.savePredictWeight(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getPeriod());
+    }
+
+    /**
+     * 유저 예상 몸무게 조회
+     */
+    @GetMapping("/getPredictWeight")
+    public ResponsePredictWeightDto getPredictWeight(Long userCode){
+        return new ResponsePredictWeightDto(userService.getPredictWeight(userCode));
     }
 
     private static LocalDateTime getLocalDateTime(String date) {

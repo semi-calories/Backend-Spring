@@ -57,11 +57,16 @@ public class UserGoal extends BaseEntity {
         this.goalPeriod = goalPeriod;
     }
 
+    public void predictWeightChange( double goalWeight,int goalPeriod ){
+        this.goalWeight = goalWeight;
+        this.goalPeriod = goalPeriod;
+    }
+
 
     /**
      *  유저 Harris-Benedict 알고리즘
      */
-    public void harrisBenedict(User findUser, Double weight, Double goalKcal) throws Exception{
+    public void harrisBenedict(User findUser, Double weight, Double goalKcal){
 
 
         double daliyEnerge = 0;

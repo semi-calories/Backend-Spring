@@ -45,8 +45,12 @@ public class UserController {
         // 유저 목표 수정
         userService.userGoalUpdate(requestInfoUpdateDto);
 
+
         // 헤리스 베네딕트 수정
         userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getWeight()   );
+
+        // 유저 예상 몸무게 추이 저장
+        userService.savePredictWeight(requestInfoUpdateDto.getUserCode(),requestInfoUpdateDto.getPeriod());
 
         ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
         return returnDto;
@@ -128,7 +132,6 @@ public class UserController {
         return  returnDto;
 
     }
-
 
 
 

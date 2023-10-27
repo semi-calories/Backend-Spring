@@ -69,7 +69,7 @@ public class LoginService {
     /**
      * 비밀번호 변경
      */
-    public String updatePw(Long userCode,String password) throws Exception{
+    public String updatePw(Long userCode,String password){
 
         Optional<Login> login = loginRepository.findByUserCode(userCode);
         if (login.isPresent()){
