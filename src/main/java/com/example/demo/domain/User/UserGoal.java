@@ -24,13 +24,13 @@ public class UserGoal extends BaseEntity {
     private String userActivity;
 
     @Column(name="goal_weight")
-    private double goalWeight;
+    private Double goalWeight;
 
     @Column(name="user_goal")
     private String userGoal;
 
     @Column(name="goal_period")
-    private Integer goalPeriod;
+    private int goalPeriod;
 
     @Column(name="user_kcal")
     private Double kcal;

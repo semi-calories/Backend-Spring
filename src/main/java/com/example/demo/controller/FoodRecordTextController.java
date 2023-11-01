@@ -220,6 +220,8 @@ public class FoodRecordTextController {
     @PostMapping("/savePredictWeight")
     public void savePredictWeight(@RequestBody RequestSavePredictWeightDto requestSavePredictWeightDto){
 
+        System.out.println("######################## " + requestSavePredictWeightDto);
+
         // 유저 목표 몸무게 수정
         userService.userGoalWeightUpdate(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getGoalWeight(), requestSavePredictWeightDto.getPeriod());
 
@@ -228,6 +230,7 @@ public class FoodRecordTextController {
 
         // 유저 예상 몸무게 추이 저장
         userService.savePredictWeight(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getPeriod());
+
     }
 
     /**
