@@ -64,6 +64,16 @@ public class UserService {
     }
 
     /**
+     * 유저 삭제
+     */
+    @Transactional
+    public Long deleteUser(Long userCode){
+        User findUser = findOne(userCode);
+        userRepository.delete(findUser);
+        return findUser.getUserCode();
+    }
+
+    /**
      * 몸무게 저장/수정
      */
     @Transactional
