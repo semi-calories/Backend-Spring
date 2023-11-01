@@ -74,14 +74,7 @@ public class UserController {
         return responseUserInfoGetDto;
     }
 
-    /**
-     * 회원 탈퇴(정보 삭제)
-     */
-    @PostMapping("/deleteInfo")
-    public ReturnDto deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
-        Long user = userService.deleteUser(requestDeleteUserDto.getUserCode());
-        return new ReturnDto(user);
-    }
+
 
     /**
      * 선호 음식 저장

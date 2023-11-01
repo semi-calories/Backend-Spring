@@ -6,7 +6,9 @@ import com.example.demo.dto.Login.Request.RequestPwUpdateDto;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseEmailCheckDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
+import com.example.demo.dto.User.Request.RequestDeleteUserDto;
 import com.example.demo.service.LoginService;
+import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
 
     private final LoginService loginService;
+    private final UserService userService;
 
     /**
      * 회원 정보 저장 (= 회원 가입)
@@ -41,6 +44,15 @@ public class LoginController {
 
         // 중복 조회 후 값 리턴 true: 중복 o, false: 중복 x
         return new ResponseEmailCheckDto(loginService.emailDuplicateCheck(email));
+    }
+
+    /**
+     * 회원 탈퇴(정보 삭제)
+     */
+    @PostMapping("/deleteInfo")
+    public UserController.ReturnDto deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
+        loginService.deleteLogin(requestDeleteUserDto.getUserCode());
+        return new UserController.ReturnDto("ok");
     }
 
 

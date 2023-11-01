@@ -44,6 +44,17 @@ public class LoginService {
     }
 
     /**
+     * 삭제
+     */
+    public void deleteLogin(Long userCode) {
+
+        User findUser = userRepository.findById(userCode)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 회원입니다."));
+        userRepository.delete(findUser);
+
+    }
+
+    /**
      * 유저 이메일 수정
      */
     public void updateEmail(Long userCode, String email){
@@ -101,4 +112,6 @@ public class LoginService {
 
         }
     }
+
+
 }
