@@ -5,8 +5,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiOperation(
@@ -22,7 +24,7 @@ public class RequestUserUpdateDto {
     private int age;
     private double height;
     private double weight;
-    private int period;
+    private int period=1;
 
     private String userActivity;
     private double goalWeight;

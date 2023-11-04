@@ -10,6 +10,7 @@ import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserWeightRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
@@ -234,29 +236,35 @@ public class UserService {
          */
 
         LocalDateTime todayLocalDate = LocalDateTime.now();
+
         int num = period / 14;
         // 2주동안 감량할 몸무게
-        double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) * 14 / period;
-        Double nowWeight = findUser.getWeight();
+        try{
+            // TODO nowWeight null point exception 뜸
 
-        // 시작 몸무게 저장
-        PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
-        predictUserWeightRepository.save(startWeight);
+            double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) * 14 / period;
+            // 시작 몸무게 저장
+            Double nowWeight = findUser.getWeight();
+            PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
+            predictUserWeightRepository.save(startWeight);
 
-        for(int i =0;i<num;i++){
-            if (findUserGoal.getGoalWeight()> findUser.getWeight()){
-                // 찔거면
-                nowWeight += predictWeight;
-            }else if(findUserGoal.getGoalWeight() < findUser.getWeight()){
-                // 뺄거면
-                nowWeight -= predictWeight;
+            for(int i =0;i<num;i++) {
+                if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
+                    // 찔거면
+                    nowWeight += predictWeight;
+                } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
+                    // 뺄거면
+                    nowWeight -= predictWeight;
+                }
+
+                todayLocalDate = todayLocalDate.plusWeeks(2);
+                PredictUserWeight weight = new PredictUserWeight(findUser, nowWeight, todayLocalDate);
+                predictUserWeightRepository.save(weight);
             }
-
-            todayLocalDate = todayLocalDate.plusWeeks(2);
-            PredictUserWeight weight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
-            predictUserWeightRepository.save(weight);
-
+        }catch (Exception e){
+            log.info("################################################# " + e);
         }
+
 
         // 목표 몸무게 저장 (위 for문에서 저장된 경우 저장x)
         Long count = predictUserWeightRepository.countByUserCondAndPredictWeight(findUser.getUserCode(), findUserGoal.getGoalWeight());

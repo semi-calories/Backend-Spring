@@ -41,10 +41,8 @@ public class UserController {
         Long userCode = userService.userUpdate(requestInfoUpdateDto);
         loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
 
-
         // 유저 목표 수정
         userService.userGoalUpdate(requestInfoUpdateDto);
-
 
         // 헤리스 베네딕트 수정
         userService.changeHarrisBenedict(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getWeight()   );

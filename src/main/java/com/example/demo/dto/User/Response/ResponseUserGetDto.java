@@ -3,7 +3,6 @@ package com.example.demo.dto.User.Response;
 import com.example.demo.domain.User.Gender;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +32,8 @@ public class ResponseUserGetDto {
     private Double protein;
     private Double fat;
 
+    private int period;
+
     public ResponseUserGetDto(User user, UserGoal userGoal) {
         this.email = user.getEmail();
         this.name = user.getName();
@@ -49,5 +50,6 @@ public class ResponseUserGetDto {
         this.carbo = userGoal.getCarbo();
         this.protein = userGoal.getProtein();
         this.fat = userGoal.getFat();
+        this.period = userGoal.getGoalPeriod();
     }
 }
