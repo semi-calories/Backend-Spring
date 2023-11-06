@@ -43,6 +43,17 @@ public class LoginService {
         return saveUser.getUserCode();
     }
 
+    /**
+     * 유저 이메일 수정
+     */
+    public void updateEmail(Long userCode, String email){
+        Optional<Login> findUserLogin = loginRepository.findByUserCode(userCode);
+
+        findUserLogin.ifPresent(
+                userLogin -> userLogin.changeEmail(email)
+        );
+    }
+
 
     /**
      * 유저 아이디 중복 체크
@@ -58,7 +69,7 @@ public class LoginService {
     /**
      * 비밀번호 변경
      */
-    public String updatePw(Long userCode,String password) throws Exception{
+    public String updatePw(Long userCode,String password){
 
         Optional<Login> login = loginRepository.findByUserCode(userCode);
         if (login.isPresent()){
@@ -73,6 +84,7 @@ public class LoginService {
      */
     public ResponseLoginDto matchPw(String userEmail, String userPw){
         Optional<Login> login = loginRepository.findByUserEmail(userEmail);
+
 
         // 유저 존재
         if (login.isPresent()){

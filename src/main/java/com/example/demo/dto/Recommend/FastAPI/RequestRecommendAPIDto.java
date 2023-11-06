@@ -1,8 +1,8 @@
 package com.example.demo.dto.Recommend.FastAPI;
 
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietDislike;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.UserGoal;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -26,6 +26,7 @@ public class RequestRecommendAPIDto {
 
     // 목표, 유저정보(성별, 키, 체중, 나이, 활동계수), 선호음식 리스트, 비선호음식 리스트, 현재 추천 끼니 시기,
     // 일일 영양소 섭취량 기록
+    private Long userCode;
 
     private String goal;
     private String gender;
@@ -47,6 +48,7 @@ public class RequestRecommendAPIDto {
         // 식단 기록 리스트 생성
         List<Double> dietRecordsList = getDietRecords(dietRecords);
 
+        this.userCode = user.getUserCode().getUserCode();
         this.goal = user.getUserGoal();
         this.gender = user.getUserCode().getGender().toString();
         this.height = user.getUserCode().getHeight();

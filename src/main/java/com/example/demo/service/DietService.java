@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietDislike;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
-import com.example.demo.domain.User.Diet.UserSatisfaction;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
+import com.example.demo.domain.Diet.UserDietPrefer;
+import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.DB.DietList;
@@ -37,7 +37,7 @@ public class DietService {
     /**
      * prefer diet 조회 by user code
      */
-    public List<UserDietPrefer> findPreferByUserCode(Long userCode) throws Exception{
+    public List<UserDietPrefer> findPreferByUserCode(Long userCode){
         List<UserDietPrefer> preferDietList = preferRepository.findByUserCode(userCode);
         return preferDietList;
     }
@@ -45,7 +45,7 @@ public class DietService {
     /**
      * dislike diet 조회 by user code
      */
-    public List<UserDietDislike> findDislikeByUserCode(Long userCode) throws Exception{
+    public List<UserDietDislike> findDislikeByUserCode(Long userCode) {
         List<UserDietDislike> dislikeDietList = dislikeRepository.findByUserCode(userCode);
         return dislikeDietList;
     }
@@ -53,7 +53,7 @@ public class DietService {
     /**
      * 전체 식단 기록 조회 by user code
      */
-    public List<DietRecord> findDietRecordByUserCode(Long userCode) throws Exception{
+    public List<DietRecord> findDietRecordByUserCode(Long userCode){
 
         List<DietRecord> dietList = dietRecordRepository.findAllByUserCode(userCode);
         return dietList;
@@ -63,7 +63,7 @@ public class DietService {
     /**
      * 식단 기록 하루치 조회 by user code & date
      */
-    public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDate date) throws Exception{
+    public List<DietRecord> findDietRecordByUserCodeAndDate(Long userCode, LocalDate date){
 
         LocalDateTime startDatetime = LocalDateTime.of(date, LocalTime.of(0,0,0));
         LocalDateTime endDatetime = LocalDateTime.of(LocalDate.from(date), LocalTime.of(23,59,59));
@@ -85,7 +85,7 @@ public class DietService {
      * 식단 기록 단일 삭제
      */
     @Transactional
-    public void deleteFoodRecord(Long userCode,Long foodCode,LocalDateTime dateTime) throws Exception{
+    public void deleteFoodRecord(Long userCode,Long foodCode,LocalDateTime dateTime) {
 
         // 식단 기록 조회
         List<DietRecord> dietList = dietRecordRepository.findAllByUserCodeAndFoodCodeWithEatDateBetween(userCode, foodCode, dateTime);

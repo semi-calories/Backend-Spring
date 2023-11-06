@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class ResponseWeightRangeDto {
-
-    private List<WeightDto> weightList = new ArrayList<>();
-
-
+public class WeightDto{
+    private LocalDateTime timestamp;
+    private Double weight;
+    private Double predictWeight;
 }

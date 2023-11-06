@@ -1,7 +1,7 @@
 package com.example.demo.dto.Login.Request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiOperation;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,10 @@ import lombok.NoArgsConstructor;
         notes = "유저의 비밀번호가 db값과 일치하는지 확인한다.")
 public class RequestPwMatchDto {
 
+
+    @NotBlank
     private String userEmail;
 
+    @NotBlank
     private String userPassword;
 }

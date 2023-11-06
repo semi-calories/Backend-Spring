@@ -1,21 +1,19 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserSatisfaction;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.Record.Request.*;
-import com.example.demo.dto.Record.Response.ResponseFoodListDto;
-import com.example.demo.dto.Record.Response.ResponseMonthStatsDto;
-import com.example.demo.dto.Record.Response.ResponseWeekStatsDto;
-import com.example.demo.dto.Record.Response.ResponseWeightRangeDto;
+import com.example.demo.dto.Record.Response.*;
 import com.example.demo.dto.User.Response.ResponseUserRecordDto;
 import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
 import com.example.demo.service.DietService;
 import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +40,7 @@ public class FoodRecordTextController {
      * 식단 기록 저장
      */
     @PostMapping("/text")
-    public ReturnDto foodRecordByText(@RequestBody RequestRecordDto requestRecordDto) throws Exception {
+    public ReturnDto foodRecordByText(@RequestBody @Valid RequestRecordDto requestRecordDto) throws Exception {
 
         // db에서 유저 검색
         User user = userService.findOne(requestRecordDto.getUserCode());
@@ -212,9 +210,40 @@ public class FoodRecordTextController {
      */
     @GetMapping("/getMonthRangeWeight")
     public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay ){
+
+        // 유저 몸무게 조회
         List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, startYear, startMonth, startDay, endYear, endMonth, endDay);
-        return new ResponseWeightRangeDto(monthWeight);
+
+        // 동일한 날짜의 예상 몸무게 조회
+        List<WeightDto> sameTimeWeight = userService.getSameTimeWeight(userCode, monthWeight);
+
+        return new ResponseWeightRangeDto(sameTimeWeight);
     }
+
+    /**
+     * 예상 몸무게 저장
+     */
+    @PostMapping("/savePredictWeight")
+    public void savePredictWeight(@RequestBody RequestSavePredictWeightDto requestSavePredictWeightDto){
+
+        // 유저 목표 몸무게 수정
+        userService.userGoalWeightUpdate(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getGoalWeight(), requestSavePredictWeightDto.getPeriod());
+
+        // 헤리스 베네딕트 수정
+        userService.changeHarrisBenedict(requestSavePredictWeightDto.getUserCode(),requestSavePredictWeightDto.getGoalWeight());
+
+        // 유저 예상 몸무게 추이 저장
+        userService.savePredictWeight(requestSavePredictWeightDto.getUserCode(), requestSavePredictWeightDto.getPeriod());
+
+    }
+
+    /**
+     * 유저 예상 몸무게 조회
+     */
+//    @GetMapping("/getPredictWeight")
+//    public ResponsePredictWeightDto getPredictWeight(Long userCode){
+//        return new ResponsePredictWeightDto(userService.getPredictWeight(userCode));
+//    }
 
     private static LocalDateTime getLocalDateTime(String date) {
         String[] eatDateList = date.split("T");

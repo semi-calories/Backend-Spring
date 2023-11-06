@@ -1,22 +1,29 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.User.PredictUserWeight;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
+import com.example.demo.dto.Record.Response.WeightDto;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
+import com.example.demo.repository.PredictUserWeightRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserWeightRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
@@ -25,12 +32,14 @@ public class UserService {
     private final UserGoalRepository userGoalRepository;
     private final UserWeightRepository userWeightRepository;
 
+    private final PredictUserWeightRepository predictUserWeightRepository;
+
 
     /**
      * 유저 기본 정보 수정
      */
     @Transactional
-    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto) throws Exception{
+    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto) {
 
         User findUser = findOne(requestUserInfoUpdateDto.getUserCode());
 
@@ -63,9 +72,10 @@ public class UserService {
      * 몸무게 저장/수정
      */
     @Transactional
-    public Long saveUserWeight(Long userCode, LocalDateTime dateTime ,Double weight) throws Exception{
+    public Long saveUserWeight(Long userCode, LocalDateTime dateTime ,Double weight) {
 
         User findUser = findOne(userCode);
+        UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
         // 유저 정보 modified_at 보다 이후에 저장/수정 한다면 유저 정보 갱신
         if ( findUser.getModifiedAt().isBefore(dateTime)){
@@ -90,7 +100,7 @@ public class UserService {
      * 몸무게 삭제
      */
     @Transactional
-    public void deleteUserWeight(Long userCode, LocalDateTime dateTime) throws Exception {
+    public void deleteUserWeight(Long userCode, LocalDateTime dateTime){
 
         List<UserWeight> weightList = getUserWeight(userCode, LocalDate.from(dateTime));
 
@@ -102,10 +112,10 @@ public class UserService {
                 // 유저 정보가 저장된 날짜의 값을 삭제할 경우
                 // 가장 최신 값으로 변경
 
-                User user = findOne(userCode);
-                userWeightRepository.findTopByUserCodeOrderByTimestampDesc(user)
+                User findUser = findOne(userCode);
+                userWeightRepository.findTopByUserCodeOrderByTimestampDesc(findUser)
                         .ifPresent(latestWeight -> {
-                            user.weightChange(latestWeight.getWeight());
+                            findUser.weightChange(latestWeight.getWeight());
                             changeHarrisBenedict(userCode, latestWeight.getWeight());
                         });
             }
@@ -117,18 +127,34 @@ public class UserService {
      * 유저 목표 정보 수정
      */
     @Transactional
-    public Long userGoalUpdate(RequestUserUpdateDto requestUserUpdateDto) throws Exception {
+    public Long userGoalUpdate(RequestUserUpdateDto requestUserUpdateDto) {
 
         UserGoal findGoal = findUserWithUserGoal(requestUserUpdateDto.getUserCode());
 
         findGoal.change(
                 requestUserUpdateDto.getUserActivity(),
                 requestUserUpdateDto.getUserGoal(),
-                requestUserUpdateDto.getGoalWeight()
+                requestUserUpdateDto.getGoalWeight(),
+                requestUserUpdateDto.getPeriod()
         );
 
 
         return findGoal.getUserCode().getUserCode();
+    }
+
+    /**
+     * 유저 몸무게 수정
+     */
+    @Transactional
+    public void userGoalWeightUpdate(Long userCode, Double weight, int period) {
+
+        UserGoal findGoal = findUserWithUserGoal(userCode);
+
+        findGoal.predictWeightChange(
+                weight,
+                period
+        );
+
     }
 
 
@@ -158,13 +184,14 @@ public class UserService {
     @Transactional
     public void changeHarrisBenedict(Long userCode, Double weight){
         User findUser = findOne(userCode);
-        UserGoal findGoal = findUserWithUserGoal(userCode);
+        UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
         if ( findUser.getAge() != null && findUser.getHeight() != null && findUser.getWeight() !=null
-                && findGoal.getUserGoal() != null && findGoal.getUserActivity()!=null){
+                && findUserGoal.getUserGoal() != null && findUserGoal.getUserActivity()!=null){
+
             try {
                 // 필요한 값 다 있으면 헤리스 베네딕트 값 생성
-                findGoal.harrisBenedict(findUser, weight);
+                findUserGoal.harrisBenedict(findUser, weight, ((Math.abs(findUser.getWeight()-findUserGoal.getGoalWeight()))*9000)/ findUserGoal.getGoalPeriod());
             } catch (Exception e) {
                 throw new RuntimeException("헤리스 베네딕트 값을 생성할 수 없습니다.");
             }
@@ -183,7 +210,7 @@ public class UserService {
     }
 
     /**
-     * 유저 몸무게 3개월치
+     * 유저 몸무게 기간별 조회
      */
     public List<UserWeight> getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
 
@@ -194,4 +221,135 @@ public class UserService {
     }
 
 
+    /**
+     * 예상 몸무게 저장
+     */
+    @Transactional
+    public void savePredictWeight(Long userCode, int period){
+        User findUser = findOne(userCode);
+        UserGoal findUserGoal = findUserWithUserGoal(userCode);
+
+
+        // 예상 몸무게 저장 들어오면 기존 값 다 삭제
+        predictUserWeightRepository.deleteByUserCode(userCode);
+
+        /**
+         * 새로 예상몸무게 계산후 저장 (건강 유지 제외)
+         * TODO 밑 로직 따로 빼기
+         */
+        if(!findUserGoal.getUserGoal().equals("health")){
+            LocalDateTime todayLocalDate = LocalDateTime.now();
+
+            // 2주동안 감량할 몸무게
+            try{
+                // TODO nowWeight null point exception 뜸
+
+                double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) / period;
+                // 시작 몸무게 저장
+                Double nowWeight = findUser.getWeight();
+                PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
+                predictUserWeightRepository.save(startWeight);
+
+                for(int i =0;i<period;i++) {
+                    if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
+                        // 찔거면
+                        nowWeight += predictWeight;
+                    } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
+                        // 뺄거면
+                        nowWeight -= predictWeight;
+                    }
+
+                    todayLocalDate = todayLocalDate.plusDays(1);
+                    PredictUserWeight weight = new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f",nowWeight)), todayLocalDate);
+                    predictUserWeightRepository.save(weight);
+
+
+                }
+
+            }catch (Exception e){
+                log.info("################################################# " + e);
+            }
+        }
+
+
+
+
+
+    }
+
+    /**
+     * 예상 몸무게 조회
+     */
+//    public List<PredictUserWeight> getPredictWeight(Long userCode){
+//        return predictUserWeightRepository.findByUserCode(userCode);
+//    }
+
+
+    /**
+     * 예상 몸무게 조회
+     */
+    public List<WeightDto> getSameTimeWeight(Long userCode, List<UserWeight> monthWeight) {
+
+        List<WeightDto> sameTimePredictWeightList = new ArrayList<>();
+
+        monthWeight.forEach(weight->{
+            predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, weight.getTimestamp().toLocalDate()).ifPresentOrElse(
+                    getWeight -> {
+                        sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), getWeight.getPredictWeight()));
+                    },
+                    () -> sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), 0.0)));
+        });
+
+        // 다이어트가 아직 안끝난 경우
+        List<PredictUserWeight> predictUserWeightList = predictUserWeightRepository.findByUserCode(userCode);
+
+        // TODO
+        // 몸무게 저장 마지막 날짜 < 다이어트 저장 날짜 인 경우 추가 (그 다음 저장된 날짜로 추가..)
+        if (predictUserWeightList.size()>1){
+            // 예상 몸무게가 저장된 경우 계산(건강 유지시 size 0임)
+
+            LocalDateTime endWeightTime = monthWeight.get(monthWeight.size()-1).getTimestamp(); // 몸무게 맨 마지막 기록날짜
+            LocalDateTime endPredictTime = predictUserWeightList.get(predictUserWeightList.size()-1).getTimestamp(); // 내 다이어트 마지막 날짜
+
+            if(endWeightTime.isBefore(endPredictTime)){
+
+                Duration duration = Duration.between(endWeightTime, endPredictTime);
+                long days = duration.toDays();
+
+
+                if(days>14){
+                    // 14일 이상 차이나는경우 14일 후의 날짜 추가
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endWeightTime.plusDays(14).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+
+                    // TODO 날짜 맞추기
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endWeightTime.plusDays(15).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+                }else{
+                    // 14일 미만이면 다이어트 맨 마지막 날짜 추가
+
+
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endPredictTime.toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+
+                    // TODO 날짜 맞추기
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endPredictTime.plusDays(1).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+                }
+            }
+        }
+        return sameTimePredictWeightList;
+    }
 }
