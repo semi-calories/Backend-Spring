@@ -72,6 +72,8 @@ public class UserController {
         return responseUserInfoGetDto;
     }
 
+
+
     /**
      * 선호 음식 저장
      */
