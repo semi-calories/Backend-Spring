@@ -1,45 +1,56 @@
 package com.example.demo.config;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.demo.config.JWT.JwtAuthenticationFilter;
+import com.example.demo.config.JWT.JwtProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Collections;
-
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtProvider jwtProvider;
 
     @Bean // 비밀번호 암호화
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
+    private static final String[] PERMIT_ALL_PATTERNS = new String[] {
+            "/v3/api-docs/**",
+            "/configuration/**",
+            "/swagger*/**",
+            "/webjars/**",
+            "/swagger-ui/**",
+            "/sign-up", // 회원가입
+            "/passwordMatch" // 로그인
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-//        http.authorizeHttpRequests()// 인증, 인가 설정 시작
-//                .requestMatchers(new AntPathRequestMatcher("/**")) // 특정 요청과 일치하는 url애대한 액세스 설정
-//                .permitAll() // requetMatchers 설정한 리소스의 접근을 인증 절차 없이 허용
-//        ;
-//        return http.build();
 
         return http.csrf((csrf) -> csrf.disable()).cors((cors) -> cors.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                        .requestMatchers(PERMIT_ALL_PATTERNS).permitAll() // 회원가입 로그인 허용
+                        .anyRequest().authenticated() // 그외 API는 TOKEN 인증 필요
                 )
-                .formLogin(login -> login.disable()).build();
+                .formLogin(login -> login.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class )
+                .build();
     }
 
     @Bean

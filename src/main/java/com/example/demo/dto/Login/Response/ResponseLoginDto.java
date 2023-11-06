@@ -22,5 +22,6 @@ public class ResponseLoginDto {
     private boolean userExists;
     private Optional<User> user;
     private boolean matchResult;
+    private String token;
 
 }

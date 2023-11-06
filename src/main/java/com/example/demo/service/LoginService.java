@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.config.JWT.JwtProvider;
+import com.example.demo.domain.User.CustomUserDetails;
 import com.example.demo.domain.User.Login;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
+import com.example.demo.dto.Login.TokenDto;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -24,6 +27,7 @@ public class LoginService {
     private final UserRepository userRepository;
     private final UserGoalRepository userGoalRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     /**
      * 저장
@@ -91,11 +95,10 @@ public class LoginService {
     }
 
     /**
-     * 비밀번호 match
+     * 비밀번호 match = 로그인
      */
     public ResponseLoginDto matchPw(String userEmail, String userPw){
         Optional<Login> login = loginRepository.findByUserEmail(userEmail);
-
 
         // 유저 존재
         if (login.isPresent()){
@@ -103,12 +106,14 @@ public class LoginService {
             if(matches==true){
                 // 비밀번호 매칭 성공
                 User user = login.get().getUserCode();
-                return new ResponseLoginDto(true, Optional.of(user),true);
+                TokenDto token = jwtProvider.generateToken(new CustomUserDetails(login.get().getUserEmail(), login.get().getUserPassword()));
+                System.out.println("########## token = " + token);
+                return new ResponseLoginDto(true, Optional.of(user),true, token.getAccessToken());
             // 매칭 실패
-            }else return new ResponseLoginDto(true, Optional.empty(),false);
+            }else return new ResponseLoginDto(true, Optional.empty(),false, null);
         }else{
             // 유저 존재 x
-            return new ResponseLoginDto(false, Optional.empty(),false);
+            return new ResponseLoginDto(false, Optional.empty(),false, null);
 
         }
     }
