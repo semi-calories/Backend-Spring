@@ -4,6 +4,7 @@ import com.example.demo.domain.User.PredictUserWeight;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
+import com.example.demo.dto.Record.Response.WeightDto;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.repository.PredictUserWeightRepository;
 import com.example.demo.repository.UserGoalRepository;
@@ -14,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -231,55 +234,122 @@ public class UserService {
         predictUserWeightRepository.deleteByUserCode(userCode);
 
         /**
-         * 새로 예상몸무게 계산후 저장
+         * 새로 예상몸무게 계산후 저장 (건강 유지 제외)
          * TODO 밑 로직 따로 빼기
          */
+        if(!findUserGoal.getUserGoal().equals("health")){
+            LocalDateTime todayLocalDate = LocalDateTime.now();
 
-        LocalDateTime todayLocalDate = LocalDateTime.now();
+            // 2주동안 감량할 몸무게
+            try{
+                // TODO nowWeight null point exception 뜸
 
-        int num = period / 14;
-        // 2주동안 감량할 몸무게
-        try{
-            // TODO nowWeight null point exception 뜸
+                double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) / period;
+                // 시작 몸무게 저장
+                Double nowWeight = findUser.getWeight();
+                PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
+                predictUserWeightRepository.save(startWeight);
 
-            double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) * 14 / period;
-            // 시작 몸무게 저장
-            Double nowWeight = findUser.getWeight();
-            PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
-            predictUserWeightRepository.save(startWeight);
+                for(int i =0;i<period;i++) {
+                    if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
+                        // 찔거면
+                        nowWeight += predictWeight;
+                    } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
+                        // 뺄거면
+                        nowWeight -= predictWeight;
+                    }
 
-            for(int i =0;i<num;i++) {
-                if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
-                    // 찔거면
-                    nowWeight += predictWeight;
-                } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
-                    // 뺄거면
-                    nowWeight -= predictWeight;
+                    todayLocalDate = todayLocalDate.plusDays(1);
+                    PredictUserWeight weight = new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f",nowWeight)), todayLocalDate);
+                    predictUserWeightRepository.save(weight);
+
+
                 }
 
-                todayLocalDate = todayLocalDate.plusWeeks(2);
-                PredictUserWeight weight = new PredictUserWeight(findUser, nowWeight, todayLocalDate);
-                predictUserWeightRepository.save(weight);
+            }catch (Exception e){
+                log.info("################################################# " + e);
             }
-        }catch (Exception e){
-            log.info("################################################# " + e);
         }
 
 
-        // 목표 몸무게 저장 (위 for문에서 저장된 경우 저장x)
-        Long count = predictUserWeightRepository.countByUserCondAndPredictWeight(findUser.getUserCode(), findUserGoal.getGoalWeight());
-        if (count==0){
-            PredictUserWeight endWeight = new PredictUserWeight(findUser, findUserGoal.getGoalWeight(), LocalDateTime.now().plusDays(period));
-            predictUserWeightRepository.save(endWeight);
-        }
+
+
+
     }
 
     /**
      * 예상 몸무게 조회
      */
-    public List<PredictUserWeight> getPredictWeight(Long userCode){
-        return predictUserWeightRepository.findByUserCode(userCode);
+//    public List<PredictUserWeight> getPredictWeight(Long userCode){
+//        return predictUserWeightRepository.findByUserCode(userCode);
+//    }
+
+
+    /**
+     * 예상 몸무게 조회
+     */
+    public List<WeightDto> getSameTimeWeight(Long userCode, List<UserWeight> monthWeight) {
+
+        List<WeightDto> sameTimePredictWeightList = new ArrayList<>();
+
+        monthWeight.forEach(weight->{
+            predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, weight.getTimestamp().toLocalDate()).ifPresentOrElse(
+                    getWeight -> {
+                        sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), getWeight.getPredictWeight()));
+                    },
+                    () -> sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), 0.0)));
+        });
+
+        // 다이어트가 아직 안끝난 경우
+        List<PredictUserWeight> predictUserWeightList = predictUserWeightRepository.findByUserCode(userCode);
+
+        // TODO
+        // 몸무게 저장 마지막 날짜 < 다이어트 저장 날짜 인 경우 추가 (그 다음 저장된 날짜로 추가..)
+        if (predictUserWeightList.size()>1){
+            // 예상 몸무게가 저장된 경우 계산(건강 유지시 size 0임)
+
+            LocalDateTime endWeightTime = monthWeight.get(monthWeight.size()-1).getTimestamp(); // 몸무게 맨 마지막 기록날짜
+            LocalDateTime endPredictTime = predictUserWeightList.get(predictUserWeightList.size()-1).getTimestamp(); // 내 다이어트 마지막 날짜
+
+            if(endWeightTime.isBefore(endPredictTime)){
+
+                Duration duration = Duration.between(endWeightTime, endPredictTime);
+                long days = duration.toDays();
+
+
+                if(days>14){
+                    // 14일 이상 차이나는경우 14일 후의 날짜 추가
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endWeightTime.plusDays(14).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+
+                    // TODO 날짜 맞추기
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endWeightTime.plusDays(15).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+                }else{
+                    // 14일 미만이면 다이어트 맨 마지막 날짜 추가
+
+
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endPredictTime.toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+
+                    // TODO 날짜 맞추기
+                    predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endPredictTime.plusDays(1).toLocalDate()).ifPresent(
+                            predictUserWeight -> {
+                                sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
+                            }
+                    );
+                }
+            }
+        }
+        return sameTimePredictWeightList;
     }
-
-
 }

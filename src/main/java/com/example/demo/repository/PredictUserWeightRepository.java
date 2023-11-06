@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface PredictUserWeightRepository extends JpaRepository<PredictUserWeight, Long> {
 
@@ -18,6 +20,14 @@ public interface PredictUserWeightRepository extends JpaRepository<PredictUserWe
     @Query("select count (pdw.id) from PredictUserWeight pdw where pdw.userCode.userCode = :userCode and pdw.predictWeight = :predictWeight")
     Long countByUserCondAndPredictWeight(@Param("userCode") Long userCode, @Param("predictWeight") Double predictWeight);
 
-    @Query("select puw from PredictUserWeight puw left join fetch puw.userCode where puw.userCode.userCode = :userCode")
+    @Query("select puw from PredictUserWeight puw left join fetch puw.userCode where puw.userCode.userCode = :userCode order by puw.timestamp")
     List<PredictUserWeight> findByUserCode(@Param("userCode") Long userCode);
+
+
+
+    @Query("select puw from PredictUserWeight puw left join fetch puw.userCode where puw.userCode.userCode = :userCode  and date(puw.timestamp) = :timestamp ")
+    Optional<PredictUserWeight> findByUserCodeAndTimestamp(@Param("userCode") Long userCode, @Param("timestamp") LocalDate timestamp);
 }
+
+
+

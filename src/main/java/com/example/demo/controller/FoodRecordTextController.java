@@ -210,8 +210,14 @@ public class FoodRecordTextController {
      */
     @GetMapping("/getMonthRangeWeight")
     public ResponseWeightRangeDto getMonthRangeWeight(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay ){
+
+        // 유저 몸무게 조회
         List<UserWeight> monthWeight = userService.getMonthRangeWeight(userCode, startYear, startMonth, startDay, endYear, endMonth, endDay);
-        return new ResponseWeightRangeDto(monthWeight);
+
+        // 동일한 날짜의 예상 몸무게 조회
+        List<WeightDto> sameTimeWeight = userService.getSameTimeWeight(userCode, monthWeight);
+
+        return new ResponseWeightRangeDto(sameTimeWeight);
     }
 
     /**
@@ -234,10 +240,10 @@ public class FoodRecordTextController {
     /**
      * 유저 예상 몸무게 조회
      */
-    @GetMapping("/getPredictWeight")
-    public ResponsePredictWeightDto getPredictWeight(Long userCode){
-        return new ResponsePredictWeightDto(userService.getPredictWeight(userCode));
-    }
+//    @GetMapping("/getPredictWeight")
+//    public ResponsePredictWeightDto getPredictWeight(Long userCode){
+//        return new ResponsePredictWeightDto(userService.getPredictWeight(userCode));
+//    }
 
     private static LocalDateTime getLocalDateTime(String date) {
         String[] eatDateList = date.split("T");
