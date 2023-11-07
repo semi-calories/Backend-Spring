@@ -102,6 +102,16 @@ public class JwtProvider {
         return new Date(date.getTime() + expirationMillisecond);
     }
 
+    // 토큰 남은 시간 get
+    public Long getExpiration(String accessToken){
+        // access token 남은 시간 get
+        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+
+        // 현재시간 get
+        Long now = new Date().getTime();
+        return (expiration.getTime()-now);
+    }
+
     /**
      * JWT 토큰을 복호화 해 토큰 정보 반환
      */

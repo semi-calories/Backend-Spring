@@ -12,11 +12,14 @@ import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
+    private final RedisTemplate<String, String> redisTemplate;
     /**
      * 저장
      */
@@ -106,8 +110,13 @@ public class LoginService {
             if(matches==true){
                 // 비밀번호 매칭 성공
                 User user = login.get().getUserCode();
+                // 토큰 생성
                 TokenDto token = jwtProvider.generateToken(new CustomUserDetails(login.get().getUserEmail(), login.get().getUserPassword()));
-                System.out.println("########## token = " + token);
+                // redis에 access token 저장
+                redisTemplate.opsForValue().set(user.getEmail(),token.getRefreshToken());
+                // db에 refresh token 저장
+
+
                 return new ResponseLoginDto(true, Optional.of(user),true, token.getAccessToken());
             // 매칭 실패
             }else return new ResponseLoginDto(true, Optional.empty(),false, null);
@@ -119,4 +128,18 @@ public class LoginService {
     }
 
 
+    @Transactional
+    public void logout(String encryptedRefreshToken, String accessToken) {
+        // token에서 로그인한 사용자 정보 get해 로그아웃 처리
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(redisTemplate.opsForValue().get(email)!=null){
+            // redis에서 삭제
+            redisTemplate.delete(email);
+            // 블랙리스트 처리
+            Long expiration = jwtProvider.getExpiration(accessToken);
+            redisTemplate.opsForValue().set(accessToken, "logout",expiration, TimeUnit.MICROSECONDS);
+
+        }
+    }
 }

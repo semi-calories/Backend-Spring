@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.config.JWT.JwtProvider;
 import com.example.demo.dto.Login.Request.RequestPwMatchDto;
 import com.example.demo.dto.Login.Request.RequestPwUpdateDto;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
@@ -8,7 +9,7 @@ import com.example.demo.dto.Login.Response.ResponseEmailCheckDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
 import com.example.demo.dto.User.Request.RequestDeleteUserDto;
 import com.example.demo.service.LoginService;
-import com.example.demo.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,13 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
 
     private final LoginService loginService;
-    private final UserService userService;
+    private final JwtProvider jwtProvider;
 
     /**
      * 회원 정보 저장 (= 회원 가입)
@@ -77,6 +79,19 @@ public class LoginController {
         ResponseLoginDto responseLoginDto = loginService.matchPw(requestPwMatchDto.getUserEmail(), requestPwMatchDto.getUserPassword());
         return responseLoginDto;
     }
+
+    /**
+     * 로그아웃
+     */
+    @GetMapping("/userLogout")
+    public ReturnDto logout(HttpServletRequest request){
+        String encryptedRefreshToken = jwtProvider.resolveRefreshToken(request);
+        String accessToken = jwtProvider.resolveAccessToken(request);
+        loginService.logout(encryptedRefreshToken, accessToken);
+        return new ReturnDto("ok");
+    }
+
+
 
 
     @AllArgsConstructor
