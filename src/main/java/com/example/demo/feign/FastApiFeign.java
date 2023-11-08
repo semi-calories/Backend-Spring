@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient(name="FastApiFeign", url="http://34.207.37.53:8000")
+@FeignClient(name="FastApiFeign", url="http://44.193.109.169:8000")
 public interface FastApiFeign {
 
     /**
