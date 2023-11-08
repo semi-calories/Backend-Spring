@@ -117,12 +117,12 @@ public class LoginService {
                 // db에 refresh token 저장
 
 
-                return new ResponseLoginDto(true, Optional.of(user),true, token.getAccessToken());
+                return new ResponseLoginDto(true, Optional.of(user),true, token.getAccessToken(),null);
             // 매칭 실패
-            }else return new ResponseLoginDto(true, Optional.empty(),false, null);
+            }else return new ResponseLoginDto(true, Optional.empty(),false, null,null);
         }else{
             // 유저 존재 x
-            return new ResponseLoginDto(false, Optional.empty(),false, null);
+            return new ResponseLoginDto(false, Optional.empty(),false, null,null);
 
         }
     }
