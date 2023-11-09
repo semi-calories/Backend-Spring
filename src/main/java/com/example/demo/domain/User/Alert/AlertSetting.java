@@ -1,0 +1,73 @@
+package com.example.demo.domain.User.Alert;
+
+import com.example.demo.domain.BaseEntity;
+import com.example.demo.domain.User.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@ToString
+@Table(schema = "Alert_setting")
+public class AlertSetting extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="alert_setting_id")
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_code")
+    @JsonIgnore
+    private User userCode;
+
+    @Column(name="user_token")
+    private String userToken;
+
+    private boolean setting;
+
+    private int breakfastHour;
+
+    private int breakfastMinute;
+
+    private int launchHour;
+
+    private int launchMinute;
+
+    private int dinnerHour;
+
+    private int dinnerMinute;
+
+    //==생성자==//
+    public AlertSetting(User userCode, String userToken, boolean setting) {
+        this.userCode = userCode;
+        this.userToken = userToken;
+        this.setting = setting;
+        this.breakfastHour = 7;
+        this.breakfastMinute = 0;
+        this.launchHour = 13;
+        this.launchMinute = 0;
+        this.dinnerHour = 18;
+        this.dinnerMinute = 30;
+    }
+
+    //==비즈니스 로직==//
+
+    // 회원가입 후 최초 푸시 알람 on 시에 사용
+    // 푸시 알람 시간대 변경
+    public void changeSetting(boolean setting, int breakfastHour,
+                              int breakfastMinute, int launchHour, int launchMinute, int dinnerHour, int dinnerMinute) {
+        this.setting = setting;
+        this.breakfastHour = breakfastHour;
+        this.breakfastMinute = breakfastMinute;
+        this.launchHour = launchHour;
+        this.launchMinute = launchMinute;
+        this.dinnerHour = dinnerHour;
+        this.dinnerMinute = dinnerMinute;
+    }
+}
+
+
+
