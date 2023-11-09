@@ -4,16 +4,19 @@ import com.example.demo.domain.Diet.UserDietDislike;
 import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
-import com.example.demo.dto.User.Request.*;
+import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
+import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.DietService;
 import com.example.demo.service.LoginService;
+import com.example.demo.service.S3UploadService;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,7 +29,8 @@ public class UserController {
     private final UserService userService;
     private final DietService dietService;
     private final LoginService loginService;
-
+    private final Base64ToMultipartFileConverter base64ToMultipartFileConverter;
+    private final S3UploadService s3UploadService;
 
 
 
@@ -36,10 +40,17 @@ public class UserController {
     @PostMapping("/updateInfo")
     public ReturnDto updateUserInfo(@RequestBody RequestUserUpdateDto requestInfoUpdateDto) throws Exception{
 
+        // 사용자 이미지(base64) MultipartFile로 변환
+        String fileName = "userImage";
+        MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
+
+        // s3에 업로드
+        String imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
 
         // 유저 수정
-        Long userCode = userService.userUpdate(requestInfoUpdateDto);
+        Long userCode = userService.userUpdate(requestInfoUpdateDto, imageUrl);
         loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
+
 
         // 유저 목표 수정
         userService.userGoalUpdate(requestInfoUpdateDto);
