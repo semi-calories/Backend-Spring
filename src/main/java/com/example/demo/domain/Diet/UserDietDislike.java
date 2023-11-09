@@ -1,4 +1,4 @@
-package com.example.demo.domain.User.Diet;
+package com.example.demo.domain.Diet;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;
@@ -12,11 +12,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
-@Table(schema = "User_diet_prefer")
-public class UserDietPrefer extends BaseEntity {
+@Table(schema = "User_diet_dislike")
+
+public class UserDietDislike extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_diet_prefer_id")
+    @Column(name="user_diet_dislike_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,15 +26,18 @@ public class UserDietPrefer extends BaseEntity {
     private User userCode;
 
 
-    @ManyToOne // (fetch=FetchType.LAZY)
-    @JoinColumn(name="prefer_food_code")
-    private DietList preferFoodCode;
-    @Column(name="prefer_food_name")
-    private String preferFoodName;
+    @ManyToOne //(fetch=FetchType.LAZY)
+    @JoinColumn(name="dislike_food_code")
+    private DietList dislikeFoodCode;
+    @Column(name="dislike_food_name")
+    private String dislikeFoodName;
 
-    public UserDietPrefer(User userCode, DietList preferFoodCode, String preferFoodName) {
+
+    public UserDietDislike(User userCode, DietList dislikeFoodCode, String dislikeFoodName) {
         this.userCode = userCode;
-        this.preferFoodCode = preferFoodCode;
-        this.preferFoodName = preferFoodName;
+        this.dislikeFoodCode = dislikeFoodCode;
+        this.dislikeFoodName = dislikeFoodName;
     }
+
+
 }

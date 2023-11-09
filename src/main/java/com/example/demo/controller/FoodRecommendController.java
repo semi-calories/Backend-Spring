@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietDislike;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Recommend.FastAPI.RequestRecommendAPIDto;
 import com.example.demo.dto.Recommend.FastAPI.ResponseRecommendAPIDto;

@@ -1,29 +1,22 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.DB.DietList;
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietDislike;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietDislike;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
-import com.example.demo.dto.Record.Request.RequestRecordDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
 import com.example.demo.repository.DietRecordRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @SpringBootTest
 @Transactional
@@ -35,23 +28,7 @@ class DietServiceTest {
     @Autowired
     DietRecordRepository dietRecordRepository;
 
-//    @Test
-////    @Rollback(false)
-//    public void 식단기록_저장() throws Exception{
-//        //given
-//        User user = userService.findOne(1L);
-//        DietList food = dbService.findOne(1L);
-//        RequestRecordDto requestRecordDto = new RequestRecordDto(1L,now(),300L,1,1L,"메밀 전병",100.0,10.0,30.0,200.0,4);
-//        DietRecord dietRecord = new DietRecord(requestRecordDto,user,food);
-//
-//        //when
-//        dietService.saveFoodRecord(dietRecord);
-//
-//        //then
-//        List<DietRecord> dietRecordByUserCode = dietService.findDietRecordByUserCode(1L);
-//        System.out.println(dietRecordByUserCode);
-////        assertThat(dietRecordByUserCode.size()).isEqualTo(2);
-//    }
+
 
     @Test
 //    @Rollback(false)

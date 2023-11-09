@@ -55,4 +55,12 @@ public class Login {
         this.userPassword = newPw;
         return this.userPassword;
     }
+
+    /**
+     * 이메일 변경
+     */
+    public String changeEmail(String newEmail){
+        this.userEmail = newEmail;
+        return this.userEmail;
+    }
 }
