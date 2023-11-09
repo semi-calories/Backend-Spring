@@ -39,7 +39,7 @@ public class UserService {
      * 유저 기본 정보 수정
      */
     @Transactional
-    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto) {
+    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto, String userImageUrl) {
 
         User findUser = findOne(requestUserInfoUpdateDto.getUserCode());
 
@@ -47,7 +47,7 @@ public class UserService {
         findUser.change(
                 requestUserInfoUpdateDto.getName(),
                 requestUserInfoUpdateDto.getEmail(),
-                requestUserInfoUpdateDto.getImage(),
+                userImageUrl,
                 requestUserInfoUpdateDto.getAge(),
                 requestUserInfoUpdateDto.getGender(),
                 requestUserInfoUpdateDto.getHeight(),
