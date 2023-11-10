@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,13 +43,16 @@ public class UserController {
 
         // 사용자 이미지(base64) MultipartFile로 변환
         String fileName = "userImage";
-        MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
-
-        // s3에 업로드
-        String imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
+        if(!StringUtils.isEmpty(requestInfoUpdateDto.getImage())){
+            MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
+            // s3에 업로드
+            String imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
+            userService.userUpdate(requestInfoUpdateDto, imageUrl);
+        }else{
+            userService.userUpdate(requestInfoUpdateDto, null);
+        }
 
         // 유저 수정
-        Long userCode = userService.userUpdate(requestInfoUpdateDto, imageUrl);
         loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
 
 
@@ -61,7 +65,7 @@ public class UserController {
         // 유저 예상 몸무게 추이 저장
         userService.savePredictWeight(requestInfoUpdateDto.getUserCode(),requestInfoUpdateDto.getPeriod());
 
-        ReturnDto<Long> returnDto = new ReturnDto<>(userCode);
+        ReturnDto<Long> returnDto = new ReturnDto<>(requestInfoUpdateDto.getUserCode());
         return returnDto;
     }
 
