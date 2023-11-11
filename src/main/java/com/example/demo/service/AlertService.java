@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.User.Alert.AlertRecord;
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.User.Diet.UserSatisfaction;
+import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.Login;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;

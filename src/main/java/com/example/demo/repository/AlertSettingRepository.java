@@ -1,8 +1,8 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.User.Diet.DietRecord;
-import com.example.demo.domain.User.Diet.UserDietPrefer;
+import com.example.demo.domain.Diet.DietRecord;
+import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +18,10 @@ public interface AlertSettingRepository extends JpaRepository<AlertSetting, User
      */
     @Query("select alertSet from AlertSetting alertSet left join fetch alertSet.userCode where  alertSet.userCode.userCode = :userCode ")
     Optional<AlertSetting> findByUserCode(@Param("userCode") Long userCode);
+
+    /**
+     * 조회 by 수신 여부
+     */
+    @Query("select alertSet from AlertSetting alertSet where alertSet.setting = :setting ")
+    List<AlertSetting> findAllBySetting(@Param("setting") boolean setting);
 }

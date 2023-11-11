@@ -2,7 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.User.Alert.AlertRecord;
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.User.Diet.DietRecord;
+import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
