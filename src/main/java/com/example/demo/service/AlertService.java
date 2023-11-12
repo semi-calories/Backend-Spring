@@ -2,23 +2,15 @@ package com.example.demo.service;
 
 import com.example.demo.domain.User.Alert.AlertRecord;
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.Diet.UserSatisfaction;
-import com.example.demo.domain.User.Login;
 import com.example.demo.domain.User.User;
-import com.example.demo.domain.User.UserGoal;
-import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
-import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.repository.AlertRecordRepository;
 import com.example.demo.repository.AlertSettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

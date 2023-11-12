@@ -1,32 +1,21 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.User.Alert.AlertRecord;
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.Diet.DietRecord;
-import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
-import com.example.demo.domain.User.UserGoal;
-import com.example.demo.domain.User.UserWeight;
-import com.example.demo.dto.Alert.Request.*;
-
+import com.example.demo.dto.Alert.Request.RequestAlertDto;
+import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertRecordListDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertSettingDto;
-import com.example.demo.dto.Record.Response.ResponseWeightRangeDto;
-import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.AlertService;
-import com.example.demo.service.DBService;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

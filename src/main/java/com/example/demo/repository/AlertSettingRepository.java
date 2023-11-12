@@ -1,16 +1,12 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.Diet.DietRecord;
-import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
-import com.example.demo.domain.User.UserGoal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 import java.util.Optional;
+import java.util.List;
 
 public interface AlertSettingRepository extends JpaRepository<AlertSetting, User> {
     /**
