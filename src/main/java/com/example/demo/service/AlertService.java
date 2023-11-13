@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -24,7 +25,10 @@ public class AlertService {
      */
     @Transactional
     public User saveAlertSetting(AlertSetting alertSetting){
-        alertSettingRepository.save(alertSetting);
+        // alert setting 테이블에 없으면 저장
+        if(alertSettingRepository.findByUserCode(alertSetting.getUserCode().getUserCode()).isEmpty()){
+            alertSettingRepository.save(alertSetting);
+        }
         return alertSetting.getUserCode();
     }
 
@@ -42,7 +46,7 @@ public class AlertService {
     @Transactional
     public AlertSetting updateAlertSetting(RequestUpdateAlertSettingDto requestUpdateAlertSettingDto){
         AlertSetting alertSetting = findOne(requestUpdateAlertSettingDto.getUserCode());
-        alertSetting.changeSetting(requestUpdateAlertSettingDto.isSetting(),
+        alertSetting.changeSetting(requestUpdateAlertSettingDto.getUserToken(), requestUpdateAlertSettingDto.isSetting(),
                 requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
                 requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute(),
                 requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
@@ -51,14 +55,16 @@ public class AlertService {
 
 
     /**
-     * 푸시 알람 발송 기록 1주일치
+     * 푸시 알람 발송 기록 조회
      */
-    public List<AlertRecord> getRangeRecord(User user, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
+    public List<AlertRecord> getRangeRecord(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
         
         LocalDateTime startDatetime = LocalDateTime.of(startYear,startMonth,startDay,0,0);
         LocalDateTime endDatetime = LocalDateTime.of(endYear,endMonth,endDay,23,59);
 
-        List<AlertRecord> alertRecordList = alertRecordRepository.findAllByUserCodeAndAlertStatusWithAlertDateBetween(user, 1, startDatetime, endDatetime);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        List<AlertRecord> alertRecordList = alertRecordRepository.findAllByUserCodeAndAlertStatusWithAlertDateBetween(userCode, true, startDatetime.format(formatter), endDatetime.format(formatter));
         return alertRecordList;
     }
 }

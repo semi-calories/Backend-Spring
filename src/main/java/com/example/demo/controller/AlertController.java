@@ -75,11 +75,10 @@ public class AlertController {
         User user = userService.findOne(userCode);
 
         // 기본 정보 조회
-        List<AlertRecord> alertRecordList = alertService.getRangeRecord(user, startYear, startMonth, startDay, endYear, endMonth, endDay);
+        List<AlertRecord> alertRecordList = alertService.getRangeRecord(userCode, startYear, startMonth, startDay, endYear, endMonth, endDay);
 
         // 응답 DTO 생성
-        ResponseGetAlertRecordListDto responseGetAlertRecordListDto = new ResponseGetAlertRecordListDto(alertRecordList);
-        return responseGetAlertRecordListDto;
+        return new ResponseGetAlertRecordListDto(alertRecordList);
     }
 
 

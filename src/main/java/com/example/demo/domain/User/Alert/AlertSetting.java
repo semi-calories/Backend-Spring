@@ -57,8 +57,9 @@ public class AlertSetting extends BaseEntity{
 
     // 회원가입 후 최초 푸시 알람 on 시에 사용
     // 푸시 알람 시간대 변경
-    public void changeSetting(boolean setting, int breakfastHour,
+    public void changeSetting(String userToken, boolean setting, int breakfastHour,
                               int breakfastMinute, int launchHour, int launchMinute, int dinnerHour, int dinnerMinute) {
+        this.userToken = userToken;
         this.setting = setting;
         this.breakfastHour = breakfastHour;
         this.breakfastMinute = breakfastMinute;

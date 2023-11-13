@@ -60,7 +60,7 @@ public class AlertRecord extends BaseEntity{
     private Double foodFat;
 
     @Column(name="alert_status")
-    private int alertStatus;
+    private boolean alertStatus;
 
     @Column(name="reg_dtm")
     private LocalDateTime regDtm;
@@ -97,7 +97,7 @@ public class AlertRecord extends BaseEntity{
     }
 
     // 푸시 알람 발송 이후
-    public void changeDtm(int alertStatus, LocalDateTime regDtm, LocalDateTime sendDtm){
+    public void changeDtm(boolean alertStatus, LocalDateTime regDtm, LocalDateTime sendDtm){
         this.alertStatus = alertStatus;
         this.regDtm = regDtm;
         this.sendDtm = sendDtm;

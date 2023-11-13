@@ -18,6 +18,7 @@ import java.util.Optional;
 @ToString
 public class RequestUpdateAlertSettingDto {
     private Long userCode;
+    private String userToken;
     private boolean setting;
     private int breakfastHour;
     private int breakfastMinute;
