@@ -1,16 +1,22 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.User.Alert.AlertRecord;
-import com.example.demo.domain.User.Alert.AlertSetting;
+import com.example.demo.domain.Alert.AlertRecord;
+import com.example.demo.domain.Alert.AlertSetting;
 import com.example.demo.domain.User.User;
 import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
+import com.example.demo.dto.Recommend.Response.RecommendDto;
 import com.example.demo.repository.AlertRecordRepository;
 import com.example.demo.repository.AlertSettingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +26,11 @@ public class AlertService {
     private final AlertSettingRepository alertSettingRepository;
     private final AlertRecordRepository alertRecordRepository;
 
+    private final AlertRecordService alertRecordService;
+
+    private final DBService dbService;
+
+    private final UserService userService;
     /**
      * 푸시 알람 수신 허용
      */
@@ -46,14 +57,154 @@ public class AlertService {
     @Transactional
     public AlertSetting updateAlertSetting(RequestUpdateAlertSettingDto requestUpdateAlertSettingDto){
         AlertSetting alertSetting = findOne(requestUpdateAlertSettingDto.getUserCode());
+
+        // Alert Record 수정 비즈니스 로직
+
+        // 시간대만 수정일 때
+        if(requestUpdateAlertSettingDto.isSetting() == alertSetting.isSetting()){
+            // 현재 시간부터 다음날 23:59까지 발송되지 않은 모든 Alert Record
+            List<AlertRecord> alertRecordList = alertRecordRepository.findAllByUserCodeAndAlertStatusWithAlertDateBetween(requestUpdateAlertSettingDto.getUserCode(), false,
+                    getNowLocalDate(), getTomorrowDateTime(23, 59));
+            // Alert Record 발송 시간 변경
+            changeAllTime(alertRecordList, requestUpdateAlertSettingDto);
+        } else {
+            
+            if(requestUpdateAlertSettingDto.isSetting()){
+                // off -> on 일 때
+                // 한국 시간대 설정
+                ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+                // 현재 한국 시간
+                LocalTime currentKoreanTime = LocalTime.now(koreaZoneId);
+
+                // 비교할 시간 (20시 00분)
+                LocalTime targetTime = LocalTime.of(20, 0);
+
+                // 오늘 시간 이후 발송할 푸시 알람 작성
+                int nowHour = currentKoreanTime.getHour();
+                int nowMinute = currentKoreanTime.getMinute();
+
+                // 비교할 시간 (발송 시간들)
+                LocalTime targetBreakfast = LocalTime.of(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
+                LocalTime targetLaunch = LocalTime.of(requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute());
+                LocalTime targetDinner = LocalTime.of(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
+
+                List<AlertRecord> alertRecordList = new ArrayList<>();
+                // db에서 유저 검색
+                User user = userService.findOne(requestUpdateAlertSettingDto.getUserCode());
+
+                if (currentKoreanTime.isBefore(targetBreakfast)){
+                    // 현재 시간이 아침 발송 시간 전일 경우
+                    RecommendDto recommend = alertRecordService.requestPushRecommend(requestUpdateAlertSettingDto.getUserCode(), 1).get(0);
+                    alertRecordRepository.save(new AlertRecord(user, requestUpdateAlertSettingDto.getUserToken(),
+                            getTodayDateTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute()), requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
+                            1, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
+                            recommend.getFoodName(), recommend.getFoodKcal(),
+                            recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat()));
+                }
+                if (currentKoreanTime.isBefore(targetLaunch)){
+                    // 현재 시간이 점심 발송 시간 전일 경우
+                    RecommendDto recommend = alertRecordService.requestPushRecommend(requestUpdateAlertSettingDto.getUserCode(), 2).get(0);
+                    alertRecordRepository.save(new AlertRecord(user, requestUpdateAlertSettingDto.getUserToken(),
+                            getTodayDateTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute()), requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
+                            2, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
+                            recommend.getFoodName(), recommend.getFoodKcal(),
+                            recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat()));
+                }
+                if (currentKoreanTime.isBefore(targetDinner)){
+                    // 현재 시간이 저녁 발송 시간 전일 경우
+                    RecommendDto recommend = alertRecordService.requestPushRecommend(requestUpdateAlertSettingDto.getUserCode(), 3).get(0);
+                    alertRecordRepository.save(new AlertRecord(user, requestUpdateAlertSettingDto.getUserToken(),
+                            getTodayDateTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute()), requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
+                            3, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
+                            recommend.getFoodName(), recommend.getFoodKcal(),
+                            recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat()));
+                }
+
+                // 현재 시간이 20시 00분 후일 경우
+                if(currentKoreanTime.isAfter(targetTime)){
+                    alertSetting.changeSetting(requestUpdateAlertSettingDto.getUserToken(), requestUpdateAlertSettingDto.isSetting(),
+                            requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
+                            requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute(),
+                            requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
+
+                    alertRecordService.findALlAlertSetting();
+                }
+
+                return alertSetting;
+            } else{
+                // on -> off 일 때
+                System.out.println(requestUpdateAlertSettingDto.getUserCode());
+                alertRecordRepository.deleteByUserCode(requestUpdateAlertSettingDto.getUserCode(), false);
+            }
+        }
+
         alertSetting.changeSetting(requestUpdateAlertSettingDto.getUserToken(), requestUpdateAlertSettingDto.isSetting(),
                 requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
                 requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute(),
                 requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
         return alertSetting;
     }
+    public void changeAllTime(List<AlertRecord> alertRecordList, RequestUpdateAlertSettingDto requestUpdateAlertSettingDto){
+        for(int i = 0; i < alertRecordList.size(); i++){
+            AlertRecord alertRecord = alertRecordList.get(i);
+            if(alertRecord.getFoodTimes() == 1){
+                alertRecord.changeTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
+            }
+            if(alertRecord.getFoodTimes() == 2){
+                alertRecord.changeTime(requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute());
+            }
+            if(alertRecord.getFoodTimes() == 3){
+                alertRecord.changeTime(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
+            }
+        }
+    }
 
+    public String getNowLocalDate(){
+        // 한국 시간대 설정
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
 
+        // 지금 날짜 구하기 (한국 시간 기준)
+        LocalDateTime now = LocalDateTime.now(koreaZoneId);
+
+        // DateTimeFormatter를 사용하여 LocalDateTime을 문자열로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return now.format(formatter);
+    }
+
+    public String getTodayDateTime(int hour, int minute){
+        // 한국 시간대 설정
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+
+        // 내일 날짜 구하기 (한국 시간 기준)
+        LocalDate today = LocalDate.now(koreaZoneId);
+
+        // LocalDateTime 만들기
+        LocalDateTime tomorrowDateTime = LocalDateTime.of(today, LocalTime.of(hour, minute));
+
+        // DateTimeFormatter를 사용하여 LocalDateTime을 문자열로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = tomorrowDateTime.format(formatter);
+
+        return formattedDateTime;
+    }
+
+    public String getTomorrowDateTime(int hour, int minute){
+        // 한국 시간대 설정
+        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+
+        // 내일 날짜 구하기 (한국 시간 기준)
+        LocalDate tomorrow = LocalDate.now(koreaZoneId).plusDays(1);
+
+        // LocalDateTime 만들기
+        LocalDateTime tomorrowDateTime = LocalDateTime.of(tomorrow, LocalTime.of(hour, minute));
+
+        // DateTimeFormatter를 사용하여 LocalDateTime을 문자열로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = tomorrowDateTime.format(formatter);
+
+        return formattedDateTime;
+    }
     /**
      * 푸시 알람 발송 기록 조회
      */

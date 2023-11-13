@@ -1,12 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.User.Alert.AlertRecord;
+import com.example.demo.domain.Alert.AlertRecord;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.repository.AlertRecordRepository;
 import com.example.demo.repository.AlertSettingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

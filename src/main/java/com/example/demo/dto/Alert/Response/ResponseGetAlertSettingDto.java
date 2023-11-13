@@ -1,15 +1,11 @@
 package com.example.demo.dto.Alert.Response;
 
-import com.example.demo.domain.User.Alert.AlertSetting;
-import com.example.demo.domain.User.User;
-import com.example.demo.domain.User.UserGoal;
+import com.example.demo.domain.Alert.AlertSetting;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
