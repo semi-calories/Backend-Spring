@@ -38,7 +38,8 @@ public class SecurityConfig {
             "/webjars/**",
             "/swagger-ui/**",
             "/sign-up", // 회원가입
-            "/passwordMatch" // 로그인
+            "/passwordMatch", // 로그인
+            "/emailDuplicateCheck" // 이메일중복확인
     };
 
     @Bean
