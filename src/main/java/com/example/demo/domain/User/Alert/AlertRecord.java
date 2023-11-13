@@ -30,7 +30,7 @@ public class AlertRecord extends BaseEntity{
     private String userToken;
 
     @Column(name="alert_date")
-    private LocalDateTime alertDate;
+    private String alertDate;
     @Column(name="alert_hour")
     private int alertHour;
     @Column(name="alert_minute")
@@ -60,7 +60,7 @@ public class AlertRecord extends BaseEntity{
     private Double foodFat;
 
     @Column(name="alert_status")
-    private int alertStatus;
+    private boolean alertStatus;
 
     @Column(name="reg_dtm")
     private LocalDateTime regDtm;
@@ -68,17 +68,21 @@ public class AlertRecord extends BaseEntity{
     private LocalDateTime sendDtm;
 
     //==생성자==//
-    public AlertRecord(User userCode, String userToken, LocalDateTime alertDate, int alertHour, int alertMinute, int foodTimes,
+    public AlertRecord(User userCode, String userToken, String alertDate, int alertHour, int alertMinute, int foodTimes,
                        DietList foodCode, String foodName, Double foodKcal, Double foodCarbo, Double foodProtein, Double foodFat){
         this.userCode = userCode;
         this.userToken = userToken;
+
         this.alertDate = alertDate;
         this.alertHour = alertHour;
         this.alertMinute = alertMinute;
+
         this.foodTimes = foodTimes;
         this.foodCode = foodCode;
+
         this.foodName = foodName;
         this.foodKcal = foodKcal;
+
         this.foodCarbo = foodCarbo;
         this.foodProtein = foodProtein;
         this.foodFat = foodFat;
@@ -93,7 +97,7 @@ public class AlertRecord extends BaseEntity{
     }
 
     // 푸시 알람 발송 이후
-    public void changeDtm(int alertStatus, LocalDateTime regDtm, LocalDateTime sendDtm){
+    public void changeDtm(boolean alertStatus, LocalDateTime regDtm, LocalDateTime sendDtm){
         this.alertStatus = alertStatus;
         this.regDtm = regDtm;
         this.sendDtm = sendDtm;

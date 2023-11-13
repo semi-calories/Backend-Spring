@@ -22,7 +22,6 @@ import java.util.Optional;
 public class ResponseGetAlertSettingDto {
 
     private Long userCode;
-
     private String userToken;
     private boolean setting;
     private int breakfastHour;
