@@ -7,6 +7,7 @@ import com.example.demo.dto.Login.Request.RequestPwUpdateDto;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseEmailCheckDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
+import com.example.demo.dto.Login.Response.ResponseSaveDto;
 import com.example.demo.dto.User.Request.RequestDeleteUserDto;
 import com.example.demo.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,9 +34,8 @@ public class LoginController {
      * 회원 정보 저장 (= 회원 가입)
      */
     @PostMapping("/sign-up")
-    public ReturnDto signUp(@RequestBody @Valid RequestSignUpDto requestSignUpDto){
-        Long userCode = loginService.save(requestSignUpDto);
-        return  new ReturnDto(userCode);
+    public ResponseSaveDto signUp(@RequestBody @Valid RequestSignUpDto requestSignUpDto){
+        return loginService.save(requestSignUpDto);
     }
 
     /**

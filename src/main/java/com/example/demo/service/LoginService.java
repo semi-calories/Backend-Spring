@@ -7,6 +7,7 @@ import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
+import com.example.demo.dto.Login.Response.ResponseSaveDto;
 import com.example.demo.dto.Login.TokenDto;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.UserGoalRepository;
@@ -36,7 +37,8 @@ public class LoginService {
     /**
      * 저장
      */
-    public Long save(RequestSignUpDto requestSignUpDto){
+    public ResponseSaveDto save(RequestSignUpDto requestSignUpDto){
+
 
         // 유저(+목표) 객체 생성 및 DB에 저장
         User saveUser = userRepository.save(new User(requestSignUpDto.getEmail(), requestSignUpDto.getName()));
@@ -48,7 +50,16 @@ public class LoginService {
         login.passwordEncode( requestSignUpDto.getPassword(), passwordEncoder);
         // DB에 저장 = 회원 가입
         loginRepository.save(login);
-        return saveUser.getUserCode();
+
+        // 토큰 생성
+        TokenDto token = jwtProvider.generateToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword()));
+        // redis에 access token 저장
+        redisTemplate.opsForValue().set(login.getUserEmail(),token.getAccessToken());
+        // db에 refresh token 저장
+        // TODO
+
+        return new ResponseSaveDto(login.getUserCode().getUserCode(), token.getAccessToken(), token.getRefreshToken());
+
     }
 
     /**

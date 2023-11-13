@@ -231,6 +231,7 @@ public class UserService {
         User findUser = findOne(userCode);
         UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
+        System.out.println("################## findUserGoal = " + findUserGoal);
 
         // 예상 몸무게 저장 들어오면 기존 값 다 삭제
         predictUserWeightRepository.deleteByUserCode(userCode);

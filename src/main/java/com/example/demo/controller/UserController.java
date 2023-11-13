@@ -34,7 +34,6 @@ public class UserController {
     private final S3UploadService s3UploadService;
 
 
-
     /**
      * 회원 정보 추가 저장(수정)
      */
@@ -44,9 +43,16 @@ public class UserController {
         // 사용자 이미지(base64) MultipartFile로 변환
         String fileName = "userImage";
         if(!StringUtils.isEmpty(requestInfoUpdateDto.getImage())){
-            MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
-            // s3에 업로드
-            String imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
+            String imageUrl="";
+            if (!requestInfoUpdateDto.getImage().startsWith("https://")){ // 사진 처음 저장할 경우
+
+                MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
+                // s3에 업로드
+                imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
+            }
+            else{
+                imageUrl= requestInfoUpdateDto.getImage();
+            }
             userService.userUpdate(requestInfoUpdateDto, imageUrl);
         }else{
             userService.userUpdate(requestInfoUpdateDto, null);
