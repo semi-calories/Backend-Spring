@@ -1,4 +1,4 @@
-package com.example.demo.domain.User.Alert;
+package com.example.demo.domain.Alert;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.DB.DietList;

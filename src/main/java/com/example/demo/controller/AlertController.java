@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.User.Alert.AlertRecord;
-import com.example.demo.domain.User.Alert.AlertSetting;
+import com.example.demo.domain.Alert.AlertRecord;
+import com.example.demo.domain.Alert.AlertSetting;
 import com.example.demo.domain.User.User;
 import com.example.demo.dto.Alert.Request.RequestAlertDto;
 import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
@@ -59,9 +59,10 @@ public class AlertController {
      * 푸시 알람 수신 시간 or 수신 여부 설정 변경
      */
     @PostMapping("/updateSetting")
-    public AlertController.ReturnDto updateAlertSetting(@RequestBody RequestUpdateAlertSettingDto requestUpdateAlertSettingDto) throws Exception {
+    public ReturnDto updateAlertSetting(@RequestBody RequestUpdateAlertSettingDto requestUpdateAlertSettingDto) throws Exception {
         // 푸시 알림 시간 설정 변경
         alertService.updateAlertSetting(requestUpdateAlertSettingDto);
+
         return new AlertController.ReturnDto<>(true);
     }
 
