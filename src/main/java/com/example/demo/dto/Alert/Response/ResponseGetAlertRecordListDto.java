@@ -1,8 +1,6 @@
 package com.example.demo.dto.Alert.Response;
 
-import com.example.demo.domain.User.Alert.AlertRecord;
-import com.example.demo.domain.User.UserWeight;
-import com.example.demo.dto.Recommend.Response.ResponseRecommendDto;
+import com.example.demo.domain.Alert.AlertRecord;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +9,6 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @NoArgsConstructor

@@ -1,7 +1,8 @@
-package com.example.demo.domain.User.Alert;
+package com.example.demo.domain.Alert;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.User.User;
+import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -52,6 +53,7 @@ public class AlertSetting extends BaseEntity{
         this.dinnerHour = 18;
         this.dinnerMinute = 30;
     }
+
 
     //==비즈니스 로직==//
 

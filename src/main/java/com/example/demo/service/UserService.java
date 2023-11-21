@@ -241,7 +241,7 @@ public class UserService {
          * TODO 밑 로직 따로 빼기
          */
         if(!findUserGoal.getUserGoal().equals("health")){
-            LocalDateTime todayLocalDate = LocalDateTime.now();
+            LocalDateTime todayLocalDate = LocalDateTime.of(2023,9,1,12,0);
 
             // 2주동안 감량할 몸무게
             try{
