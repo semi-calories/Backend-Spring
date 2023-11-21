@@ -69,6 +69,7 @@ public class AlertRecordService {
 
     public AlertRecord getAlertRecord(AlertSetting alertSetting, int j, RecommendDto recommend ){
         if(j == 1) {
+
             return new AlertRecord(alertSetting.getUserCode(), alertSetting.getUserToken(),
                     getTomorrowDateTime(alertSetting.getBreakfastHour(), alertSetting.getBreakfastMinute()), alertSetting.getBreakfastHour(), alertSetting.getBreakfastMinute(),
                     j, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
