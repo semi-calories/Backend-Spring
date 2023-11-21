@@ -1,13 +1,16 @@
 package com.example.demo.config.JWT;
 
 import com.example.demo.domain.User.CustomUserDetails;
-import com.example.demo.dto.Login.TokenDto;
+import com.example.demo.dto.Login.Token.AccessTokenDto;
+import com.example.demo.dto.Login.Token.RefreshTokenDto;
 import com.example.demo.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Calendar;
@@ -68,9 +70,8 @@ public class JwtProvider {
     /**
      * 토큰 생성
      */
-    public TokenDto generateToken(CustomUserDetails customUserDetails){
+    public AccessTokenDto generateAccessToken(CustomUserDetails customUserDetails){
         Date accessTokenExpiresIn = getTokenExpiration(accessTokenExpirationMillis);
-        Date refreshTokenExpiresIn = getTokenExpiration(refreshTokenExpirationMillis);
 
         // Claim = JWT에 들어갈 정보
         // Claim에 loginId를 넣어 나중에 이를 꺼낼 수 있음
@@ -85,6 +86,17 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
+        return new AccessTokenDto(BEARER_TYPE, AUTHORIZATION_HEADER,accessToken,accessTokenExpiresIn.getTime());
+    }
+
+    public RefreshTokenDto generateRefreshToken(CustomUserDetails customUserDetails){
+        Date refreshTokenExpiresIn = getTokenExpiration(refreshTokenExpirationMillis);
+
+        // Claim = JWT에 들어갈 정보
+        // Claim에 loginId를 넣어 나중에 이를 꺼낼 수 있음
+        Claims claims = Jwts.claims();
+        claims.put("loginId", customUserDetails.getUsername());
+
         String refreshToken = Jwts.builder()
                 .setSubject(customUserDetails.getUsername())
                 .setIssuedAt(Calendar.getInstance().getTime())
@@ -92,7 +104,7 @@ public class JwtProvider {
                 .signWith(key)
                 .compact();
 
-        return new TokenDto(BEARER_TYPE, AUTHORIZATION_HEADER,accessToken,refreshToken,accessTokenExpiresIn.getTime());
+        return new RefreshTokenDto(BEARER_TYPE, AUTHORIZATION_HEADER,refreshToken,refreshTokenExpiresIn.getTime());
     }
 
     // 토큰 만료시간 get
@@ -151,9 +163,10 @@ public class JwtProvider {
         return true;
     }
 
+
     // Token 복호화 및 예외발생시 Claims 객체 생성 x
     // 예외) 토큰 만료, 시그니처 오류 등
-    private Claims parseClaims(String token) {
+    public Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
