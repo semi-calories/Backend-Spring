@@ -8,7 +8,7 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
 import com.example.demo.dto.Login.Response.ResponseSaveDto;
-import com.example.demo.dto.Login.TokenDto;
+import com.example.demo.dto.Login.Token.RefreshTokenDto;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -51,14 +53,10 @@ public class LoginService {
         // DB에 저장 = 회원 가입
         loginRepository.save(login);
 
-        // 토큰 생성
-        TokenDto token = jwtProvider.generateToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword()));
-        // redis에 access token 저장
-        redisTemplate.opsForValue().set(login.getUserEmail(),token.getAccessToken());
-        // db에 refresh token 저장
-        // TODO
+        // token 얻기
+        List<String> tokenList = getToken(login);
 
-        return new ResponseSaveDto(login.getUserCode().getUserCode(), token.getAccessToken(), token.getRefreshToken());
+        return new ResponseSaveDto(login.getUserCode().getUserCode(), tokenList.get(0), tokenList.get(1));
 
     }
 
@@ -121,14 +119,9 @@ public class LoginService {
             if(matches==true){
                 // 비밀번호 매칭 성공
                 User user = login.get().getUserCode();
-                // 토큰 생성
-                TokenDto token = jwtProvider.generateToken(new CustomUserDetails(login.get().getUserEmail(), login.get().getUserPassword()));
-                // redis에 access token 저장
-                redisTemplate.opsForValue().set(user.getEmail(),token.getRefreshToken());
-                // db에 refresh token 저장
+                List<String> tokenList = getToken(login.get());
 
-
-                return new ResponseLoginDto(true, Optional.of(user),true, token.getAccessToken(),null);
+                return new ResponseLoginDto(true, Optional.of(user),true, tokenList.get(0),tokenList.get(1));
             // 매칭 실패
             }else return new ResponseLoginDto(true, Optional.empty(),false, null,null);
         }else{
@@ -138,15 +131,40 @@ public class LoginService {
         }
     }
 
+    /**
+     * 토큰 생성 및 db에 refresh token db 저장
+     */
+    private List<String> getToken(Login login) {
+
+        // 토큰 담기위한 list
+        List<String> tokenList = new ArrayList<>();
+
+        // 토큰 생성
+        tokenList.add(jwtProvider.generateAccessToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword())).getAccessToken());
+        RefreshTokenDto newRefreshTokenDto = jwtProvider.generateRefreshToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword()));
+
+        tokenList.add(newRefreshTokenDto.getRefreshToken());
+
+        // redis에 refresh token 저장, db에 저장
+        redisTemplate.opsForValue().set(login.getUserEmail(), newRefreshTokenDto.getRefreshToken(),newRefreshTokenDto.getRefreshTokenExpiresIn(),TimeUnit.MILLISECONDS );
+        login.changeToken(newRefreshTokenDto.getRefreshToken());
+        return tokenList;
+    }
+
 
     @Transactional
-    public void logout(String encryptedRefreshToken, String accessToken) {
+    public void logout(String encryptedRefreshToken, String accessToken, Long userCode) {
         // token에서 로그인한 사용자 정보 get해 로그아웃 처리
 
+        Optional<Login> findLogin = loginRepository.findByUserCode(userCode);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if(redisTemplate.opsForValue().get(email)!=null){
-            // redis에서 삭제
+            // redis 및 db에서 삭제
             redisTemplate.delete(email);
+            if (findLogin.isPresent()){
+                findLogin.get().changeToken(null);
+            }
+
             // 블랙리스트 처리
             Long expiration = jwtProvider.getExpiration(accessToken);
             redisTemplate.opsForValue().set(accessToken, "logout",expiration, TimeUnit.MICROSECONDS);
