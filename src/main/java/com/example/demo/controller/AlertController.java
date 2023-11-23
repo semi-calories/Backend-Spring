@@ -4,6 +4,7 @@ import com.example.demo.domain.Alert.AlertRecord;
 import com.example.demo.domain.Alert.AlertSetting;
 import com.example.demo.domain.User.User;
 import com.example.demo.dto.Alert.Request.RequestAlertDto;
+import com.example.demo.dto.Alert.Request.RequestAlertSettingDto;
 import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertRecordListDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertSettingDto;
@@ -47,9 +48,9 @@ public class AlertController {
      * 푸시 알람 설정 조회
      */
     @PostMapping("/getSetting")
-    public ResponseGetAlertSettingDto getAlertSetting(@RequestBody Long userCode) throws Exception {
+    public ResponseGetAlertSettingDto getAlertSetting(@RequestBody RequestAlertSettingDto requestAlertSettingDto) throws Exception {
         // 기본 정보 조회
-        AlertSetting alertSetting = alertService.findOne(userCode);
+        AlertSetting alertSetting = alertService.findOne(requestAlertSettingDto.getUserCode());
         System.out.println(alertSetting.getUserToken());
         System.out.println(alertSetting.getUserCode());
 

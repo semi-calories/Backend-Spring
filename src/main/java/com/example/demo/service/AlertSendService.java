@@ -68,8 +68,8 @@ public class AlertSendService {
         //→ Message Title : MM월 dd일 (아/점/저)
         //→ Message Body : 음식 정보(음식 DB에 있는 객체)
         String month = alertRecord.getAlertDate();
-        String title = String.format("%s월 %일 % %");
-        String body = String.format("%s %skcal");
+        String title = String.format("%s월 %일 % %시 %분");
+        String body = String.format("%s %s kcal");
         // Expo 서버에 전송할 데이터 (푸시 알림 내용 등)
         String expoRequestBody = String.format("{ \"to\": \"%s\", \"title\": \"%s\", \"body\": \"%s\" }",
                 alertRecord.getUserToken(), title, body);
