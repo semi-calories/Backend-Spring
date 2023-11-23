@@ -22,8 +22,8 @@ public class RequestUpdateAlertSettingDto {
     private boolean setting;
     private int breakfastHour;
     private int breakfastMinute;
-    private int launchHour;
-    private int launchMinute;
+    private int lunchHour;
+    private int lunchMinute;
     private int dinnerHour;
     private int dinnerMinute;
 }

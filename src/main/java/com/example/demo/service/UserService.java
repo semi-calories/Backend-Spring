@@ -193,7 +193,7 @@ public class UserService {
 
             try {
                 // 필요한 값 다 있으면 헤리스 베네딕트 값 생성
-                findUserGoal.harrisBenedict(findUser, weight, ((Math.abs(findUser.getWeight()-findUserGoal.getGoalWeight()))*9000)/ findUserGoal.getGoalPeriod());
+                findUserGoal.harrisBenedict(findUser, weight, ((Math.abs(findUser.getWeight()-findUserGoal.getGoalWeight()))*7700)/ findUserGoal.getGoalPeriod());
             } catch (Exception e) {
                 throw new RuntimeException("헤리스 베네딕트 값을 생성할 수 없습니다.");
             }
