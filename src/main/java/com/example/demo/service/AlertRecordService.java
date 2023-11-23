@@ -78,7 +78,7 @@ public class AlertRecordService {
         }
         if(j == 2) {
             return new AlertRecord(alertSetting.getUserCode(), alertSetting.getUserToken(),
-                    getTomorrowDateTime(alertSetting.getLaunchHour(), alertSetting.getLaunchMinute()), alertSetting.getLaunchHour(), alertSetting.getLaunchMinute(),
+                    getTomorrowDateTime(alertSetting.getLunchHour(), alertSetting.getLunchMinute()), alertSetting.getLunchHour(), alertSetting.getLunchMinute(),
                     j, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
                     recommend.getFoodName(), recommend.getFoodKcal(),
                     recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat());

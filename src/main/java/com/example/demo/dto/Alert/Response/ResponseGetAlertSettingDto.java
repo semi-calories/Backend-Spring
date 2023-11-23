@@ -22,8 +22,8 @@ public class ResponseGetAlertSettingDto {
     private boolean setting;
     private int breakfastHour;
     private int breakfastMinute;
-    private int launchHour;
-    private int launchMinute;
+    private int lunchHour;
+    private int lunchMinute;
     private int dinnerHour;
     private int dinnerMinute;
 
@@ -33,9 +33,10 @@ public class ResponseGetAlertSettingDto {
         this.setting = alertSetting.isSetting();
         this.breakfastHour = alertSetting.getBreakfastHour();
         this.breakfastMinute=alertSetting.getBreakfastMinute();
-        this.launchHour=alertSetting.getLaunchHour();
-        this.launchMinute=alertSetting.getLaunchMinute();
+        this.lunchHour=alertSetting.getLunchHour();
+        this.lunchMinute=alertSetting.getLunchMinute();
         this.dinnerHour=alertSetting.getDinnerHour();
         this.dinnerMinute=alertSetting.getDinnerMinute();
     }
+
 }

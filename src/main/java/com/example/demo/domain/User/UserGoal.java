@@ -73,10 +73,10 @@ public class UserGoal extends BaseEntity {
 
         // 성별에 따라
         if(findUser.getGender() == Gender.M){
-            daliyEnerge = 88.362 + 13.397 * weight + 4.799 * findUser.getHeight() - 5.677 * findUser.getAge();
+            daliyEnerge = 10 * weight + 6.25 * findUser.getHeight() - 5 * findUser.getAge() +5;
         }
         else{
-            daliyEnerge = 88.362 + 447.593 + 9.24 * weight + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
+            daliyEnerge =  10 * weight + 6.25 * findUser.getHeight() - 5 * findUser.getAge() -161;
         }
 
         // 활동계수에 따라

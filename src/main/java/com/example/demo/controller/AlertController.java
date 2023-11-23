@@ -42,18 +42,25 @@ public class AlertController {
 
         return new AlertController.ReturnDto<>(true);
     }
+
     /**
      * 푸시 알람 설정 조회
      */
-    @GetMapping("/getSetting")
-    public ResponseGetAlertSettingDto getAlertSetting(Long userCode) throws Exception {
+    @PostMapping("/getSetting")
+    public ResponseGetAlertSettingDto getAlertSetting(@RequestBody Long userCode) throws Exception {
         // 기본 정보 조회
         AlertSetting alertSetting = alertService.findOne(userCode);
+        System.out.println(alertSetting.getUserToken());
+        System.out.println(alertSetting.getUserCode());
 
         // 응답 DTO 생성
         ResponseGetAlertSettingDto responseGetAlertSettingDto = new ResponseGetAlertSettingDto(alertSetting);
+        log.info("################################ responseGetAlertSettingDto.getUserToken() {}", responseGetAlertSettingDto );
+
+
         return responseGetAlertSettingDto;
     }
+
 
     /**
      * 푸시 알람 수신 시간 or 수신 여부 설정 변경
@@ -70,8 +77,8 @@ public class AlertController {
     /**
      * 푸시 알람 발송 기록 조회
      */
-    @GetMapping("/getAlert")
-    public ResponseGetAlertRecordListDto getAlert(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) throws Exception {
+    @GetMapping("/getAlertRecord")
+    public ResponseGetAlertRecordListDto getAlertRecord(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) throws Exception {
         // db에서 유저 검색
         User user = userService.findOne(userCode);
 
@@ -91,9 +98,16 @@ public class AlertController {
         return localDateTime;
     }
 
+
     @AllArgsConstructor
     @Getter
     static class ReturnDto<T>{
         private T response;
     }
 }
+// 푸시 알람 설정 조회
+/*    @PostMapping("/getAlertSet")
+    public AlertController.ReturnDto test(Long userCode){
+        System.out.println("########################## test");
+        return new AlertController.ReturnDto<>(true);
+    }*/

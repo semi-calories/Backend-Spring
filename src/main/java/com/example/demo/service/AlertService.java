@@ -38,6 +38,7 @@ public class AlertService {
     public User saveAlertSetting(AlertSetting alertSetting){
         // alert setting 테이블에 없으면 저장
         if(alertSettingRepository.findByUserCode(alertSetting.getUserCode().getUserCode()).isEmpty()){
+            System.out.println("########################save 저장!!!!!!!!!!!!!!!!!  "+alertSetting);
             alertSettingRepository.save(alertSetting);
         }
         return alertSetting.getUserCode();
@@ -85,7 +86,7 @@ public class AlertService {
 
                 // 비교할 시간 (발송 시간들)
                 LocalTime targetBreakfast = LocalTime.of(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
-                LocalTime targetLaunch = LocalTime.of(requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute());
+                LocalTime targetlunch = LocalTime.of(requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute());
                 LocalTime targetDinner = LocalTime.of(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
 
                 List<AlertRecord> alertRecordList = new ArrayList<>();
@@ -101,7 +102,7 @@ public class AlertService {
                             recommend.getFoodName(), recommend.getFoodKcal(),
                             recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat()));
                 }
-                if (currentKoreanTime.isBefore(targetLaunch)){
+                if (currentKoreanTime.isBefore(targetlunch)){
                     // 현재 시간이 점심 발송 시간 전일 경우
                     RecommendDto recommend = alertRecordService.requestPushRecommend(requestUpdateAlertSettingDto.getUserCode(), 2).get(0);
                     alertRecordRepository.save(new AlertRecord(user, requestUpdateAlertSettingDto.getUserToken(),
@@ -124,7 +125,7 @@ public class AlertService {
                 if(currentKoreanTime.isAfter(targetTime)){
                     alertSetting.changeSetting(requestUpdateAlertSettingDto.getUserToken(), requestUpdateAlertSettingDto.isSetting(),
                             requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
-                            requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute(),
+                            requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute(),
                             requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
 
                     alertRecordService.findALlAlertSetting();
@@ -140,7 +141,7 @@ public class AlertService {
 
         alertSetting.changeSetting(requestUpdateAlertSettingDto.getUserToken(), requestUpdateAlertSettingDto.isSetting(),
                 requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute(),
-                requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute(),
+                requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute(),
                 requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
         return alertSetting;
     }
@@ -151,7 +152,7 @@ public class AlertService {
                 alertRecord.changeTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
             }
             if(alertRecord.getFoodTimes() == 2){
-                alertRecord.changeTime(requestUpdateAlertSettingDto.getLaunchHour(), requestUpdateAlertSettingDto.getLaunchMinute());
+                alertRecord.changeTime(requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute());
             }
             if(alertRecord.getFoodTimes() == 3){
                 alertRecord.changeTime(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
