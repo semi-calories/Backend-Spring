@@ -37,6 +37,7 @@ public class SecurityConfig {
             "/swagger*/**",
             "/webjars/**",
             "/swagger-ui/**",
+            "/error",
             "/sign-up", // 회원가입
             "/passwordMatch", // 로그인
             "/auth/reissueToken", // 토큰 재발급
