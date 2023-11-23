@@ -140,26 +140,30 @@ public class LoginService {
 
         // 토큰 생성
         tokenList.add(jwtProvider.generateAccessToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword())).getAccessToken());
-        String newRefreshToken = jwtProvider.generateRefreshToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword())).getRefreshToken();
-        tokenList.add(newRefreshToken);
+        RefreshTokenDto newRefreshTokenDto = jwtProvider.generateRefreshToken(new CustomUserDetails(login.getUserEmail(), login.getUserPassword()));
+
+        tokenList.add(newRefreshTokenDto.getRefreshToken());
 
         // redis에 refresh token 저장, db에 저장
-        System.out.println("############## newRefreshToken 로그인할때 저장!! = " + newRefreshToken);
-        redisTemplate.opsForValue().set(login.getUserEmail(), newRefreshToken);
-        login.changeToken(newRefreshToken);
-//        loginRepository.bulkModifyingByUserCode(login.getUserCode().getUserCode(),newRefreshToken);
+        redisTemplate.opsForValue().set(login.getUserEmail(), newRefreshTokenDto.getRefreshToken(),newRefreshTokenDto.getRefreshTokenExpiresIn(),TimeUnit.MILLISECONDS );
+        login.changeToken(newRefreshTokenDto.getRefreshToken());
         return tokenList;
     }
 
 
     @Transactional
-    public void logout(String encryptedRefreshToken, String accessToken) {
+    public void logout(String encryptedRefreshToken, String accessToken, Long userCode) {
         // token에서 로그인한 사용자 정보 get해 로그아웃 처리
 
+        Optional<Login> findLogin = loginRepository.findByUserCode(userCode);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if(redisTemplate.opsForValue().get(email)!=null){
-            // redis에서 삭제
+            // redis 및 db에서 삭제
             redisTemplate.delete(email);
+            if (findLogin.isPresent()){
+                findLogin.get().changeToken(null);
+            }
+
             // 블랙리스트 처리
             Long expiration = jwtProvider.getExpiration(accessToken);
             redisTemplate.opsForValue().set(accessToken, "logout",expiration, TimeUnit.MICROSECONDS);

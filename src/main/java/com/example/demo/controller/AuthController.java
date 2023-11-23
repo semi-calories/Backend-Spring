@@ -4,7 +4,6 @@ import com.example.demo.config.JWT.JwtProvider;
 import com.example.demo.dto.Login.Response.ResponseReissuedTokenDto;
 import com.example.demo.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ public class AuthController{
     private final JwtProvider jwtProvider;
 
     @PostMapping("/reissueToken")
-    public Object reissueToken(HttpServletRequest request, HttpServletResponse response, Long userCode){
+    public Object reissueToken(HttpServletRequest request, Long userCode){
 
         String encryptedRefreshToken = jwtProvider.resolveRefreshToken(request);
 

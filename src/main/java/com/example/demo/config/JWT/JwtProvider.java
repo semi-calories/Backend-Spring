@@ -146,7 +146,7 @@ public class JwtProvider {
      */
     public boolean validateToken(String token){
         try{
-            parseClaims(token);
+            Claims claims = parseClaims(token);
         }catch (MalformedJwtException e){
             log.info("Invalid JWT Token");
             log.trace("Invalid JWT Token trace",e);
@@ -163,10 +163,25 @@ public class JwtProvider {
         return true;
     }
 
+    /**
+     * valid refresh token
+     */
+    public boolean validateRefreshToken(String refreshToken){
+        try{
+            Jwts.parser().setSigningKey(key).parseClaimsJws(refreshToken);
+        }catch (ExpiredJwtException e){
+            log.info("Expired JWT Token");
+            log.trace("Expired JWT Token trace",e);
+            throw new IllegalArgumentException("refresh token 만료");
+        }
+        return true;
+    }
+
 
     // Token 복호화 및 예외발생시 Claims 객체 생성 x
     // 예외) 토큰 만료, 시그니처 오류 등
     public Claims parseClaims(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

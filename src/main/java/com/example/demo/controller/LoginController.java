@@ -84,10 +84,10 @@ public class LoginController {
      * 로그아웃
      */
     @GetMapping("/userLogout")
-    public ReturnDto logout(HttpServletRequest request){
+    public ReturnDto logout(HttpServletRequest request, Long userCode){
         String encryptedRefreshToken = jwtProvider.resolveRefreshToken(request);
         String accessToken = jwtProvider.resolveAccessToken(request);
-        loginService.logout(encryptedRefreshToken, accessToken);
+        loginService.logout(encryptedRefreshToken, accessToken, userCode);
         return new ReturnDto("ok");
     }
 
