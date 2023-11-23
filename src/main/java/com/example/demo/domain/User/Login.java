@@ -63,4 +63,11 @@ public class Login {
         this.userEmail = newEmail;
         return this.userEmail;
     }
+
+    /**
+     * refresh token 변경
+     */
+    public void changeToken(String newToken){
+        this.userToken = newToken;
+    }
 }

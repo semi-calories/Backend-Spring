@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.User.Login;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -15,4 +16,9 @@ public interface LoginRepository extends JpaRepository<Login, Long> {
     Optional<Login> findByUserCode(@Param("userCode") Long userCode);
 
     Optional<Login> findByUserEmail(String userEmail);
+
+    @Modifying
+    @Query("update Login l set l.userToken = :refreshToken where l.userCode.userCode = :userCode")
+    void bulkModifyingByUserCode(@Param("userCode") Long userCode, @Param("refreshToken") String refreshToken);
+    
 }

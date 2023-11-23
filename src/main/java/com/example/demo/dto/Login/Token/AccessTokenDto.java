@@ -1,4 +1,4 @@
-package com.example.demo.dto.Login;
+package com.example.demo.dto.Login.Token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class TokenDto {
+public class AccessTokenDto {
 
     private String grantType;
     private String authType;
     private String accessToken;
-    private String refreshToken;
     private Long accessTokenExpiresIn;
 
 }

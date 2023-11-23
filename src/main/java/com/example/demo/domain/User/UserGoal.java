@@ -76,7 +76,7 @@ public class UserGoal extends BaseEntity {
             daliyEnerge = 88.362 + 13.397 * weight + 4.799 * findUser.getHeight() - 5.677 * findUser.getAge();
         }
         else{
-            daliyEnerge = 88.362 + 447.593 + 9.24 * weight + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
+            daliyEnerge = 447.593 + 9.24 * weight + 3.098 * findUser.getHeight() - 4.330 * findUser.getAge();
         }
 
         // 활동계수에 따라
