@@ -29,4 +29,11 @@ public interface AlertRecordRepository extends JpaRepository<AlertRecord, User> 
     @Modifying
     @Query("delete from AlertRecord ar where ar.userCode.userCode = :userCode and ar.alertStatus = :alertStatus")
     void deleteByUserCode(@Param("userCode") Long userCode, @Param("alertStatus") Boolean alertStatus);
+
+    /**
+     * 발송완료 by user code & date
+     */
+    //@Query("update AlertRecord ar set ar.alertStatus = :alertStatus left join fetch ar.userCode where ar.userCode.userCode = :userCode and ar.alertDate between :startDatetime and :endDatetime")
+    //List<AlertRecord> updateStatusByUserCodeWithAlertDateBetween(@Param("alertStatus") boolean alertStatus, @Param("userCode") Long userCode, @Param("startDatetime") String startDatetime, @Param("endDatetime") String endDatetime);
+
 }

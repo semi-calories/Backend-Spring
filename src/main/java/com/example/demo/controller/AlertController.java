@@ -106,9 +106,3 @@ public class AlertController {
         private T response;
     }
 }
-// 푸시 알람 설정 조회
-/*    @PostMapping("/getAlertSet")
-    public AlertController.ReturnDto test(Long userCode){
-        System.out.println("########################## test");
-        return new AlertController.ReturnDto<>(true);
-    }*/

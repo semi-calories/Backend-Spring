@@ -5,8 +5,10 @@ import com.example.demo.domain.Alert.AlertRecord;
 import com.example.demo.feign.FastApiFeign;
 import com.example.demo.repository.AlertRecordRepository;
 import com.example.demo.repository.AlertSettingRepository;
+import com.example.demo.config.NotificationConfig.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +36,9 @@ public class AlertSendService {
     private final DietService dietService;
     private final DBService dbService;
 
+    private final RestTemplate restTemplate;
+
+
     /**
      * 10초 후 실행
      */
@@ -57,19 +62,28 @@ public class AlertSendService {
         List<AlertRecord> alertRecordList = alertRecordRepository.findAllByAlertStatusWithAlertDateBetween(false, formattedNow, formattedNext);
 
         for (int i=0; i<alertRecordList.size(); i++){
-            sendExpoPushNotification(alertRecordList.get(i));
+            if(sendExpoPushNotification(alertRecordList.get(i))){
+                //발송이 잘 된 것
+                //alertRecordRepository.updateStatusByUserCodeWithAlertDateBetween(true, alertRecordList.get(i).getUserCode().getUserCode(), formattedNow, formattedNext);
+            } else {
+                // TODO : ERROR MESSAGE DB에 넣기
+            }
         }
 
     }
-    private void sendExpoPushNotification(AlertRecord alertRecord) {
+    private boolean sendExpoPushNotification(AlertRecord alertRecord) {
         // Expo push notification을 보내기 위한 Expo 서버 API 엔드포인트
         String expoApiEndpoint = "https://exp.host/--/api/v2/push/send";
 
-        //→ Message Title : MM월 dd일 (아/점/저)
-        //→ Message Body : 음식 정보(음식 DB에 있는 객체)
+
+
         String month = alertRecord.getAlertDate();
         String title = String.format("%s월 %일 % %시 %분");
+        //→ Message Title : MM월 dd일 (아/점/저) N시 N분
         String body = String.format("%s %s kcal");
+        //→ Message Body : 음식이름 칼로리 kcal
+
+
         // Expo 서버에 전송할 데이터 (푸시 알림 내용 등)
         String expoRequestBody = String.format("{ \"to\": \"%s\", \"title\": \"%s\", \"body\": \"%s\" }",
                 alertRecord.getUserToken(), title, body);
@@ -85,11 +99,11 @@ public class AlertSendService {
         // Expo 서버 응답 확인
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             System.out.println("Expo push notification sent successfully");
-        } else {
-            System.err.println("Failed to send Expo push notification. Response: " + responseEntity.getBody());
+            return true;
         }
+        System.err.println("Failed to send Expo push notification. Response: " + responseEntity.getBody());
+        return false;
     }
-    @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
