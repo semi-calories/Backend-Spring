@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-            // TODO 예외처리 리팩토링
+            // 예외처리
         }catch(ExpiredJwtException e){
             log.info("access 토큰 만료 에러 발생");
             jwtExceptionHandler(response);
