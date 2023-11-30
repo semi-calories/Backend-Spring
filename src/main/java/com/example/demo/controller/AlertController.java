@@ -15,7 +15,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -51,13 +50,9 @@ public class AlertController {
     public ResponseGetAlertSettingDto getAlertSetting(@RequestBody RequestAlertSettingDto requestAlertSettingDto) throws Exception {
         // 기본 정보 조회
         AlertSetting alertSetting = alertService.findOne(requestAlertSettingDto.getUserCode());
-        System.out.println(alertSetting.getUserToken());
-        System.out.println(alertSetting.getUserCode());
 
         // 응답 DTO 생성
         ResponseGetAlertSettingDto responseGetAlertSettingDto = new ResponseGetAlertSettingDto(alertSetting);
-        log.info("################################ responseGetAlertSettingDto.getUserToken() {}", responseGetAlertSettingDto );
-
 
         return responseGetAlertSettingDto;
     }
@@ -89,16 +84,6 @@ public class AlertController {
         // 응답 DTO 생성
         return new ResponseGetAlertRecordListDto(alertRecordList);
     }
-
-
-    private static LocalDateTime getLocalDateTime(String date) {
-        String[] eatDateList = date.split("T");
-        String[] dateList = eatDateList[0].split("-"); // "2023-09-11"
-        String[] timeList = eatDateList[1].split(":");// "13:11"
-        LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateList[0]), Integer.parseInt(dateList[1]), Integer.parseInt(dateList[2]), Integer.parseInt(timeList[0]), Integer.parseInt(timeList[1]),Integer.parseInt(timeList[2]));
-        return localDateTime;
-    }
-
 
     @AllArgsConstructor
     @Getter

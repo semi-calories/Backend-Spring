@@ -91,15 +91,15 @@ public class AlertRecord extends BaseEntity{
     //==비즈니스 로직==//
 
     // 푸시 알람 발송 시간 변경
-    public void changeTime(int alertHour, int alertMinute){
+    public void changeTime(String alertDate,int alertHour, int alertMinute){
+        this.alertDate = alertDate;
         this.alertHour = alertHour;
         this.alertMinute = alertMinute;
     }
 
     // 푸시 알람 발송 이후
-    public void changeDtm(boolean alertStatus, LocalDateTime regDtm, LocalDateTime sendDtm){
+    public void changeDtm(boolean alertStatus, LocalDateTime sendDtm){
         this.alertStatus = alertStatus;
-        this.regDtm = regDtm;
         this.sendDtm = sendDtm;
     }
 }

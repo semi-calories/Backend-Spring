@@ -19,7 +19,5 @@ import java.util.List;
 
 @ToString
 public class ResponseGetAlertRecordListDto {
-
-    //private List<ResponseGetAlertRecordDto> alertRecordList = new ArrayList<>();
     private List<AlertRecord> alertRecordList = new ArrayList<>();
 }

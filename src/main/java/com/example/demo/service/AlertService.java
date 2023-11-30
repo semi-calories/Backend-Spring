@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.temporal.ChronoField;
 import java.util.List;
 
 @Service
@@ -25,11 +25,8 @@ import java.util.List;
 public class AlertService {
     private final AlertSettingRepository alertSettingRepository;
     private final AlertRecordRepository alertRecordRepository;
-
     private final AlertRecordService alertRecordService;
-
     private final DBService dbService;
-
     private final UserService userService;
     /**
      * 푸시 알람 수신 허용
@@ -38,7 +35,6 @@ public class AlertService {
     public User saveAlertSetting(AlertSetting alertSetting){
         // alert setting 테이블에 없으면 저장
         if(alertSettingRepository.findByUserCode(alertSetting.getUserCode().getUserCode()).isEmpty()){
-            System.out.println("########################save 저장!!!!!!!!!!!!!!!!!  "+alertSetting);
             alertSettingRepository.save(alertSetting);
         }
         return alertSetting.getUserCode();
@@ -78,18 +74,14 @@ public class AlertService {
                 LocalTime currentKoreanTime = LocalTime.now(koreaZoneId);
 
                 // 비교할 시간 (20시 00분)
+                // TODO  hard coding 말고 전역변수로 바꾸기
                 LocalTime targetTime = LocalTime.of(20, 0);
-
-                // 오늘 시간 이후 발송할 푸시 알람 작성
-                int nowHour = currentKoreanTime.getHour();
-                int nowMinute = currentKoreanTime.getMinute();
 
                 // 비교할 시간 (발송 시간들)
                 LocalTime targetBreakfast = LocalTime.of(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
                 LocalTime targetlunch = LocalTime.of(requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute());
                 LocalTime targetDinner = LocalTime.of(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
 
-                List<AlertRecord> alertRecordList = new ArrayList<>();
                 // db에서 유저 검색
                 User user = userService.findOne(requestUpdateAlertSettingDto.getUserCode());
 
@@ -149,13 +141,19 @@ public class AlertService {
         for(int i = 0; i < alertRecordList.size(); i++){
             AlertRecord alertRecord = alertRecordList.get(i);
             if(alertRecord.getFoodTimes() == 1){
-                alertRecord.changeTime(requestUpdateAlertSettingDto.getBreakfastHour(), requestUpdateAlertSettingDto.getBreakfastMinute());
+                int newHour = requestUpdateAlertSettingDto.getBreakfastHour();
+                int newMinute = requestUpdateAlertSettingDto.getBreakfastMinute();
+                alertRecord.changeTime(getModified(alertRecord.getAlertDate(), newHour, newMinute), newHour, newMinute);
             }
             if(alertRecord.getFoodTimes() == 2){
-                alertRecord.changeTime(requestUpdateAlertSettingDto.getLunchHour(), requestUpdateAlertSettingDto.getLunchMinute());
+                int newHour = requestUpdateAlertSettingDto.getLunchHour();
+                int newMinute = requestUpdateAlertSettingDto.getLunchMinute();
+                alertRecord.changeTime(getModified(alertRecord.getAlertDate(), newHour, newMinute), newHour, newMinute);
             }
             if(alertRecord.getFoodTimes() == 3){
-                alertRecord.changeTime(requestUpdateAlertSettingDto.getDinnerHour(), requestUpdateAlertSettingDto.getDinnerMinute());
+                int newHour = requestUpdateAlertSettingDto.getDinnerHour();
+                int newMinute = requestUpdateAlertSettingDto.getDinnerMinute();
+                alertRecord.changeTime(getModified(alertRecord.getAlertDate(), newHour, newMinute), newHour, newMinute);
             }
         }
     }
@@ -206,6 +204,19 @@ public class AlertService {
 
         return formattedDateTime;
     }
+
+    public String getModified(String Original, int hour, int Minute) {
+        // 문자열을 LocalDateTime으로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime originalDTM = LocalDateTime.parse(Original, formatter);
+        
+        // 새로운 시간과 분으로 수정
+        LocalDateTime modifiedDTM = originalDTM.with(ChronoField.HOUR_OF_DAY, hour)
+                                                .with(ChronoField.MINUTE_OF_HOUR, Minute);
+        return modifiedDTM.format(formatter);
+    }
+
+
     /**
      * 푸시 알람 발송 기록 조회
      */

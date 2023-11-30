@@ -105,7 +105,6 @@ public class AlertRecordService {
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
                 new RequestRecommendAPIDto(user, eatTimes, preferDiet, dislikeDiet, dietRecords);
-        System.out.println(requestRecommendAPIDto);
 
         ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
