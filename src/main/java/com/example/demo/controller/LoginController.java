@@ -52,9 +52,9 @@ public class LoginController {
      * 회원 탈퇴(정보 삭제)
      */
     @PostMapping("/deleteInfo")
-    public UserController.ReturnDto deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
+    public ReturnDto deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
         loginService.deleteLogin(requestDeleteUserDto.getUserCode());
-        return new UserController.ReturnDto("ok");
+        return new ReturnDto("ok");
     }
 
 
@@ -90,9 +90,6 @@ public class LoginController {
         loginService.logout(encryptedRefreshToken, accessToken, userCode);
         return new ReturnDto("ok");
     }
-
-
-
 
 
 

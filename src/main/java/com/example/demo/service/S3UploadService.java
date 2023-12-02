@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,13 +25,19 @@ public class S3UploadService {
 
     // multipart file을 전달받아 s3 업로드
     // 동일 유저 사진은 overwrite
-    public String upload(MultipartFile multipartFile, String fileName) throws IOException {
+    public String upload(MultipartFile multipartFile, String fileName) {
         String s3FileName = fileName+".jpg";
 
         ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentLength(multipartFile.getInputStream().available());
+        InputStream inputStream = null;
+        try {
+            inputStream = multipartFile.getInputStream();
+            objMeta.setContentLength(inputStream.available());
+        } catch (IOException e) {
+            log.info("S3 업로드 실패",e);
+        }
 
-        amazonS3.putObject(bucket, s3FileName, multipartFile.getInputStream(), objMeta);
+        amazonS3.putObject(bucket, s3FileName, inputStream, objMeta);
 
 
         return amazonS3.getUrl(bucket, s3FileName).toString();

@@ -231,62 +231,48 @@ public class UserService {
         User findUser = findOne(userCode);
         UserGoal findUserGoal = findUserWithUserGoal(userCode);
 
-        System.out.println("################## findUserGoal = " + findUserGoal);
 
         // 예상 몸무게 저장 들어오면 기존 값 다 삭제
         predictUserWeightRepository.deleteByUserCode(userCode);
 
         /**
          * 새로 예상몸무게 계산후 저장 (건강 유지 제외)
-         * TODO 밑 로직 따로 빼기
          */
+
         if(!findUserGoal.getUserGoal().equals("health")){
-            LocalDateTime todayLocalDate = LocalDateTime.now();
-            // LocalDateTime 수정함
-
-            // 2주동안 감량할 몸무게
-            try{
-                // TODO nowWeight null point exception 뜸
-
-                double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) / period;
-                // 시작 몸무게 저장
-                Double nowWeight = findUser.getWeight();
-                PredictUserWeight startWeight = new PredictUserWeight(findUser, nowWeight,todayLocalDate);
-                predictUserWeightRepository.save(startWeight);
-
-                for(int i =0;i<period;i++) {
-                    if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
-                        // 찔거면
-                        nowWeight += predictWeight;
-                    } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
-                        // 뺄거면
-                        nowWeight -= predictWeight;
-                    }
-
-                    todayLocalDate = todayLocalDate.plusDays(1);
-                    PredictUserWeight weight = new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f",nowWeight)), todayLocalDate);
-                    predictUserWeightRepository.save(weight);
-
-
-                }
-
-            }catch (Exception e){
-                log.info("################################################# " + e);
-            }
+            funcPredictWeight(period, findUser, findUserGoal);
         }
-
-
-
-
-
     }
 
     /**
-     * 예상 몸무게 조회
+     * 예상 몸무게 계산
      */
-//    public List<PredictUserWeight> getPredictWeight(Long userCode){
-//        return predictUserWeightRepository.findByUserCode(userCode);
-//    }
+    private void funcPredictWeight(int period, User findUser, UserGoal findUserGoal) {
+        LocalDateTime todayLocalDate = LocalDateTime.now();
+
+        // 기간동안 감량할 몸무게
+        double predictWeight = Math.abs(findUser.getWeight() - findUserGoal.getGoalWeight()) / period;
+
+        // 시작 몸무게 저장
+        Double nowWeight = findUser.getWeight();
+        predictUserWeightRepository.save(new PredictUserWeight(findUser, nowWeight,todayLocalDate));
+
+
+        for(int i = 0; i< period; i++) {
+            if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
+                // 찔거면
+                nowWeight += predictWeight;
+            } else if (findUserGoal.getGoalWeight() < findUser.getWeight()) {
+                // 뺄거면
+                nowWeight -= predictWeight;
+            }
+
+            todayLocalDate = todayLocalDate.plusDays(1);
+            PredictUserWeight weight = new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f", nowWeight)), todayLocalDate);
+            predictUserWeightRepository.save(weight);
+
+        }
+    }
 
 
     /**
