@@ -29,4 +29,5 @@ public interface AlertRecordRepository extends JpaRepository<AlertRecord, User> 
     @Modifying
     @Query("delete from AlertRecord ar where ar.userCode.userCode = :userCode and ar.alertStatus = :alertStatus")
     void deleteByUserCode(@Param("userCode") Long userCode, @Param("alertStatus") Boolean alertStatus);
+
 }

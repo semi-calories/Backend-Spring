@@ -40,27 +40,14 @@ public class UserController {
     @PostMapping("/updateInfo")
     public ReturnDto updateUserInfo(@RequestBody RequestUserUpdateDto requestInfoUpdateDto) throws Exception{
 
-        // 사용자 이미지(base64) MultipartFile로 변환
-        String fileName = "userImage";
-        if(!StringUtils.isEmpty(requestInfoUpdateDto.getImage())){
-            String imageUrl="";
-            if (!requestInfoUpdateDto.getImage().startsWith("https://")){ // 사진 처음 저장할 경우
+        // 유저 이미지 저장
+        String imageUrl = getImageUrl(requestInfoUpdateDto);
 
-                MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
-                // s3에 업로드
-                imageUrl = s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
-            }
-            else{
-                imageUrl= requestInfoUpdateDto.getImage();
-            }
-            userService.userUpdate(requestInfoUpdateDto, imageUrl);
-        }else{
-            userService.userUpdate(requestInfoUpdateDto, null);
-        }
+        // 유저 정보 수정
+        userService.userUpdate(requestInfoUpdateDto, imageUrl);
 
-        // 유저 수정
+        // 유저 이메일 수정
         loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
-
 
         // 유저 목표 수정
         userService.userGoalUpdate(requestInfoUpdateDto);
@@ -73,6 +60,30 @@ public class UserController {
 
         ReturnDto<Long> returnDto = new ReturnDto<>(requestInfoUpdateDto.getUserCode());
         return returnDto;
+    }
+
+
+    // 사용자 정보 중 이미지 수정 로직
+    private String getImageUrl(RequestUserUpdateDto requestInfoUpdateDto)  {
+        // 사용자 이미지(base64) MultipartFile로 변환
+        String fileName = "userImage";
+        if(StringUtils.hasText(requestInfoUpdateDto.getImage())){
+            // 이미지를 저장할 경우
+            if (!requestInfoUpdateDto.getImage().startsWith("https://")){
+                // 사진 처음 저장할 경우
+                MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
+                // s3에 업로드
+                return s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
+            }
+            else{
+                // 이미 등록된 사진이 있는 경우
+                return requestInfoUpdateDto.getImage();
+            }
+        }else{
+            // 이미지 저장 안함
+            return null;
+        }
+
     }
 
 
@@ -92,6 +103,8 @@ public class UserController {
         ResponseUserGetDto responseUserInfoGetDto = new ResponseUserGetDto(findUser, findGoal);
         return responseUserInfoGetDto;
     }
+
+
 
 
 

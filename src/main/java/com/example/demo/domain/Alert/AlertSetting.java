@@ -2,7 +2,6 @@ package com.example.demo.domain.Alert;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.User.User;
-import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,9 +32,9 @@ public class AlertSetting extends BaseEntity{
 
     private int breakfastMinute;
 
-    private int launchHour;
+    private int lunchHour;
 
-    private int launchMinute;
+    private int lunchMinute;
 
     private int dinnerHour;
 
@@ -48,8 +47,8 @@ public class AlertSetting extends BaseEntity{
         this.setting = setting;
         this.breakfastHour = 7;
         this.breakfastMinute = 0;
-        this.launchHour = 13;
-        this.launchMinute = 0;
+        this.lunchHour = 13;
+        this.lunchMinute = 0;
         this.dinnerHour = 18;
         this.dinnerMinute = 30;
     }
@@ -60,13 +59,13 @@ public class AlertSetting extends BaseEntity{
     // 회원가입 후 최초 푸시 알람 on 시에 사용
     // 푸시 알람 시간대 변경
     public void changeSetting(String userToken, boolean setting, int breakfastHour,
-                              int breakfastMinute, int launchHour, int launchMinute, int dinnerHour, int dinnerMinute) {
+                              int breakfastMinute, int lunchHour, int lunchMinute, int dinnerHour, int dinnerMinute) {
         this.userToken = userToken;
         this.setting = setting;
         this.breakfastHour = breakfastHour;
         this.breakfastMinute = breakfastMinute;
-        this.launchHour = launchHour;
-        this.launchMinute = launchMinute;
+        this.lunchHour = lunchHour;
+        this.lunchMinute = lunchMinute;
         this.dinnerHour = dinnerHour;
         this.dinnerMinute = dinnerMinute;
     }

@@ -4,6 +4,7 @@ import com.example.demo.domain.Alert.AlertRecord;
 import com.example.demo.domain.Alert.AlertSetting;
 import com.example.demo.domain.User.User;
 import com.example.demo.dto.Alert.Request.RequestAlertDto;
+import com.example.demo.dto.Alert.Request.RequestAlertSettingDto;
 import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertRecordListDto;
 import com.example.demo.dto.Alert.Response.ResponseGetAlertSettingDto;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -42,18 +42,21 @@ public class AlertController {
 
         return new AlertController.ReturnDto<>(true);
     }
+
     /**
      * 푸시 알람 설정 조회
      */
-    @GetMapping("/getSetting")
-    public ResponseGetAlertSettingDto getAlertSetting(Long userCode) throws Exception {
+    @PostMapping("/getSetting")
+    public ResponseGetAlertSettingDto getAlertSetting(@RequestBody RequestAlertSettingDto requestAlertSettingDto) throws Exception {
         // 기본 정보 조회
-        AlertSetting alertSetting = alertService.findOne(userCode);
+        AlertSetting alertSetting = alertService.findOne(requestAlertSettingDto.getUserCode());
 
         // 응답 DTO 생성
         ResponseGetAlertSettingDto responseGetAlertSettingDto = new ResponseGetAlertSettingDto(alertSetting);
+
         return responseGetAlertSettingDto;
     }
+
 
     /**
      * 푸시 알람 수신 시간 or 수신 여부 설정 변경
@@ -70,8 +73,8 @@ public class AlertController {
     /**
      * 푸시 알람 발송 기록 조회
      */
-    @GetMapping("/getAlert")
-    public ResponseGetAlertRecordListDto getAlert(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) throws Exception {
+    @GetMapping("/getAlertRecord")
+    public ResponseGetAlertRecordListDto getAlertRecord(Long userCode, int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) throws Exception {
         // db에서 유저 검색
         User user = userService.findOne(userCode);
 
@@ -80,15 +83,6 @@ public class AlertController {
 
         // 응답 DTO 생성
         return new ResponseGetAlertRecordListDto(alertRecordList);
-    }
-
-
-    private static LocalDateTime getLocalDateTime(String date) {
-        String[] eatDateList = date.split("T");
-        String[] dateList = eatDateList[0].split("-"); // "2023-09-11"
-        String[] timeList = eatDateList[1].split(":");// "13:11"
-        LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateList[0]), Integer.parseInt(dateList[1]), Integer.parseInt(dateList[2]), Integer.parseInt(timeList[0]), Integer.parseInt(timeList[1]),Integer.parseInt(timeList[2]));
-        return localDateTime;
     }
 
     @AllArgsConstructor

@@ -78,7 +78,7 @@ public class AlertRecordService {
         }
         if(j == 2) {
             return new AlertRecord(alertSetting.getUserCode(), alertSetting.getUserToken(),
-                    getTomorrowDateTime(alertSetting.getLaunchHour(), alertSetting.getLaunchMinute()), alertSetting.getLaunchHour(), alertSetting.getLaunchMinute(),
+                    getTomorrowDateTime(alertSetting.getLunchHour(), alertSetting.getLunchMinute()), alertSetting.getLunchHour(), alertSetting.getLunchMinute(),
                     j, dbService.findOne(Long.valueOf(recommend.getFoodCode())),
                     recommend.getFoodName(), recommend.getFoodKcal(),
                     recommend.getFoodCarbon(), recommend.getFoodProtein(), recommend.getFoodFat());
@@ -105,7 +105,6 @@ public class AlertRecordService {
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
                 new RequestRecommendAPIDto(user, eatTimes, preferDiet, dislikeDiet, dietRecords);
-        System.out.println(requestRecommendAPIDto);
 
         ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
