@@ -2,7 +2,6 @@ package com.example.demo.domain.Alert;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.User.User;
-import com.example.demo.dto.Alert.Request.RequestUpdateAlertSettingDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
