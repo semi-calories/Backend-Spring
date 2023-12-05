@@ -74,7 +74,6 @@ public class AlertService {
                 LocalTime currentKoreanTime = LocalTime.now(koreaZoneId);
 
                 // 비교할 시간 (20시 00분)
-                // TODO  hard coding 말고 전역변수로 바꾸기
                 LocalTime targetTime = LocalTime.of(20, 0);
 
                 // 비교할 시간 (발송 시간들)

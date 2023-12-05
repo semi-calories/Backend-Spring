@@ -1,8 +1,5 @@
 package com.example.demo.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import com.example.demo.domain.Alert.AlertRecord;
 import com.example.demo.repository.AlertRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -48,7 +46,6 @@ public class AlertSendService {
         String formattedNow = now.format(formatter);
         String formattedNext = nextMinute.format(formatter);
 
-        // TODO 페이징 처리
         List<AlertRecord> alertRecordList = alertRecordRepository.findAllByAlertStatusWithAlertDateBetween(false, formattedNow, formattedNext);
 
         for (int i = 0; i < alertRecordList.size(); i++) {
@@ -57,7 +54,6 @@ public class AlertSendService {
                 //발송이 잘 된 것
                 alertRecord.changeDtm(true, now);
             } else {
-                // TODO : ERROR MESSAGE DB에 넣기
             }
         }
     }
@@ -89,8 +85,6 @@ public class AlertSendService {
         HttpEntity<String> requestEntity = new HttpEntity<>(expoRequestBody, headers);
         ResponseEntity<String> responseEntity = restTemplate().exchange(expoApiEndpoint, HttpMethod.POST, requestEntity, String.class);
 
-
-        //TODO 존재하지 않는 토큰 예외처리 org.springframework.web.client.HttpClientErrorException$NotFound: 404 Not Found: "Not Found"
         //2023-11-28T19:12:48.073+09:00 DEBUG 1396 --- [   scheduling-1] o.s.web.client.RestTemplate              : HTTP POST https://exp.host/--/api/v2/push/send
         //2023-11-28T19:12:48.088+09:00 DEBUG 1396 --- [   scheduling-1] o.s.web.client.RestTemplate              : Accept=[text/plain, application/json, application/cbor, application+json, *]
         //2023-11-28T19:12:48.092+09:00 DEBUG 1396 --- [   scheduling-1] o.s.web.client.RestTemplate              : Writing [{ "to": ""ExponentPushToken[Cgd7MKMqDELU7ge5lTBj05]"", "title": "11월 29일 저녁 18시 48분", "body": "불고기 395.30 kcal" }] as "application/json"

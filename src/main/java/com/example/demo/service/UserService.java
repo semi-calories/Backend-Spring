@@ -293,7 +293,6 @@ public class UserService {
         // 다이어트가 아직 안끝난 경우
         List<PredictUserWeight> predictUserWeightList = predictUserWeightRepository.findByUserCode(userCode);
 
-        // TODO
         // 몸무게 저장 마지막 날짜 < 다이어트 저장 날짜 인 경우 추가 (그 다음 저장된 날짜로 추가..)
         if (predictUserWeightList.size()>1){
             // 예상 몸무게가 저장된 경우 계산(건강 유지시 size 0임)
@@ -315,7 +314,6 @@ public class UserService {
                             }
                     );
 
-                    // TODO 날짜 맞추기
                     predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endWeightTime.plusDays(15).toLocalDate()).ifPresent(
                             predictUserWeight -> {
                                 sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
@@ -331,7 +329,6 @@ public class UserService {
                             }
                     );
 
-                    // TODO 날짜 맞추기
                     predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, endPredictTime.plusDays(1).toLocalDate()).ifPresent(
                             predictUserWeight -> {
                                 sameTimePredictWeightList.add(new WeightDto(predictUserWeight.getTimestamp(),0.0, predictUserWeight.getPredictWeight()));
