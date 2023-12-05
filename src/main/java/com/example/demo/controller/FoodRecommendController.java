@@ -54,7 +54,6 @@ public class FoodRecommendController {
 
 
         // FASTAPI 서버에 api 요청
-        // TODO : eattime 수정
         RequestRecommendAPIDto requestRecommendAPIDto =
                 new RequestRecommendAPIDto(user, 0, preferDiet, dislikeDiet, dietRecords);
 
