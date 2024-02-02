@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "deploy" ]
+    branches: [ "feature/49-cicd" ]
   pull_request:
-    branches: [ "deploy" ]
+    branches: [ "feature/49-cicd" ]
 
 jobs:
   build:
@@ -25,6 +25,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # JDK 17 셋팅
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
     # 1) git ignore에 등록된 application.properties 파일 생성
     - name: make application.properties
       run: |
@@ -37,7 +44,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew clean build --no-daemon
+      run: ./gradlew clean build
 
     # 3) docker hub에 image push
     - name: Docker build
