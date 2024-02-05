@@ -58,8 +58,8 @@ jobs:
               docker pull ${{ secrets.DOCKER_USERNAME }}/docker-semicalorie
               docker stop $(docker ps -a -q)
               docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/docker-semicalorie
-              docker rm $(docker ps --filter 'status=exited' -a -q)
-              docker image prune -a -f
+              # docker rm $(docker ps --filter 'status=exited' -a -q)
+              # docker image prune -a -f
                   
       
     
