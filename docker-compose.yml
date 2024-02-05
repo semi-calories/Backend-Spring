@@ -1,8 +1,7 @@
 version: '3'
 services:
-
   spring:
-    container_name: spring
+    container_name: zeunxx/docker-semicalorie
     image: zeunxx/docker-semicalorie
     expose:
       - 8080
