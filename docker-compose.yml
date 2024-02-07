@@ -2,22 +2,18 @@ version: '3'
 services:
 
 
-#  database:
-#    image: mysql
-#    environment:
-#        MYSQL_USER: admin
-#        MYSQL_PASSWORD: 20230714se&mi
-#    ports:
-#        - "3306:3306"
-
-
+  database:
+    image: mysql
+    environment:
+        MYSQL_USER: admin
+        MYSQL_PASSWORD: 20230714se&mi
+    ports:
+        - "3306:3306"
 
   spring:
-    container_name: dockersemicalorie
+    container_name: zeunxx/docker-semicalorie
     image: zeunxx/docker-semicalorie
     expose:
       - 8080
     ports:
       - 8080:8080
-    depends_on:
-      - database  # db가 뜬 후에 spring이 뜰 수 있도록 depends_on 설정
