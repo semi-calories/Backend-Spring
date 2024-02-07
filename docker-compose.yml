@@ -1,15 +1,6 @@
 version: '3'
 services:
 
-
-  database:
-    image: mysql
-    environment:
-        MYSQL_USER: admin
-        MYSQL_PASSWORD: 20230714se&mi
-    ports:
-        - "3306:3306"
-
   spring:
     container_name: zeunxx/docker-semicalorie
     image: zeunxx/docker-semicalorie
