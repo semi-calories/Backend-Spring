@@ -57,11 +57,8 @@ public class FoodRecommendController {
         // TODO : eattime 수정
         RequestRecommendAPIDto requestRecommendAPIDto =
                 new RequestRecommendAPIDto(user, 0, preferDiet, dislikeDiet, dietRecords);
-        System.out.println(requestRecommendAPIDto);
 
         ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
-
-
 
         // FASTAPI 응답 DTO로 list별로 음식 접근가능케 함 (fast api: 인덱스별로 접근)
         List<RecommendDto> recommendDtoList = IntStream.range(0, responseAPIDto.getFoodCodeList().size()) // 음식 추천 수만큼 반복

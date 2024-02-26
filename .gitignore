@@ -5,6 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 application-private.propterties
+application-db.propterties
+application-localdb.propterties
 
 ### STS ###
 .apt_generated
