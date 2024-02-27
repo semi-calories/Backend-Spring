@@ -257,7 +257,9 @@ public class UserService {
         Double nowWeight = findUser.getWeight();
         predictUserWeightRepository.save(new PredictUserWeight(findUser, nowWeight,todayLocalDate));
 
+        List<PredictUserWeight> predictUserWeightList = new ArrayList<>();
 
+        // 기간별로 하루씩의 예상몸무게 생성 후 list에 add
         for(int i = 0; i< period; i++) {
             if (findUserGoal.getGoalWeight() > findUser.getWeight()) {
                 // 찔거면
@@ -267,11 +269,11 @@ public class UserService {
                 nowWeight -= predictWeight;
             }
 
-            todayLocalDate = todayLocalDate.plusDays(1);
-            PredictUserWeight weight = new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f", nowWeight)), todayLocalDate);
-            predictUserWeightRepository.save(weight);
-
+            predictUserWeightList.add(new PredictUserWeight(findUser, Double.parseDouble(String.format("%.1f", nowWeight)), todayLocalDate.plusDays(1)));
         }
+
+        // list save
+        predictUserWeightRepository.saveAll(predictUserWeightList);
     }
 
 
@@ -282,17 +284,23 @@ public class UserService {
 
         List<WeightDto> sameTimePredictWeightList = new ArrayList<>();
 
+
+        // 해당 기간 유저 예상 몸무게 하루씩 조회
         monthWeight.forEach(weight->{
             predictUserWeightRepository.findByUserCodeAndTimestamp(userCode, weight.getTimestamp().toLocalDate()).ifPresentOrElse(
-                    getWeight -> {
+                    getWeight -> { // 저장된 예상 몸무게 존재
                         sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), getWeight.getPredictWeight()));
-                    },
+                    }, // 저장된 예상 몸무게 값이 없음 = 0.0으로 리턴
                     () -> sameTimePredictWeightList.add(new WeightDto(weight.getTimestamp(), weight.getWeight(), 0.0)));
         });
 
-        // 다이어트가 아직 안끝난 경우
+        // 저장된 전체 예상 몸무게 조회
         List<PredictUserWeight> predictUserWeightList = predictUserWeightRepository.findByUserCode(userCode);
 
+
+        /**
+         * 다이어트가 아직 안끝난 경우
+         */
         // TODO
         // 몸무게 저장 마지막 날짜 < 다이어트 저장 날짜 인 경우 추가 (그 다음 저장된 날짜로 추가..)
         if (predictUserWeightList.size()>1){
