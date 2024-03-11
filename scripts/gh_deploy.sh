@@ -1,6 +1,6 @@
 #!/bin/bash
-PROJECT_NAME="semicalorie"
-JAR_PATH="/home/ubuntu/semicalorie/build/libs/*.jar"
+PROJECT_NAME="semicalories"
+JAR_PATH="/home/ubuntu/semicalories/build/libs/*.jar"
 DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
