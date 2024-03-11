@@ -7,7 +7,7 @@ on:
 
 env:
   S3_BUCKET_NAME: s3-fastcampus
-  RESOURCE_PATH: ./src/main/resources/application.yaml
+  RESOURCE_PATH: ./src/main/resources/application.properties
   CODE_DEPLOY_APPLICATION_NAME: CODE-DEPLOY-FAST-CAMPUS
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
 
