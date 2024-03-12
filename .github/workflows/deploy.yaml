@@ -25,13 +25,9 @@ jobs:
           java-version: 17
 
       - name: Set properties file
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ${{env.RESOURCE_PATH}}
-        env:
-          spring.datasource.url: ${{secrets.DATASOURCE_URL}}
-          spring.datasource.username: ${{secrets.DATASOURCE_USERNAME}}
-          spring.datasource.password: ${{secrets.DATASOURCE_PASSWORD}}
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
