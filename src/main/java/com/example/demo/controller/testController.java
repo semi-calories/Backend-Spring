@@ -7,6 +7,7 @@ import com.example.demo.feign.FastApiFeign;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import java.util.List;
 public class testController {
 
     private final FastApiFeign fastApiFeign;
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
 
     @Retryable(maxAttempts = 3)
     @GetMapping("/api")
@@ -41,8 +44,8 @@ public class testController {
 
 
     @GetMapping("/test")
-    public int test(){
-        return 2023;
+    public String test(){
+        return datasourceUrl;
     }
 
 

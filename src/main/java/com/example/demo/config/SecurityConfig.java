@@ -42,6 +42,7 @@ public class SecurityConfig {
             "/passwordMatch", // 로그인
             "/auth/reissueToken", // 토큰 재발급
             "/emailDuplicateCheck", // 이메일중복확인
+            "/test"
     };
 
     @Bean

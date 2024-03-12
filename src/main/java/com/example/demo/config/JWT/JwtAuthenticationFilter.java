@@ -79,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setAuthenticationToContext(String accessToken) {
         Authentication authentication = jwtProvider.getAuthentication(accessToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("## token verification success!");
+        log.info("## token verification success! security context에 인증정보 저장");
     }
 
 }
