@@ -15,5 +15,6 @@ public interface UserWeightRepository extends JpaRepository<UserWeight, Long> {
     @Query("select uw from UserWeight uw left join fetch uw.userCode where  uw.userCode.userCode = :userCode and uw.timestamp between :startDatetime and :endDatetime order by uw.timestamp")
     List<UserWeight> findByUserCodeWithDateBetween(@Param("userCode") Long userCode, @Param("startDatetime") LocalDateTime startDatetime, @Param("endDatetime") LocalDateTime endDatetime);
 
+
     Optional<UserWeight> findTopByUserCodeOrderByTimestampDesc(@Param("userCode") User user);
 }
