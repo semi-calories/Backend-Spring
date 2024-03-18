@@ -3,9 +3,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "feature/49-cicd" ]
+    branches: [ "deploy" ]
   pull_request:
-    branches: [ "feature/49-cicd" ]
+    branches: [ "deploy" ]
 env:
   S3_BUCKET_NAME: semi-server
   RESOURCE_PATH: ./src/main/resources/application.properties
