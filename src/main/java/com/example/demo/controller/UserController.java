@@ -71,7 +71,7 @@ public class UserController {
             // 이미지를 저장할 경우
             if (!requestInfoUpdateDto.getImage().startsWith("https://")){
                 // 사진 처음 저장할 경우
-                MultipartFile multipartFile = base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
+                MultipartFile multipartFile = Base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
                 // s3에 업로드
                 return s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
             }
@@ -100,8 +100,7 @@ public class UserController {
         UserGoal findGoal = userService.findUserWithUserGoal(userCode);
 
         // 응답 DTO 생성
-        ResponseUserGetDto responseUserInfoGetDto = new ResponseUserGetDto(findUser, findGoal);
-        return responseUserInfoGetDto;
+        return new ResponseUserGetDto(findUser, findGoal);
     }
 
 

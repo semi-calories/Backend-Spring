@@ -33,7 +33,7 @@ public class DBService {
     // food code list 통해 DB 읽어와 diet 객체 리스트(Diet List)로 반환
     public List<DietList> findByList(List<Long> foodCodeList) {
         List<DietList> dietList = foodCodeList.stream()
-                .map(foodCode -> dietListRepository.findById(foodCode)) //각 코드를통해 dietList 찾기
+                .map(dietListRepository::findById) //각 코드를통해 dietList 찾기
                 .filter(Optional::isPresent) // 찾은 dietList가 존재하는 것만 filter
                 .map(Optional::get) // 존재하면 get
                 .collect(Collectors.toList());// 리스트로 리턴

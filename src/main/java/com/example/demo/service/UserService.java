@@ -81,7 +81,7 @@ public class UserService {
 
         // 유저 정보 modified_at 보다 이후에 저장/수정 한다면 유저 정보 갱신
         if ( findUser.getModifiedAt().isBefore(dateTime)){
-            findUser.weightChange(weight);
+            findUser.changeWeight(weight);
             // 헤리스 베네딕트
             changeHarrisBenedict(userCode, weight);
         }
@@ -117,7 +117,7 @@ public class UserService {
                 User findUser = findOne(userCode);
                 userWeightRepository.findTopByUserCodeOrderByTimestampDesc(findUser)
                         .ifPresent(latestWeight -> {
-                            findUser.weightChange(latestWeight.getWeight());
+                            findUser.changeWeight(latestWeight.getWeight());
                             changeHarrisBenedict(userCode, latestWeight.getWeight());
                         });
             }
@@ -152,7 +152,7 @@ public class UserService {
 
         UserGoal findGoal = findUserWithUserGoal(userCode);
 
-        findGoal.predictWeightChange(
+        findGoal.changePredictWeight(
                 weight,
                 period
         );

@@ -237,13 +237,6 @@ public class FoodRecordTextController {
 
     }
 
-    /**
-     * 유저 예상 몸무게 조회
-     */
-//    @GetMapping("/getPredictWeight")
-//    public ResponsePredictWeightDto getPredictWeight(Long userCode){
-//        return new ResponsePredictWeightDto(userService.getPredictWeight(userCode));
-//    }
 
     private static LocalDateTime getLocalDateTime(String date) {
         String[] eatDateList = date.split("T");

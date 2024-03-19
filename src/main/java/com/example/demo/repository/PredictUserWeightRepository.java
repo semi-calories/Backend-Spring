@@ -17,9 +17,6 @@ public interface PredictUserWeightRepository extends JpaRepository<PredictUserWe
     @Query("delete from PredictUserWeight pdw where pdw.userCode.userCode = :userCode")
     void deleteByUserCode(@Param("userCode") Long userCode);
 
-    @Query("select puw from PredictUserWeight puw left join fetch puw.userCode where puw.userCode.userCode = :userCode order by puw.timestamp")
-    List<PredictUserWeight> findByUserCode(@Param("userCode") Long userCode);
-
     @Query("select puw from PredictUserWeight puw left join fetch puw.userCode where puw.userCode.userCode = :userCode  and date(puw.timestamp) = :timestamp ")
     Optional<PredictUserWeight> findByUserCodeAndTimestamp(@Param("userCode") Long userCode, @Param("timestamp") LocalDate timestamp);
 }
