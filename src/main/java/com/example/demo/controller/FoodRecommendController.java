@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import static java.time.LocalDateTime.now;
 
 @RestController
 @RequestMapping("/recommend")
@@ -54,9 +53,8 @@ public class FoodRecommendController {
 
 
         // FASTAPI 서버에 api 요청
-        // TODO : eattime 수정
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, 0, preferDiet, dislikeDiet, dietRecords);
+                new RequestRecommendAPIDto(user, preferDiet, dislikeDiet, dietRecords);
 
         ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
 
