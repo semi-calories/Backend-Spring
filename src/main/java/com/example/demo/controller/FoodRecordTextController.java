@@ -139,10 +139,6 @@ public class FoodRecordTextController {
     }
 
 
-
-
-
-
     private static LocalDateTime getLocalDateTime(String date) {
         String[] eatDateList = date.split("T");
         String[] dateList = eatDateList[0].split("-"); // "2023-09-11"
