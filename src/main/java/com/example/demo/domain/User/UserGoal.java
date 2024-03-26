@@ -57,7 +57,7 @@ public class UserGoal extends BaseEntity {
         this.goalPeriod = goalPeriod;
     }
 
-    public void predictWeightChange( double goalWeight,int goalPeriod ){
+    public void changePredictWeight( double goalWeight,int goalPeriod ){
         this.goalWeight = goalWeight;
         this.goalPeriod = goalPeriod;
     }

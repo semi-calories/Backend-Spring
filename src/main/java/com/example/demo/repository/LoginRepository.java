@@ -17,8 +17,5 @@ public interface LoginRepository extends JpaRepository<Login, Long> {
 
     Optional<Login> findByUserEmail(String userEmail);
 
-    @Modifying
-    @Query("update Login l set l.userToken = :refreshToken where l.userCode.userCode = :userCode")
-    void bulkModifyingByUserCode(@Param("userCode") Long userCode, @Param("refreshToken") String refreshToken);
     
 }
