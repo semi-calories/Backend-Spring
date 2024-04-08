@@ -37,6 +37,8 @@ public class RequestRecommendAPIDto {
     private List<Long> prefer;
     private List<Long> dislike;
     private List<Double> nutrient;
+    private double goalWeight;
+    private int goalPeriod;
 
     public RequestRecommendAPIDto(UserGoal user, List<UserDietPrefer> preferDiet, List<UserDietDislike> dislikeDiet, List<DietRecord> dietRecords) {
         // 선호 음식 리스트 생성
@@ -56,6 +58,8 @@ public class RequestRecommendAPIDto {
         this.prefer = preferCollect;
         this.dislike = dislikeCollect;
         this.nutrient = dietRecordsList;
+        this.goalWeight = user.getGoalWeight();
+        this.goalPeriod = user.getGoalPeriod();
     }
 
     private static List<Long> getPreferCollect(List<UserDietPrefer> preferDiet) {
