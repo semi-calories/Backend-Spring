@@ -42,7 +42,6 @@ public class AuthService {
         if(findLogin.isPresent()){
             String redisRefreshToken = redisTemplate.opsForValue().get(findLogin.get().getUserEmail());
 
-
             // 클라이언트가 보낸 refresh가 db의 refresh 및 redis의 refresh와 동일한지 확인
             if(findLogin.get().getUserToken().equals(refreshToken) && redisRefreshToken.equals(refreshToken)){
                 // access 토큰 생성

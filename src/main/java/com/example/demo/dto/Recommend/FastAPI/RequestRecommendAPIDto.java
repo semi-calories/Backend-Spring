@@ -36,11 +36,9 @@ public class RequestRecommendAPIDto {
     private String activity;
     private List<Long> prefer;
     private List<Long> dislike;
-
-    private int eatTimes;
     private List<Double> nutrient;
 
-    public RequestRecommendAPIDto(UserGoal user, int eatTimes, List<UserDietPrefer> preferDiet, List<UserDietDislike> dislikeDiet, List<DietRecord> dietRecords) {
+    public RequestRecommendAPIDto(UserGoal user, List<UserDietPrefer> preferDiet, List<UserDietDislike> dislikeDiet, List<DietRecord> dietRecords) {
         // 선호 음식 리스트 생성
         List<Long> preferCollect = getPreferCollect(preferDiet);
         // 비선호 음식 리스트 생성
@@ -57,7 +55,6 @@ public class RequestRecommendAPIDto {
         this.activity = user.getUserActivity();
         this.prefer = preferCollect;
         this.dislike = dislikeCollect;
-        this.eatTimes = eatTimes;
         this.nutrient = dietRecordsList;
     }
 

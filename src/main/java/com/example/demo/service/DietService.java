@@ -145,7 +145,7 @@ public class DietService {
         Optional<UserSatisfaction> satisfaction = userSatisfactionRepository.findByUserCodeAndFoodCode(userCode, userSatisfaction.getFoodCode().getFoodCode());
         if (satisfaction.isPresent()){
             // 이미 만족도 저장된 음식이면 만족도 값만 update
-            satisfaction.get().updateSatisfaction(userSatisfaction.getSatisfaction());
+            satisfaction.get().changeSatisfaction(userSatisfaction.getSatisfaction());
         } // 저장안된 음식이면 만족토 객체 db에 저장
         else userSatisfactionRepository.save(userSatisfaction);
         return userSatisfaction.getId();
