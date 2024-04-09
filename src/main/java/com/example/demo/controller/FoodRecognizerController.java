@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.DB.DietList;
 import com.example.demo.dto.Recognizer.FastAPI.ResponseFoodRecogAPIDto;
+import com.example.demo.dto.Recognizer.Request.RequestFoodImgRecogDto;
 import com.example.demo.dto.Recognizer.Request.RequestFoodRecogDto;
 import com.example.demo.dto.Recognizer.Response.ResponseFoodRecogDto;
 import com.example.demo.feign.FastApiFeign;
@@ -40,6 +41,28 @@ public class FoodRecognizerController {
         try {
             // FAST API - 음식 사진 AI 모델에 전송
             ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(multipartFile);
+
+            // db에 값 조회해 영양성분 get
+            List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
+            ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto(dietLists);
+            return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
+        } catch (Exception e) {
+            ResponseFoodRecogDto responseFoodRecogDto = new ResponseFoodRecogDto();
+            return ResponseEntity.status(HttpStatus.OK).body(responseFoodRecogDto);
+
+        }
+    }
+
+    /**
+     * 음식 인식용 이미지 받는 API
+     */
+    @PostMapping(value = "/recognizerFoodImg")
+    public ResponseEntity recogMultipartFoodImg(@ModelAttribute RequestFoodImgRecogDto requestFoodImgRecogDto) {
+
+        // 사진 인식 응답 DTO 생성
+        try {
+            // FAST API - 음식 사진 AI 모델에 전송
+            ResponseFoodRecogAPIDto responseFoodRecogAPIDto = fastApiFeign.requestRecognizer(requestFoodImgRecogDto.getFile());
 
             // db에 값 조회해 영양성분 get
             List<DietList> dietLists = dbService.findByList(responseFoodRecogAPIDto.getFoodCodeList());
