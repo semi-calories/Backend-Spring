@@ -2,12 +2,11 @@ package com.example.demo.dto.User.Request;
 
 import com.example.demo.domain.User.Gender;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +17,7 @@ public class RequestUserUpdateDto {
 
     private Long userCode;
     private String email;
-    private String image;
+    private MultipartFile image;
     private String name;
     private Gender gender;
     private int age;

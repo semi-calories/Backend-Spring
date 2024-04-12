@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Base64;
 
-@Component
+// @Component
 public class Base64ToMultipartFileConverter {
 
     public static MultipartFile getMultipartFile(String file, String fileName) {
