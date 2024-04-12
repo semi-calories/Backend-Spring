@@ -30,6 +30,7 @@ public class FoodRecognizerController {
     /**
      * 음식 인식용 이미지 받는 API
      */
+    /**
     @PostMapping(value = "/recognizerFood")
     public ResponseEntity recogFood(@RequestBody RequestFoodRecogDto requestFoodRecogDto) {
 
@@ -52,6 +53,7 @@ public class FoodRecognizerController {
 
         }
     }
+    **/
 
     /**
      * 음식 인식용 이미지 받는 API
