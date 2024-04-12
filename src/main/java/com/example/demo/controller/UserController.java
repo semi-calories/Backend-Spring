@@ -55,8 +55,7 @@ public class UserController {
         // 유저 예상 몸무게 추이 저장
         userService.savePredictWeight(requestInfoUpdateDto.getUserCode(),requestInfoUpdateDto.getPeriod());
 
-            ReturnDto<String> returnDto = new ReturnDto<>(requestInfoUpdateDto.getEmail());
-        return returnDto;
+        return new ReturnDto<>(requestInfoUpdateDto.getUserCode());
     }
 
 
