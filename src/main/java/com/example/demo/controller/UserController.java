@@ -15,9 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,10 +35,10 @@ public class UserController {
      * 회원 정보 추가 저장(수정)
      */
     @PostMapping("/updateInfo")
-    public ReturnDto updateUserInfo(@RequestBody RequestUserUpdateDto requestInfoUpdateDto){
+    public ReturnDto updateUserInfo(@ModelAttribute RequestUserUpdateDto requestInfoUpdateDto){
 
         // 유저 이미지 저장
-        String imageUrl = getImageUrl(requestInfoUpdateDto);
+        String imageUrl = s3UploadService.upload(requestInfoUpdateDto.getImage(), requestInfoUpdateDto.getUserCode().toString());
 
         // 유저 정보 수정
         userService.userUpdate(requestInfoUpdateDto, imageUrl);
@@ -57,34 +55,9 @@ public class UserController {
         // 유저 예상 몸무게 추이 저장
         userService.savePredictWeight(requestInfoUpdateDto.getUserCode(),requestInfoUpdateDto.getPeriod());
 
-        ReturnDto<Long> returnDto = new ReturnDto<>(requestInfoUpdateDto.getUserCode());
-        return returnDto;
+        return new ReturnDto<>(requestInfoUpdateDto.getUserCode());
     }
 
-
-    // 사용자 정보 중 이미지 수정 로직
-    private String getImageUrl(RequestUserUpdateDto requestInfoUpdateDto)  {
-        // 사용자 이미지(base64) MultipartFile로 변환
-        String fileName = "userImage";
-        if(StringUtils.hasText(requestInfoUpdateDto.getImage())){
-            // 이미지를 저장할 경우
-            if (!requestInfoUpdateDto.getImage().startsWith("https://")){
-                // 사진 처음 저장할 경우
-                MultipartFile multipartFile = Base64ToMultipartFileConverter.getMultipartFile(requestInfoUpdateDto.getImage(), fileName);
-                // s3에 업로드
-                assert multipartFile != null;
-                return s3UploadService.upload(multipartFile, requestInfoUpdateDto.getUserCode().toString());
-            }
-            else{
-                // 이미 등록된 사진이 있는 경우
-                return requestInfoUpdateDto.getImage();
-            }
-        }else{
-            // 이미지 저장 안함
-            return null;
-        }
-
-    }
 
 
     /**
