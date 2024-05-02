@@ -9,6 +9,8 @@ import com.example.demo.dto.Login.Request.RequestSignUpDto;
 import com.example.demo.dto.Login.Response.ResponseLoginDto;
 import com.example.demo.dto.Login.Response.ResponseSaveDto;
 import com.example.demo.dto.Login.Token.RefreshTokenDto;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.repository.LoginRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -103,7 +105,7 @@ public class LoginService {
         if (login.isPresent()){
             login.get().changePassword(login.get().passwordEncode(password, passwordEncoder));
         }
-        else throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        else throw new RestApiException(CustomErrorCode.USER_NOT_FOUND);
     }
 
     /**
