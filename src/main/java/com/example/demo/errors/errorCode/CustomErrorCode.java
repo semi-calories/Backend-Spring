@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum CustomErrorCode implements ErrorCode{
 
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included"), // 잘못된 파라미터
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid token"), // 만료된 토큰 or 사용 불가 토큰
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid token"), // 인증되지 않음
+    FORBIDDEN_TOKEN(HttpStatus.FORBIDDEN, "Invalid token"), // 접근 권한 없음
     FOOD_RECOG_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "food recognition fail"), // 음식 인식 불가
     HARRIS_BENEDICT_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "HarrisBenedict fail"), // 음식 인식 불가
 
