@@ -97,12 +97,11 @@ public class LoginService {
     /**
      * 비밀번호 변경
      */
-    public String updatePw(Long userCode,String password){
+    public void updatePw(Long userCode, String password){
 
         Optional<Login> login = loginRepository.findByUserCode(userCode);
         if (login.isPresent()){
-            String newPassword = login.get().changePassword(login.get().passwordEncode(password, passwordEncoder));
-            return newPassword;
+            login.get().changePassword(login.get().passwordEncode(password, passwordEncoder));
         }
         else throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
     }
@@ -116,7 +115,7 @@ public class LoginService {
         // 유저 존재
         if (login.isPresent()){
             boolean matches = passwordEncoder.matches(userPw, login.get().getUserPassword());
-            if(matches==true){
+            if(matches){
                 // 비밀번호 매칭 성공
                 User user = login.get().getUserCode();
                 List<String> tokenList = getToken(login.get());

@@ -51,6 +51,9 @@ public class JwtProvider {
     private Key key;
 
 
+    /**
+     * key decode
+     */
     // Bean 등록후 Key SecretKey HS256 decode
     @PostConstruct
     public void init() {
@@ -58,12 +61,17 @@ public class JwtProvider {
         this.key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
     }
 
+
+    // Plain Text인 Secret Key의 byte[]를 Base64 형식의 문자열로 인코딩
     public String encodeBase64SecretKey(String secretKey) {
         return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
+    // JWT의 서명에 사용할 Secret Key를 생성
     private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
+        // Base64 형식으로 인코딩 된 Secret Key를 디코딩한 후, byte array를 반환
         byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
+        // 적절한 hmac 알고리즘을 적용한 key 반환
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -166,7 +174,7 @@ public class JwtProvider {
     /**
      * valid refresh token
      */
-    public boolean validateRefreshToken(String refreshToken){
+    public void validateRefreshToken(String refreshToken){
         try{
             Jwts.parser().setSigningKey(key).parseClaimsJws(refreshToken);
         }catch (ExpiredJwtException e){
@@ -174,7 +182,6 @@ public class JwtProvider {
             log.trace("Expired JWT Token trace",e);
             throw new IllegalArgumentException("refresh token 만료");
         }
-        return true;
     }
 
 
@@ -187,15 +194,6 @@ public class JwtProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    public void accessTokenSetHeader(String accessToken, HttpServletResponse response){
-        String headerValue = BEARER_PREFIX + accessToken;
-        response.setHeader(AUTHORIZATION_HEADER, headerValue);
-    }
-
-    public void refreshTokenSetHeader(String refreshToken, HttpServletResponse response){
-        response.setHeader("Refresh", refreshToken);
     }
 
     // request header에 access token 정보 추출

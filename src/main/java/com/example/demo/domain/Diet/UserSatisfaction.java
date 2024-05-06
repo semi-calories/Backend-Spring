@@ -43,8 +43,8 @@ public class UserSatisfaction extends BaseEntity {
         this.satisfaction = satisfaction;
     }
 
-    //==update 로직==//
-    public void updateSatisfaction(int satisfaction){
+    //==change 로직==//
+    public void changeSatisfaction(int satisfaction){
         this.satisfaction = satisfaction;
     }
 }
