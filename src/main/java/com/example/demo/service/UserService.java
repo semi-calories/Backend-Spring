@@ -6,6 +6,8 @@ import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.Record.Response.WeightDto;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.repository.PredictUserWeightRepository;
 import com.example.demo.repository.UserGoalRepository;
 import com.example.demo.repository.UserRepository;
@@ -195,7 +197,7 @@ public class UserService {
                 // 필요한 값 다 있으면 헤리스 베네딕트 값 생성
                 findUserGoal.harrisBenedict(findUser, weight, ((Math.abs(findUser.getWeight()-findUserGoal.getGoalWeight()))*7700)/ findUserGoal.getGoalPeriod());
             } catch (Exception e) {
-                throw new RuntimeException("헤리스 베네딕트 값을 생성할 수 없습니다.");
+                throw new RestApiException(CustomErrorCode.HARRIS_BENEDICT_FAIL);
             }
         }
 

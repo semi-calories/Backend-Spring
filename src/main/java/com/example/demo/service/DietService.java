@@ -11,6 +11,8 @@ import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
 import com.example.demo.dto.Record.Request.RequestWeekStatDto;
 import com.example.demo.dto.Record.Request.WeekDto;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -101,7 +103,7 @@ public class DietService {
                 userSatisfactionRepository.delete(userSatisfaction.get());
             }
         }else{
-            throw new IllegalStateException("존재하지 않는 정보입니다.");
+            throw new RestApiException(CustomErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 
@@ -211,7 +213,7 @@ public class DietService {
 
                         }
                     } else {
-                        throw new IllegalStateException("존재하지 않는 정보입니다.");
+                        throw new RestApiException(CustomErrorCode.RESOURCE_NOT_FOUND);
                     }
                 });
 

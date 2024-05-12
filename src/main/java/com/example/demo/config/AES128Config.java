@@ -1,5 +1,9 @@
 package com.example.demo.config;
 
+import com.example.demo.errors.errorCode.CommonErrorCode;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.errorCode.ErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +51,7 @@ public class AES128Config {
             return new String(cipher.doFinal(decoded), ENCODING_TYPE);
         } catch (Exception e) {
             log.info(e.getMessage());
-            throw new RuntimeException();
+            throw new RestApiException(CommonErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }
