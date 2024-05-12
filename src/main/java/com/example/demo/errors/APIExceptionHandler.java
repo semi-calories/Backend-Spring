@@ -45,7 +45,8 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(final ErrorCode errorCode) {
         return com.example.demo.errors.response.ErrorResponse.builder()
-                .code(errorCode.name())
+                .status(errorCode.name())
+                .code(errorCode.getHttpCode())
                 .message(errorCode.getMessage())
                 .build();
     }
@@ -53,16 +54,12 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(final ErrorCode errorCode, final String message) {
         return ErrorResponse.builder()
-                .code(errorCode.name())
+                .status(errorCode.name())
+                .code(errorCode.getHttpCode())
                 .message(message)
                 .build();
     }
 
-    // 스프링 내부 로직 custom exception 적용
-    // https://github.com/MangKyu/InterviewSubscription/blob/master/src/main/java/com/mangkyu/employment/interview/erros/handler/GlobalExceptionHandler.java
-    // https://mangkyu.tistory.com/205
 
-    // 스프링 필터에서 적용되는 exception -> 401/403
-    // https://ailiartsua.tistory.com/35
 
 }

@@ -27,7 +27,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private void setResponse(HttpServletResponse response, String message) throws IOException{
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .code(HttpStatus.FORBIDDEN.name())
+                .status(HttpStatus.FORBIDDEN.name())
+                .code(HttpStatus.FORBIDDEN.value())
                 .message(message)
                 .build();
         response.setStatus(HttpStatus.FORBIDDEN.value());
