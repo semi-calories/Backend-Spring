@@ -17,7 +17,7 @@ public class AuthController{
     private final JwtProvider jwtProvider;
 
     @PostMapping("/reissueToken")
-    public Object reissueToken(HttpServletRequest request, Long userCode){
+    public ResponseReissuedTokenDto reissueToken(HttpServletRequest request, Long userCode){
 
         String encryptedRefreshToken = jwtProvider.resolveRefreshToken(request);
 
