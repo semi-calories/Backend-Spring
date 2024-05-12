@@ -57,7 +57,7 @@ public class User extends BaseEntity {
         this.weight = weight;
     }
 
-    public void weightChange( double weight){
+    public void changeWeight( double weight){
         this.weight = weight;
     }
 

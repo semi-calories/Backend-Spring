@@ -24,7 +24,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import static java.time.LocalDateTime.now;
 
 @RestController
 @RequestMapping("/recommend")
@@ -41,7 +40,7 @@ public class FoodRecommendController {
      * 음식 추천 요청 받는 api
      */
     @PostMapping("/request")
-    public ResponseRecommendListDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
+    public ResponseRecommendListDto requestRecommend(@RequestBody RequestRecommendDto requestRecommendDto) {
 
         // DB에서 해당 정보 가져옴
         // 유저 목표 및 유저 조회
@@ -55,12 +54,9 @@ public class FoodRecommendController {
 
         // FASTAPI 서버에 api 요청
         RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, 0, preferDiet, dislikeDiet, dietRecords);
-        System.out.println(requestRecommendAPIDto);
+                new RequestRecommendAPIDto(user, preferDiet, dislikeDiet, dietRecords);
 
         ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
-
-
 
         // FASTAPI 응답 DTO로 list별로 음식 접근가능케 함 (fast api: 인덱스별로 접근)
         List<RecommendDto> recommendDtoList = IntStream.range(0, responseAPIDto.getFoodCodeList().size()) // 음식 추천 수만큼 반복
@@ -84,48 +80,5 @@ public class FoodRecommendController {
         // 응답 DTO 생성 및 return
         return new ResponseRecommendListDto(dietImgByMainCategory);
     }
-    @PostMapping("/requestPush")
-    public ResponseRecommendListDto requestPushRecommend(@RequestBody RequestRecommendDto requestRecommendDto) throws Exception {
 
-        // DB에서 해당 정보 가져옴
-        // 유저 목표 및 유저 조회
-        UserGoal user = userService.findUserWithUserGoal(requestRecommendDto.getUserCode());
-
-        // 유저 선호, 비선호, 기록 조회
-        List<UserDietPrefer> preferDiet = dietService.findPreferByUserCode(requestRecommendDto.getUserCode());
-        List<UserDietDislike> dislikeDiet = dietService.findDislikeByUserCode(requestRecommendDto.getUserCode());
-        List<DietRecord> dietRecords = dietService.findDietRecordByUserCodeAndDate(requestRecommendDto.getUserCode(), LocalDate.now());
-
-
-        // FASTAPI 서버에 api 요청
-        RequestRecommendAPIDto requestRecommendAPIDto =
-                new RequestRecommendAPIDto(user, 1, preferDiet, dislikeDiet, dietRecords);
-        System.out.println(requestRecommendAPIDto);
-
-        ResponseRecommendAPIDto responseAPIDto = fastApiFeign.requestRecommend(requestRecommendAPIDto);
-
-
-
-        // FASTAPI 응답 DTO로 list별로 음식 접근가능케 함 (fast api: 인덱스별로 접근)
-        List<RecommendDto> recommendDtoList = IntStream.range(0, responseAPIDto.getFoodCodeList().size()) // 음식 추천 수만큼 반복
-                .mapToObj(i -> new RecommendDto(
-                        responseAPIDto.getFoodCodeList().get(i),
-                        responseAPIDto.getFoodNameList().get(i),
-                        responseAPIDto.getFoodMainCategoryList().get(i),
-                        responseAPIDto.getFoodDetailedClassificationList().get(i),
-                        responseAPIDto.getFoodWeightList().get(i),
-                        responseAPIDto.getFoodKcalList().get(i),
-                        responseAPIDto.getFoodCarbonList().get(i),
-                        responseAPIDto.getFoodProteinList().get(i),
-                        responseAPIDto.getFoodFatList().get(i)
-                ))
-                .collect(Collectors.toList());
-
-
-        // Image 조회
-        List<ResponseRecommendDto> dietImgByMainCategory = imgService.findDietImgByFoodMainCategory(recommendDtoList);
-
-        // 응답 DTO 생성 및 return
-        return new ResponseRecommendListDto(dietImgByMainCategory);
-    }
 }
