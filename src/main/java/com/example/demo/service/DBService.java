@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.DB.DietList;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.repository.DietListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class DBService {
                 .map(Optional::get) // 존재하면 get
                 .collect(Collectors.toList());// 리스트로 리턴
         if (dietList.isEmpty()){
-            throw new IllegalStateException("인식된 음식의 정보가 없습니다.");
+            throw new RestApiException(CustomErrorCode.FOOD_RECOG_FAIL);
         }
         return dietList;
     }
@@ -52,7 +54,7 @@ public class DBService {
             return foodList.get();
         }
         else {
-            throw new IllegalArgumentException("내부오류");
+            throw new RestApiException(CustomErrorCode.RESOURCE_NOT_FOUND);
         }
     }
 }

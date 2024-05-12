@@ -3,6 +3,8 @@ package com.example.demo.config.JWT;
 import com.example.demo.domain.User.CustomUserDetails;
 import com.example.demo.dto.Login.Token.AccessTokenDto;
 import com.example.demo.dto.Login.Token.RefreshTokenDto;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.service.JwtService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -10,7 +12,6 @@ import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -139,7 +140,8 @@ public class JwtProvider {
         Claims claims = parseClaims(accessToken);
 
         if(claims.get("loginId") == null){
-            throw new IllegalArgumentException("접근 불가 토큰");
+            // 로그인 아이디가 없으면 인증 불가
+            throw new RestApiException(CustomErrorCode.INVALID_TOKEN);
         }
 
         String authority = claims.get("loginId").toString();
@@ -180,7 +182,8 @@ public class JwtProvider {
         }catch (ExpiredJwtException e){
             log.info("Expired JWT Token");
             log.trace("Expired JWT Token trace",e);
-            throw new IllegalArgumentException("refresh token 만료");
+            // 토큰 만료
+            throw new RestApiException(CustomErrorCode.INVALID_TOKEN);
         }
     }
 
