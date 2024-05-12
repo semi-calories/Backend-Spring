@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.config.JWT.JwtAuthenticationEntryPoint;
 import com.example.demo.config.JWT.JwtAuthenticationFilter;
 import com.example.demo.config.JWT.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final RedisTemplate<String, String > redisTemplate;
 
     @Bean // 비밀번호 암호화
@@ -55,6 +57,7 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(handler -> handler.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class )
                 .build();
     }

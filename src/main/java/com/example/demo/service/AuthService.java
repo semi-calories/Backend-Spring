@@ -4,6 +4,8 @@ import com.example.demo.config.JWT.JwtProvider;
 import com.example.demo.domain.User.CustomUserDetails;
 import com.example.demo.domain.User.Login;
 import com.example.demo.dto.Login.Token.AccessTokenDto;
+import com.example.demo.errors.errorCode.CustomErrorCode;
+import com.example.demo.errors.exception.RestApiException;
 import com.example.demo.repository.LoginRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,15 +50,15 @@ public class AuthService {
                 AccessTokenDto newAccessToken = jwtProvider.generateAccessToken(new CustomUserDetails(findLogin.get().getUserEmail(), findLogin.get().getUserPassword()));
                 return newAccessToken.getAccessToken();
             }else{
-                throw new IllegalArgumentException("사용불가능한 refresh token입니다.");
+                throw new RestApiException(CustomErrorCode.INVALID_TOKEN);
             }
-        }else throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+        }else throw new RestApiException(CustomErrorCode.USER_NOT_FOUND);
 
     }
 
     private void verifiedRefreshToken(String encryptedRefreshToken){
         if(encryptedRefreshToken == null){
-            throw new IllegalArgumentException("refresh token 사용 불가");
+            throw new RestApiException(CustomErrorCode.INVALID_TOKEN);
         }
     }
 
