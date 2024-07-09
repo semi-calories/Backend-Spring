@@ -5,6 +5,7 @@ import com.example.demo.domain.Diet.UserDietPrefer;
 import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.dto.User.Request.RequestPreferenceSaveDto;
+import com.example.demo.dto.User.Request.RequestSaveUserImageDto;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.dto.User.Response.ResponseUserGetDto;
 import com.example.demo.service.DietService;
@@ -37,11 +38,8 @@ public class UserController {
     @PostMapping("/updateInfo")
     public ReturnDto updateUserInfo(@ModelAttribute RequestUserUpdateDto requestInfoUpdateDto){
 
-        // 유저 이미지 저장
-        String imageUrl = s3UploadService.upload(requestInfoUpdateDto.getImage(), requestInfoUpdateDto.getUserCode().toString());
-
         // 유저 정보 수정
-        userService.userUpdate(requestInfoUpdateDto, imageUrl);
+        userService.userUpdate(requestInfoUpdateDto);
 
         // 유저 이메일 수정
         loginService.updateEmail(requestInfoUpdateDto.getUserCode(), requestInfoUpdateDto.getEmail());
@@ -76,6 +74,19 @@ public class UserController {
         return new ResponseUserGetDto(findUser, findGoal);
     }
 
+    /**
+     * 회원 정보 추가 저장(수정)
+     */
+    @PostMapping("/saveUserImage")
+    public void saveUserImage(@ModelAttribute RequestSaveUserImageDto requestSaveUserImageDto){
+
+        // 유저 이미지 저장
+        String imageUrl = s3UploadService.upload(requestSaveUserImageDto.getImage(), requestSaveUserImageDto.getUserCode().toString());
+
+        // 유저 정보 수정
+        userService.saveUserImage(requestSaveUserImageDto, imageUrl);
+
+    }
 
 
 

@@ -47,14 +47,17 @@ public class User extends BaseEntity {
     }
 
     //==비즈니스 변경 로직==//
-    public void change(String name, String email, String image,int age, Gender gender, double height, double weight){
+    public void change(String name, String email, int age, Gender gender, double height, double weight){
         this.name = name;
         this.email = email;
-        this.image = image;
         this.age = age;
         this.gender = gender;
         this.height = height;
         this.weight = weight;
+    }
+
+    public void changeImage(String image){
+        this.image = image;
     }
 
     public void changeWeight( double weight){
