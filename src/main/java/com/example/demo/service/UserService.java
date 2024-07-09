@@ -5,6 +5,7 @@ import com.example.demo.domain.User.User;
 import com.example.demo.domain.User.UserGoal;
 import com.example.demo.domain.User.UserWeight;
 import com.example.demo.dto.Record.Response.WeightDto;
+import com.example.demo.dto.User.Request.RequestSaveUserImageDto;
 import com.example.demo.dto.User.Request.RequestUserUpdateDto;
 import com.example.demo.errors.errorCode.CustomErrorCode;
 import com.example.demo.errors.exception.RestApiException;
@@ -40,7 +41,7 @@ public class UserService {
      * 유저 기본 정보 수정
      */
     @Transactional
-    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto, String userImageUrl) {
+    public Long userUpdate(RequestUserUpdateDto requestUserInfoUpdateDto) {
 
         User findUser = findOne(requestUserInfoUpdateDto.getUserCode());
 
@@ -48,7 +49,6 @@ public class UserService {
         findUser.change(
                 requestUserInfoUpdateDto.getName(),
                 requestUserInfoUpdateDto.getEmail(),
-                userImageUrl,
                 requestUserInfoUpdateDto.getAge(),
                 requestUserInfoUpdateDto.getGender(),
                 requestUserInfoUpdateDto.getHeight(),
@@ -67,6 +67,16 @@ public class UserService {
         }
 
         return findUser.getUserCode();
+    }
+
+    /**
+     * 유저 이미지 저장
+     */
+    public void saveUserImage(RequestSaveUserImageDto requestSaveUserImageDto, String imageUrl) {
+
+        User findUser = findOne(requestSaveUserImageDto.getUserCode());
+        // 유저 이미지 수정
+        findUser.changeImage(imageUrl);
     }
 
 
@@ -299,4 +309,6 @@ public class UserService {
 
         return sameTimePredictWeightList;
     }
+
+
 }
