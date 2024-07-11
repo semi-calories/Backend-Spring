@@ -80,10 +80,11 @@ public class UserController {
     @PostMapping("/saveUserImage")
     public void saveUserImage(@ModelAttribute RequestSaveUserImageDto requestSaveUserImageDto){
 
+
         // 유저 이미지 저장
         String imageUrl = s3UploadService.upload(requestSaveUserImageDto.getImage(), requestSaveUserImageDto.getUserCode().toString());
 
-        // 유저 정보 수정
+      // 유저 정보 수정
         userService.saveUserImage(requestSaveUserImageDto, imageUrl);
 
     }
