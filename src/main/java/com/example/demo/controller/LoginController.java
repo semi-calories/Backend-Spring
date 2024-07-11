@@ -52,9 +52,8 @@ public class LoginController {
      * 회원 탈퇴(정보 삭제)
      */
     @PostMapping("/deleteInfo")
-    public ReturnDto deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
+    public void deleteInfo(@RequestBody RequestDeleteUserDto requestDeleteUserDto){
         loginService.deleteLogin(requestDeleteUserDto.getUserCode());
-        return new ReturnDto("ok");
     }
 
 

@@ -4,10 +4,10 @@ import com.example.demo.domain.DB.DietList;
 import com.example.demo.domain.Diet.DietRecord;
 import com.example.demo.domain.Diet.UserSatisfaction;
 import com.example.demo.domain.User.User;
-import com.example.demo.domain.User.UserGoal;
-import com.example.demo.domain.User.UserWeight;
-import com.example.demo.dto.Record.Request.*;
-import com.example.demo.dto.Record.Response.*;
+import com.example.demo.dto.Record.Request.RequestDeleteRecordDto;
+import com.example.demo.dto.Record.Request.RequestRecordDto;
+import com.example.demo.dto.Record.Request.RequestUpdateRecordDto;
+import com.example.demo.dto.Record.Response.ResponseFoodListDto;
 import com.example.demo.dto.User.Response.ResponseUserRecordDto;
 import com.example.demo.dto.User.Response.UserRecordDto;
 import com.example.demo.service.DBService;
@@ -40,7 +40,7 @@ public class FoodRecordTextController {
      * 식단 기록 저장
      */
     @PostMapping("/text")
-    public ReturnDto foodRecordByText(@RequestBody @Valid RequestRecordDto requestRecordDto) throws Exception {
+    public void foodRecordByText(@RequestBody @Valid RequestRecordDto requestRecordDto) throws Exception {
 
         // db에서 유저 검색
         User user = userService.findOne(requestRecordDto.getUserCode());
@@ -58,7 +58,6 @@ public class FoodRecordTextController {
         UserSatisfaction userSatisfaction = new UserSatisfaction(user, food, food.getFoodName(), requestRecordDto.getSatisfaction());
         dietService.saveUserSatisfaction(user.getUserCode(), userSatisfaction);
 
-        return new ReturnDto<>(true);
     }
 
     /**
@@ -86,7 +85,7 @@ public class FoodRecordTextController {
      * 식단 기록 삭제
      */
     @PostMapping("/deleteRecord")
-    public ReturnDto deleteFoodRecord(@RequestBody RequestDeleteRecordDto requestDeleteRecordDto) throws Exception {
+    public void deleteFoodRecord(@RequestBody RequestDeleteRecordDto requestDeleteRecordDto) throws Exception {
 
         // string 타입의 먹은 시간 LocalDateTime으로 변경
 
@@ -94,14 +93,13 @@ public class FoodRecordTextController {
 
         // 식단 기록 삭제
         dietService.deleteFoodRecord(requestDeleteRecordDto.getUserCode(), requestDeleteRecordDto.getFoodCode(), localDateTime);
-        return new ReturnDto(true);
     }
 
     /**
      * 식단 기록 수정
      */
     @PostMapping("/updateRecord")
-    public ReturnDto updateFoodRecord(@RequestBody RequestUpdateRecordDto requestUpdateRecordDto) throws Exception {
+    public void updateFoodRecord(@RequestBody RequestUpdateRecordDto requestUpdateRecordDto) throws Exception {
 
         LocalDateTime originalEatDate = getLocalDateTime(requestUpdateRecordDto.getOriginalEatDate());
         LocalDateTime newEatDate = getLocalDateTime(requestUpdateRecordDto.getEatDate());
@@ -124,7 +122,6 @@ public class FoodRecordTextController {
         UserSatisfaction userSatisfaction = new UserSatisfaction(user, food, food.getFoodName(), requestUpdateRecordDto.getSatisfaction());
         dietService.saveUserSatisfaction(requestUpdateRecordDto.getUserCode(), userSatisfaction);
 
-        return new ReturnDto<>(true);
     }
 
 

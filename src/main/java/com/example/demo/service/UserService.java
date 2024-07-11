@@ -72,6 +72,7 @@ public class UserService {
     /**
      * 유저 이미지 저장
      */
+    @Transactional
     public void saveUserImage(RequestSaveUserImageDto requestSaveUserImageDto, String imageUrl) {
 
         User findUser = findOne(requestSaveUserImageDto.getUserCode());

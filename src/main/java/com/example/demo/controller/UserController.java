@@ -80,10 +80,11 @@ public class UserController {
     @PostMapping("/saveUserImage")
     public void saveUserImage(@ModelAttribute RequestSaveUserImageDto requestSaveUserImageDto){
 
+
         // 유저 이미지 저장
         String imageUrl = s3UploadService.upload(requestSaveUserImageDto.getImage(), requestSaveUserImageDto.getUserCode().toString());
 
-        // 유저 정보 수정
+      // 유저 정보 수정
         userService.saveUserImage(requestSaveUserImageDto, imageUrl);
 
     }
@@ -95,7 +96,7 @@ public class UserController {
      * 선호 음식 저장
      */
     @PostMapping("/savePrefer")
-    public ReturnDto savePrefer(@RequestBody RequestPreferenceSaveDto requestPreferSaveDto){
+    public void savePrefer(@RequestBody RequestPreferenceSaveDto requestPreferSaveDto){
 
         // 유저 찾기
         User user = userService.findOne(requestPreferSaveDto.getUserCode());
@@ -103,7 +104,6 @@ public class UserController {
         // 선호 음식 저장
         dietService.savePreferDiet(user, requestPreferSaveDto, true);
 
-        return new ReturnDto<>(true);
     }
 
     /**
@@ -125,7 +125,7 @@ public class UserController {
      * 비선호 음식 저장
      */
     @PostMapping("/saveDislike")
-    public ReturnDto saveDislike(@RequestBody RequestPreferenceSaveDto requestDislikeSaveDto){
+    public void saveDislike(@RequestBody RequestPreferenceSaveDto requestDislikeSaveDto){
 
         // 유저 찾기
         User user = userService.findOne(requestDislikeSaveDto.getUserCode());
@@ -133,7 +133,6 @@ public class UserController {
         // 비선호음식 저장
         Long userCode = dietService.saveDislikeDiet(user, requestDislikeSaveDto, false);
 
-        return new ReturnDto<>(true);
     }
 
     /**
