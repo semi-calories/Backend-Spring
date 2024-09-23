@@ -62,28 +62,6 @@ https://www.youtube.com/watch?si=L2XPrdrjfqKJwl-q&v=tg4nNRUMVk4&feature=youtu.be
 ## 📜  API Document
 https://www.notion.so/semi-calories/API-Document-7097f7b7e3b044848caefc7a9be3bf42
 
-<br>
-
-## 각 파트별 수행 역할
-
-➡️ 백엔드측 역할 및 기능
-1. Main Server 
-  -	Java, Spring Boot를 사용하여 앱의 백엔드 기능 구현
-    -	사용자 인증 및 권한 관리
-    -	클라이언트 앱과의 통신 처리 및 API 엔드포인트 제공
-    -	비즈니스 로직 처리 및 데이터 조작
-  - JPA(Java Persistence API)를 통한 데이터베이스 관리 및 접근
-2. AI Server 
-  -	Python, FastAPI를 통해 음식 사진, 음식 추천 기능 API 제공 
-  -	PyTorch 라이브러리를 통해 AI 모델 실행 및 수행
-  -	Scikit-learn 라이브러리 통해 추천 알고리즘 구현
-  
-➡️ 프론트엔드측 역할 및 기능
-  -	React Native와 Expo를 통한 모바일 앱 개발
-    
-➡️ 통합 및 통신
-  -	클라이언트-백엔드 통신 방식 : REST API
-  -	데이터 전송 및 보안 프로토콜 : HTTP
 
 <br>
 
